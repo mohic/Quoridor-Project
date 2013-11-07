@@ -47,7 +47,7 @@
 \**********************/
 
 /**
-	classe servant à obtenir toute la configuration initiale du jeu</sumary>
+	classe servant à obtenir toute la configuration initiale du jeu
 	@author LECAT Maxime
 	@author MOHIMONT Christophe
 */
