@@ -32,7 +32,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// configuration des caméras
 	Vec3 eye    = Vec3(0, 0, 1);
-	Vec3 center = Vec3(0, 0, 0);
+	Vec3 center = POSITION_CENTRE;
 	Vec3 up     = Vec3(0, 1, 0);
 
 	ref_ptr<Camera> cameraPlateau = new Camera();
@@ -63,7 +63,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// dessin du plateau
 	ref_ptr<ShapeDrawable> plateau = new ShapeDrawable();
-	plateau->setShape(new Box(Vec3(0, 0, 0), Config::getInstance()->getTaillePlateau(), Config::getInstance()->getTaillePlateau(), 0));
+	plateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTaillePlateau(), Config::getInstance()->getTaillePlateau(), 0));
 	plateau->setColor(COLOR_PLATEAU);
 
 	ref_ptr<Geode> geodePlateau = new Geode();
@@ -76,7 +76,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// dessin des cases
 	ref_ptr<ShapeDrawable> casePlateau = new ShapeDrawable();
-	casePlateau->setShape(new Box(Vec3(0, 0, 0), Config::getInstance()->getTailleCase(), Config::getInstance()->getTailleCase(), 1));
+	casePlateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleCase(), Config::getInstance()->getTailleCase(), 1));
 	casePlateau->setColor(COLOR_CASE);
 	
 	ref_ptr<Geode> geodeCase = new Geode();
@@ -115,7 +115,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// dessin des barrières
 	ref_ptr<ShapeDrawable> barriere = new ShapeDrawable();
-	barriere->setShape(new Box(Vec3(0, 0, 0), Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), 2));
+	barriere->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), 2));
 	barriere->setColor(COLOR_BARRIERE);
 
 	ref_ptr<Geode> geodeBarriere = new Geode();
@@ -132,7 +132,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// dessin de la barrière virtuelle
 	ref_ptr<ShapeDrawable> virtualBarriere = new ShapeDrawable();
-	virtualBarriere->setShape(new Box(Vec3(0, 0, 0), Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), 3));
+	virtualBarriere->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), 3));
 	virtualBarriere->setColor(COLOR_VIRTUAL_BARRIERE);
 
 	ref_ptr<Geode> geodeVirtualBarriere = new Geode();
@@ -150,8 +150,8 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	ref_ptr<Geode> geodePion1 = new Geode();
 	ref_ptr<Geode> geodePion2 = new Geode();
 
-	pion1->setShape(new Cylinder(Vec3(0, 0, 0), Config::getInstance()->getTaillePion(), 2));
-	pion2->setShape(new Cylinder(Vec3(0, 0, 0), Config::getInstance()->getTaillePion(), 2));
+	pion1->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), 2));
+	pion2->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), 2));
 	pion1->setColor(COLOR_PION_1);
 	pion2->setColor(COLOR_PION_2);
 
@@ -245,7 +245,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// dessin du bouton de changement de sens
 	ref_ptr<ShapeDrawable> buttonSens = new ShapeDrawable();
-	buttonSens->setShape(new Box(Vec3(0, 0, 0), 1));
+	buttonSens->setShape(new Box(POSITION_CENTRE, 1));
 	buttonSens->setColor(BLACK);
 
 	ref_ptr<Geode> geodeButtonSens = new Geode();
@@ -265,7 +265,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// créer un bouton
 	ref_ptr<ShapeDrawable> button = new ShapeDrawable();
-	button->setShape(new Box(Vec3(0, 0, 0), 1.5, 1, 1));
+	button->setShape(new Box(POSITION_CENTRE, 1.5, 1, 1));
 	button->setColor(BLACK);
 
 	ref_ptr<Geode> geodeButton = new Geode();

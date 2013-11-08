@@ -12,6 +12,7 @@
 #define FENETRE_Y		50	// position y de la fenêtre à l'écran
 #define FENETRE_HEIGHT	700	// hauteur de la fenêtre
 #define FENETRE_WIDTH	600	// largeur de la fenêtre
+#define POSITION_CENTRE Vec3(0, 0, 0)
 
 /**********\
 *          *
