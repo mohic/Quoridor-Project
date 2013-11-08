@@ -9,6 +9,7 @@
 #include "Config.h"
 #include "Controller.h"
 #include "EventController.h"
+#include "InputBoxDialog.h" // TODO: remove me
 #include "Model.h"
 #include "PositionUpdater.h"
 

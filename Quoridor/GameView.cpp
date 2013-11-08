@@ -311,6 +311,9 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	cameraAction->addChild(transformButtonSave.get());
 
+	// TODO: remove me
+	cameraPlateau->addChild(InputBoxDialog::getInstance()->showDialog("Titre", "Coucou"));
+
 	// création d'un noeud racine de type group contenant les caméras
 	ref_ptr<Group> root = new Group();
 
