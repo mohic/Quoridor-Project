@@ -17,13 +17,13 @@ Config::Config()
 	taillePlateau = 200 - 5;
 
 	setSaveFileName("save.dat");
-	setNbrCases(9); // TODO: régler bug barrière
+	setNbrCases(9);
 }
 
 void Config::setNbrCases(int nbr)
 {
-	if ((nbr % 2) == 0)
-		throw ArgumentInvalidException("Le nombre de cases doit être un nombre impair.");
+	if ((nbr % 2) == 0 || nbr <= 1)
+		throw ArgumentInvalidException("Le nombre de cases doit être un nombre impair et supérieur à 1");
 
 	// enregistrement des différentes tailles
 	nbrCases = nbr;

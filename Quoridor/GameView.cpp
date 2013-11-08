@@ -87,8 +87,12 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	geodeCase->addDrawable(casePlateau.get());
 
 	ref_ptr<MatrixTransform> caseTransform;
-	int px = -90 + (Config::getInstance()->getTailleCase() * 2) + Config::getInstance()->getTailleRainure();
-	int py = 90 - (Config::getInstance()->getTailleCase() * 2) - Config::getInstance()->getTailleRainure();
+
+	int pxInit =  - ((Config::getInstance()->getNbrCases() - 1) / 2 * Config::getInstance()->getTailleCase()) // retire le décalage par rapport à chaque case
+		     - ((Config::getInstance()->getNbrBarriereJoueur() - 2) / 2 * Config::getInstance()->getTailleRainure()); // retire le décalage par rapport au rainure
+
+	int px = pxInit;
+	int py = -pxInit;
 
 	for (int y = 0; y < Config::getInstance()->getNbrCases(); y++)
 	{
@@ -106,7 +110,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 		}
 
 		py -= (Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure());
-		px = -90 + (Config::getInstance()->getTailleCase() * 2) + Config::getInstance()->getTailleRainure();
+		px = pxInit;
 	}
 
 	// dessin des barrières

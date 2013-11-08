@@ -89,7 +89,13 @@ vector<ref_ptr<MatrixTransform>> Controller::getBarrieres()
 	int barriereZoneJ2 = Model::getInstance()->getNbrBarriereAPlacer(2);
 
 	// emplacement de la première barrière dans la zone de rangement du joueur 1
-	int px = -90 + (Config::getInstance()->getTailleCase() * 2) - Config::getInstance()->getTailleRainure() - (Config::getInstance()->getTailleRainure() / 2);
+	int pxInit = - ((Config::getInstance()->getNbrCases() - 1) / 2 * Config::getInstance()->getTailleCase()) // retire le décalage par rapport à chaque case
+		- ((Config::getInstance()->getNbrBarriereJoueur() - 2) / 2 * Config::getInstance()->getTailleRainure()) // retire le décalage par rapport au rainure
+		- (Config::getInstance()->getTailleCase() / 2 + Config::getInstance()->getTailleRainure() / 2); // retire une demi case et une demi rainure
+	
+	int px = pxInit;
+
+	int py = -pxInit + Config::getInstance()->getTailleRainure() * 2 + Config::getInstance()->getTailleCase();
 
 	// placement des barrières dans la zone rangement du joueur 1
 	for (int i = 0; i < barriereZoneJ1; i++)
@@ -97,7 +103,7 @@ vector<ref_ptr<MatrixTransform>> Controller::getBarrieres()
 		mt = barrieres[0][i];
 		mt->setMatrix(Matrix::identity());
 		mt->postMult(Matrix::rotate(osg::inDegrees(90.0), Z_AXIS));
-		mt->postMult(Matrix::translate(Vec3(px, 85, 0)));
+		mt->postMult(Matrix::translate(Vec3(px, py, 0)));
 
 		px += Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure();
 
@@ -105,7 +111,7 @@ vector<ref_ptr<MatrixTransform>> Controller::getBarrieres()
 	}
 
 	// emplacement de la première barrière dans la zone de rangement du joueur 2
-	px = -90 + (Config::getInstance()->getTailleCase() * 2) - (Config::getInstance()->getTailleRainure() * 2);
+	px = pxInit;
 
 	// placement des barrières dans la zone rangement du joueur 2
 	for (int i = 0; i < barriereZoneJ2; i++)
@@ -113,7 +119,7 @@ vector<ref_ptr<MatrixTransform>> Controller::getBarrieres()
 		mt = barrieres[1][i];
 		mt->setMatrix(Matrix::identity());
 		mt->postMult(Matrix::rotate(osg::inDegrees(90.0), Z_AXIS));
-		mt->postMult(Matrix::translate(Vec3(px, -85, 0)));
+		mt->postMult(Matrix::translate(Vec3(px, -py, 0)));
 
 		px += Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure();
 
