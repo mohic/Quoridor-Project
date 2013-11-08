@@ -10,7 +10,7 @@
 /**
 	Controlleur du jeu
 	@author LECAT Maxime
-	@author MOHIMONT Christophe 
+	@author MOHIMONT Christophe
 */
 class Controller
 {
