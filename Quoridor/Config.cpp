@@ -17,7 +17,7 @@ Config::Config()
 	taillePlateau = 200 - 5;
 
 	setSaveFileName("save.dat");
-	setNbrCases(11);
+	setNbrCases(9); // TODO: régler bug barrière
 }
 
 void Config::setNbrCases(int nbr)
