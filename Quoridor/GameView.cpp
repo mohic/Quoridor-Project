@@ -312,7 +312,10 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	cameraAction->addChild(transformButtonSave.get());
 
 	// TODO: remove me
-	cameraPlateau->addChild(InputBoxDialog::getInstance()->showDialog("Titre", "Coucou"));
+	//ref_ptr<MatrixTransform> dlg = InputBoxDialog::getInstance()->showDialog("Titre", "Coucou");
+	//dlg->setMatrix(Matrix::identity());
+	//dlg->postMult(Matrix::translate(Vec3(0, 0, 1)));
+	//cameraPlateau->addChild(dlg);
 
 	// création d'un noeud racine de type group contenant les caméras
 	ref_ptr<Group> root = new Group();
