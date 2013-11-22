@@ -25,6 +25,7 @@ private:
 	std::vector<std::vector<bool>> placePrises;	// représente une grille en mémoire permettant de savoir si une place de barrière est prise ou pas
 	Point virtualBarriere;						// position de la barrière virtuelle si affichée
 	bool sensVirtualBarriere;					// sens de la barrière virtuelle. true = vertical, false = horizontal
+	bool partieTerminee;						// true si la partie est terminée, sinon false
 	int joueurEnCours;							// joueur qui doit jouer
 	Mode currentMode;							// mode courant du jeu
 	std::string message;						// message à afficher à l'utilisateur
@@ -55,6 +56,19 @@ public:
 		@return l'instance du modèle
 	*/
 	static Model *getInstance();
+
+	//TODO documentation
+	bool getPartieTerminee()
+	{
+		return partieTerminee;
+	}
+
+	//TODO documentation
+	void recommencerPartie()
+	{
+		delete instance;
+		instance = new Model();
+	}
 
 	/**
 		méthode de récupération de la position d'un pion

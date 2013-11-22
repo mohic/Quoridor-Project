@@ -44,6 +44,10 @@ void EventController::operator()(Node *node, NodeVisitor *nv)
 
 void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 {
+	// tester si le jeu est terminé
+	if (Model::getInstance()->getPartieTerminee())
+		return;
+
 	if (ea->getButton() == GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON)
 	{
 		ref_ptr<LineSegmentIntersector> intersector = new LineSegmentIntersector(Intersector::CoordinateFrame::WINDOW, ea->getX(), ea->getY());
@@ -147,6 +151,15 @@ bool EventController::testButtonColision(Button button, Point position)
 
 void EventController::handleKeyboard(int key)
 {
+	if (key == GUIEventAdapter::KEY_R) { // recommencer la partie
+		Model::getInstance()->recommencerPartie();
+		return;
+	}
+
+	// tester si le jeu est terminé
+	if (Model::getInstance()->getPartieTerminee())
+		return;
+
 	if (key == GUIEventAdapter::KEY_M) { // changer de mode
 		if (Model::getInstance()->getMode() == Model::Mode::PIONS)
 			Model::getInstance()->setMode(Model::Mode::BARRIERE);

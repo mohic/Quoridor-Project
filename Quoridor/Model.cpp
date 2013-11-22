@@ -24,6 +24,9 @@ Model::Model()
 	// initialisation du joueur en cours
 	joueurEnCours = 1;
 
+	// initialisation de partie terminée
+	partieTerminee = false;
+
 	// initialisation du mode
 	currentMode = Mode::PIONS;
 
@@ -52,43 +55,66 @@ bool Model::deplacerPion(int joueur, Direction direction)
 {
 	//TODO: sauter au dessus du pion adverse si possible
 
-	// récupération de l'emplacement du pion du joueur
+	// récupération de l'emplacement initial du pion du joueur
 	Point p = pions[joueur - 1];
+	bool succeed = true;
 
 	switch (direction)
 	{
 		case Model::UP: // si le pion doit se déplacer en haut
 			// teste si le pion est tout en haut ou bloqué par une barrière
 			if (p.getY() <= 0 || !testerPassagePion(p, Direction::UP))
-				return false;
-
-			pions[joueur - 1] = Point(p.getX(), p.getY() - 1);
+				succeed = false;
+			else
+				pions[joueur - 1] = Point(p.getX(), p.getY() - 1);
 
 			break;
 		case Model::DOWN: // si le pion doit se déplacer en bas
 			// teste si le pion est tout en bas ou bloqué par une barrière
 			if (p.getY() >= Config::getInstance()->getNbrCases() - 1 || !testerPassagePion(p, Direction::DOWN))
-				return false;
-
-			pions[joueur - 1] = Point(p.getX(), p.getY() + 1);
+				succeed = false;
+			else
+				pions[joueur - 1] = Point(p.getX(), p.getY() + 1);
 
 			break;
 		case Model::LEFT: // si le pion doit se déplacer à gauche
 			// teste si le pion est tout à gauche ou bloqué par une barrière
 			if (p.getX() <= 0 || !testerPassagePion(p, Direction::LEFT))
-				return false;
-
-			pions[joueur - 1] = Point(p.getX() - 1, p.getY());
+				succeed = false;
+			else
+				pions[joueur - 1] = Point(p.getX() - 1, p.getY());
 
 			break;
 		case Model::RIGHT: // si le pion doit se déplacer à droite
 			// teste si le pion est tout à droite ou bloqué par une barrière
 			if (p.getX() >= Config::getInstance()->getNbrCases() - 1 || !testerPassagePion(p, Direction::RIGHT))
-				return false;
-
-			pions[joueur - 1] = Point(p.getX() + 1, p.getY());
+				succeed = false;
+			else
+				pions[joueur - 1] = Point(p.getX() + 1, p.getY());
 
 			break;
+	}
+
+	// si échec du déplacement
+	if (!succeed) {
+		message = "Mouvement impossible";
+		return false;
+	}
+
+	// condition pour sauter au dessus de l'autre joueur
+	int autreJoueur = (joueur == 1 ? 2 : 1);
+
+	if (pions[joueur - 1].getX() == pions[autreJoueur - 1].getX() && pions[joueur - 1].getY() == pions[autreJoueur - 1].getY()) {
+		if (!deplacerPion(joueur, direction)) {
+			pions[joueur - 1] = p; // remettre le pion à sa position initiale
+			return false;
+		}
+	}
+
+	// vérifier victoire
+	if ((joueur == 1 && pions[joueur - 1].getY() == Config::getInstance()->getNbrCases() - 1) || (joueur == 2 && pions[joueur - 1].getY() == 0)) {
+		message = "Le joueur " + to_string(joueur) + " gagne la partie";
+		partieTerminee = true;
 	}
 
 	return true;

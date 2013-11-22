@@ -33,16 +33,15 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	
 	viewer->setUpViewInWindow(FENETRE_X, FENETRE_Y, FENETRE_WIDTH, FENETRE_HEIGHT);
 	viewer->getCamera()->setClearColor(BLACK);
-	//viewer->getCamera()->setProjectionMatrixAsOrtho(-100, 100, -100, 100, 0.5, 5);
-	viewer->getCamera()->setProjectionMatrixAsPerspective(70, 1, 0.1, 2);
-	viewer->getCamera()->setViewport(new Viewport(10, FENETRE_HEIGHT - (FENETRE_WIDTH - 10), FENETRE_WIDTH - 20, FENETRE_WIDTH - 20));
-	//viewer->getCamera()->setAllowEventFocus(false);
+	//viewer->getCamera()->setProjectionMatrixAsPerspective(70, 1, 0.1, 2);
+	viewer->getCamera()->setAllowEventFocus(false);
 
 	ref_ptr<Camera> cameraPlateau = new Camera();
 
 	cameraPlateau->setViewMatrixAsLookAt(eye, center, up);
-	//cameraPlateau->setProjectionMatrixAsOrtho(-100, 100, -100, 100, 0.5, 5);
-	//cameraPlateau->setViewport(new Viewport(10, FENETRE_HEIGHT - (FENETRE_WIDTH - 10), FENETRE_WIDTH - 20, FENETRE_WIDTH - 20));
+	cameraPlateau->setProjectionMatrixAsOrtho(-100, 100, -100, 100, 0.5, 5);
+	//cameraPlateau->setProjectionMatrixAsPerspective(70, 1, 0.1, 2);
+	cameraPlateau->setViewport(new Viewport(10, FENETRE_HEIGHT - (FENETRE_WIDTH - 10), FENETRE_WIDTH - 20, FENETRE_WIDTH - 20));
 	cameraPlateau->setReferenceFrame(Camera::ABSOLUTE_RF);
 	cameraPlateau->setClearColor(COLOR_PLATEAU);
 
@@ -66,7 +65,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// dessin du plateau
 	ref_ptr<ShapeDrawable> plateau = new ShapeDrawable();
-	plateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTaillePlateau(), Config::getInstance()->getTaillePlateau(), 0));
+	plateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTaillePlateau(), Config::getInstance()->getTaillePlateau(), 5));
 	plateau->setColor(COLOR_PLATEAU);
 
 	ref_ptr<Geode> geodePlateau = new Geode();
@@ -79,7 +78,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// dessin des cases
 	ref_ptr<ShapeDrawable> casePlateau = new ShapeDrawable();
-	casePlateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleCase(), Config::getInstance()->getTailleCase(), 1));
+	casePlateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleCase(), Config::getInstance()->getTailleCase(), 8));
 	casePlateau->setColor(COLOR_CASE);
 	
 	ref_ptr<Geode> geodeCase = new Geode();
@@ -154,7 +153,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	ref_ptr<Geode> geodePion2 = new Geode();
 
 	pion1->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), 20));
-	pion2->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), 2));
+	pion2->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), 20));
 	pion1->setColor(COLOR_PION_1);
 	pion2->setColor(COLOR_PION_2);
 
@@ -314,18 +313,10 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	cameraAction->addChild(transformButtonSave.get());
 
-	// TODO: remove me
-	//ref_ptr<MatrixTransform> dlg = InputBoxDialog::getInstance()->showDialog("Titre", "Coucou");
-	//dlg->setMatrix(Matrix::identity());
-	//dlg->postMult(Matrix::translate(Vec3(0, 0, 1)));
-	//cameraPlateau->addChild(dlg);
-
 	// création d'un noeud racine de type group contenant les caméras
 	ref_ptr<Group> root = new Group();
-	for (unsigned int i = 0; i < cameraPlateau->getNumChildren(); i++)
-		root->addChild(cameraPlateau->getChild(i));
 
-	//root->addChild(cameraPlateau.get());
+	root->addChild(cameraPlateau.get());
 	root->addChild(cameraTexte.get());
 	root->addChild(cameraAction.get());
 
@@ -335,8 +326,6 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// ajouter le noeud racine au viewer
 	viewer->setSceneData(root.get());
-
-	Controller::getInstance()->setCamera(viewer->getCamera());
 
 	return viewer.get();
 }
