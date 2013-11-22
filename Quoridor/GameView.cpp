@@ -33,17 +33,19 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	
 	viewer->setUpViewInWindow(FENETRE_X, FENETRE_Y, FENETRE_WIDTH, FENETRE_HEIGHT);
 	viewer->getCamera()->setClearColor(BLACK);
-	//viewer->getCamera()->setProjectionMatrixAsPerspective(70, 1, 0.1, 2);
 	viewer->getCamera()->setAllowEventFocus(false);
 
 	ref_ptr<Camera> cameraPlateau = new Camera();
 
+	Vec3 eyePlateau = Vec3(0, -50, 100);
+
 	cameraPlateau->setViewMatrixAsLookAt(eye, center, up);
+	//cameraPlateau->setViewMatrixAsLookAt(eyePlateau, center, up);
 	cameraPlateau->setProjectionMatrixAsOrtho(-100, 100, -100, 100, 0.5, 5);
-	//cameraPlateau->setProjectionMatrixAsPerspective(70, 1, 0.1, 2);
+	//cameraPlateau->setProjectionMatrixAsPerspective(70, 1, 0.1, 200);
 	cameraPlateau->setViewport(new Viewport(10, FENETRE_HEIGHT - (FENETRE_WIDTH - 10), FENETRE_WIDTH - 20, FENETRE_WIDTH - 20));
 	cameraPlateau->setReferenceFrame(Camera::ABSOLUTE_RF);
-	cameraPlateau->setClearColor(COLOR_PLATEAU);
+	cameraPlateau->setClearColor(BLACK);
 
 	Controller::getInstance()->setCamera(cameraPlateau.get());
 
@@ -64,6 +66,11 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	cameraAction->setClearColor(COLOR_PLATEAU);
 
 	// dessin du plateau
+	ref_ptr<Texture2D> textPlateau = new Texture2D();
+
+	ref_ptr<Image> imgPlateau = osgDB::readImageFile("resources/plateau.jpg");
+	textPlateau->setImage(imgPlateau);
+
 	ref_ptr<ShapeDrawable> plateau = new ShapeDrawable();
 	plateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTaillePlateau(), Config::getInstance()->getTaillePlateau(), 5));
 	plateau->setColor(COLOR_PLATEAU);
@@ -71,7 +78,8 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	ref_ptr<Geode> geodePlateau = new Geode();
 
 	stateset = geodePlateau->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
+	stateset->setTextureAttributeAndModes(0, textPlateau, StateAttribute::Values::ON);
 
 	geodePlateau->addDrawable(plateau.get());
 	cameraPlateau->addChild(geodePlateau.get());
@@ -84,7 +92,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	ref_ptr<Geode> geodeCase = new Geode();
 	
 	stateset = geodeCase->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	geodeCase->addDrawable(casePlateau.get());
 
@@ -123,7 +131,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	ref_ptr<Geode> geodeBarriere = new Geode();
 
 	stateset = geodeBarriere->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	geodeBarriere->addDrawable(barriere.get());
 
@@ -140,7 +148,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	ref_ptr<Geode> geodeVirtualBarriere = new Geode();
 
 	stateset = geodeVirtualBarriere->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	geodeVirtualBarriere->addDrawable(virtualBarriere.get());
 
@@ -158,10 +166,10 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	pion2->setColor(COLOR_PION_2);
 
 	stateset = geodePion1->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	stateset = geodePion2->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	geodePion1->addDrawable(pion1.get());
 	geodePion2->addDrawable(pion2.get());
@@ -175,7 +183,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	ref_ptr<Geode> geodeMessage = new Geode();
 	
 	stateset = geodeMessage->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	initMessage();
 
@@ -189,7 +197,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	ref_ptr<Geode> geodeTopArrow = new Geode();
 	stateset = geodeTopArrow->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 	geodeTopArrow->addDrawable(topArrow.get());
 
 	ref_ptr<MatrixTransform> topArrowTransform = new MatrixTransform();
@@ -204,7 +212,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	ref_ptr<Geode> geodeBaseArrow = new Geode();
 	
 	stateset = geodeBaseArrow->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	geodeBaseArrow->addDrawable(baseArrow.get());
 
@@ -253,7 +261,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	ref_ptr<Geode> geodeButtonSens = new Geode();
 
 	stateset = geodeButtonSens->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	geodeButtonSens->addDrawable(buttonSens.get());
 
@@ -273,7 +281,7 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	ref_ptr<Geode> geodeButton = new Geode();
 
 	stateset = geodeButton->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	geodeButton->addDrawable(button.get());
 

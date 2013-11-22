@@ -3,13 +3,14 @@
 #include <osg\Geode>
 #include <osg\MatrixTransform>
 #include <osg\ShapeDrawable>
+#include <osg\Texture2D>
+#include <osgDB\ReadFile>
 #include <osgText\Text>
 #include <osgViewer\Viewer>
 #include <vector>
 #include "Config.h"
 #include "Controller.h"
 #include "EventController.h"
-#include "InputBoxDialog.h" // TODO: remove me
 #include "Model.h"
 #include "PositionUpdater.h"
 

@@ -90,6 +90,13 @@
     <ClInclude Include="Point.h" />
     <ClInclude Include="PositionUpdater.h" />
     <ClInclude Include="GameView.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Quoridor.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\plateau.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
