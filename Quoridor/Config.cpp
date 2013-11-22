@@ -22,8 +22,8 @@ Config::Config()
 
 void Config::setNbrCases(int nbr)
 {
-	if ((nbr % 2) == 0 || nbr <= 1)
-		throw ArgumentInvalidException("Le nombre de cases doit être un nombre impair et supérieur à 1");
+	if ((nbr % 2) == 0 || nbr <= 1 || nbr > 35)
+		throw ArgumentInvalidException("Le nombre de cases doit être un nombre impair et supérieur à 1 et inférieur ou égale à 35");
 
 	// enregistrement des différentes tailles
 	nbrCases = nbr;
