@@ -44,10 +44,6 @@ void EventController::operator()(Node *node, NodeVisitor *nv)
 
 void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 {
-	// tester si le jeu est terminé
-	if (Model::getInstance()->getPartieTerminee())
-		return;
-
 	if (ea->getButton() == GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON)
 	{
 		ref_ptr<LineSegmentIntersector> intersector = new LineSegmentIntersector(Intersector::CoordinateFrame::WINDOW, ea->getX(), ea->getY());
@@ -66,6 +62,13 @@ void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 
 			Point position = Point(result.getWorldIntersectPoint().x(), result.getWorldIntersectPoint().y());
 
+			if (testButtonColision(Button::RESTART, position)) // recommencer une partie
+				Model::getInstance()->recommencerPartie();
+
+			// tester si le jeu est terminé
+			if (Model::getInstance()->getPartieTerminee())
+				return;
+
 			if (testButtonColision(Button::LOAD, position)) { // charger une partie
 				ifstream ifs = ifstream(Config::getInstance()->getSaveFileName());
 
@@ -80,9 +83,7 @@ void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 					ofs << *Model::getInstance();
 					ofs.close();
 				}
-			} else if (testButtonColision(Button::RESTART, position)) {
-				Model::getInstance()->recommencerPartie();
-			}else if (testButtonColision(Button::MODE, position)) { // changer de mode
+			} else if (testButtonColision(Button::MODE, position)) { // changer de mode
 				if (Model::getInstance()->getMode() == Model::Mode::PIONS)
 					Model::getInstance()->setMode(Model::Mode::BARRIERE);
 				else {
