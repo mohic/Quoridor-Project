@@ -153,9 +153,11 @@ bool EventController::testButtonColision(Button button, Point position)
 	return false;
 }
 
+//TODO: résoudre le problème des touches avec capslock
+
 void EventController::handleKeyboard(int key)
 {
-	if (key == GUIEventAdapter::KEY_R) { // recommencer la partie
+	if (key == GUIEventAdapter::KeySymbol::KEY_R) { // recommencer la partie
 		Model::getInstance()->recommencerPartie();
 		return;
 	}
@@ -164,7 +166,7 @@ void EventController::handleKeyboard(int key)
 	if (Model::getInstance()->getPartieTerminee())
 		return;
 
-	if (key == GUIEventAdapter::KEY_M) { // changer de mode
+	if (key == GUIEventAdapter::KeySymbol::KEY_M) { // changer de mode
 		if (Model::getInstance()->getMode() == Model::Mode::PIONS)
 			Model::getInstance()->setMode(Model::Mode::BARRIERE);
 		else {
@@ -175,7 +177,7 @@ void EventController::handleKeyboard(int key)
 		return;
 	}
 
-	if (key == GUIEventAdapter::KEY_F6) { // enregistrer une partie
+	if (key == GUIEventAdapter::KeySymbol::KEY_F6) { // enregistrer une partie
 		ofstream ofs = ofstream(Config::getInstance()->getSaveFileName());
 
 		if (ofs) {
@@ -184,7 +186,7 @@ void EventController::handleKeyboard(int key)
 		}
 
 		return;
-	} else if (key == GUIEventAdapter::KEY_F7) { // charger une partie
+	} else if (key == GUIEventAdapter::KeySymbol::KEY_F7) { // charger une partie
 		ifstream ifs = ifstream(Config::getInstance()->getSaveFileName());
 
 		if (ifs) {

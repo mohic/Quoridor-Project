@@ -17,7 +17,7 @@ Config::Config()
 	taillePlateau = 200 - 5;
 
 	setSaveFileName("save.dat");
-	setNbrCases(15);
+	setNbrCases(9);
 }
 
 void Config::setNbrCases(int nbr)

@@ -14,6 +14,7 @@
 */
 class Model
 {
+	//TODO: faire 2 messages: 1 pour donner à qui c'est le tour et l'autre pour dire les différentes erreurs
 public:
 	enum Direction { LEFT, RIGHT, UP, DOWN };	// différente direction possible pour le pion
 	enum Mode { BARRIERE, PIONS };				// différent mode de jeu possible
