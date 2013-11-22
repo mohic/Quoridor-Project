@@ -80,7 +80,9 @@ void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 					ofs << *Model::getInstance();
 					ofs.close();
 				}
-			} else if (testButtonColision(Button::MODE, position)) { // changer de mode
+			} else if (testButtonColision(Button::RESTART, position)) {
+				Model::getInstance()->recommencerPartie();
+			}else if (testButtonColision(Button::MODE, position)) { // changer de mode
 				if (Model::getInstance()->getMode() == Model::Mode::PIONS)
 					Model::getInstance()->setMode(Model::Mode::BARRIERE);
 				else {
@@ -126,24 +128,26 @@ bool EventController::testButtonColision(Button button, Point position)
 	// TODO: améliorer les if si dessous pour obtenir les coordonnées directement depuis l'objet
 	switch (button)
 	{
-	case EventController::ARROW_UP:
-		return position.getX() > -70 && position.getX() < -50 && position.getY() < 35 && position.getY() > 9;
-	case EventController::ARROW_DOWN:
-		return position.getX() > -70 && position.getX() < -50 && position.getY() < -8 && position.getY() > -33;
-	case EventController::ARROW_LEFT:
-		return position.getX() > -95 && position.getX() < -68 && position.getY() < 10 && position.getY() > -10;
-	case EventController::ARROW_RIGHT:
-		return position.getX() > -52 && position.getX() < -25 && position.getY() < 10 && position.getY() > -10;
-	case EventController::SENS:
-		return position.getX() > -65 && position.getX() < -54 && position.getY() < 4 && position.getY() > -3;
-	case EventController::MODE:
-		return position.getX() > -15 && position.getX() < 14 && position.getY() < 30 && position.getY() > 12;
-	case EventController::VALIDATE:
-		return position.getX() > -15 && position.getX() < 14 && position.getY() < -10 && position.getY() > -27;
-	case EventController::LOAD:
-		return position.getX() > 45 && position.getX() < 75 && position.getY() < 30 && position.getY() > 12;
-	case EventController::SAVE:
-		return position.getX() > 45 && position.getX() < 75 && position.getY() < -10 && position.getY() > -27;
+		case EventController::ARROW_UP:
+			return position.getX() > -70 && position.getX() < -50 && position.getY() < 35 && position.getY() > 9;
+		case EventController::ARROW_DOWN:
+			return position.getX() > -70 && position.getX() < -50 && position.getY() < -8 && position.getY() > -33;
+		case EventController::ARROW_LEFT:
+			return position.getX() > -95 && position.getX() < -68 && position.getY() < 10 && position.getY() > -10;
+		case EventController::ARROW_RIGHT:
+			return position.getX() > -52 && position.getX() < -25 && position.getY() < 10 && position.getY() > -10;
+		case EventController::SENS:
+			return position.getX() > -65 && position.getX() < -54 && position.getY() < 4 && position.getY() > -3;
+		case EventController::MODE:
+			return position.getX() > -15 && position.getX() < 15 && position.getY() < 30 && position.getY() > 12;
+		case EventController::VALIDATE:
+			return position.getX() > -15 && position.getX() < 15 && position.getY() < -10 && position.getY() > -27;
+		case EventController::LOAD:
+			return position.getX() > 45 && position.getX() < 75 && position.getY() < 30 && position.getY() > 12;
+		case EventController::SAVE:
+			return position.getX() > 45 && position.getX() < 75 && position.getY() < -10 && position.getY() > -27;
+		case EventController::RESTART:
+			return position.getX() > 14 && position.getX() < 45 && position.getY() < 10 && position.getY() > -7;
 	}
 
 	return false;

@@ -134,6 +134,7 @@ public:
 	void setJoueurEnCours(int joueur)
 	{
 		joueurEnCours = joueur;
+		message = "Au tour du joueur " + std::to_string(joueur);
 	}
 
 	/**

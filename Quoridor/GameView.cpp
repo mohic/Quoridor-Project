@@ -313,6 +313,15 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	cameraAction->addChild(transformButtonSave.get());
 
+	// dessin du bouton pour recommencer une partie
+	ref_ptr<MatrixTransform> restartButtonSave = new MatrixTransform();
+	restartButtonSave->addChild(geodeButton.get());
+	restartButtonSave->setMatrix(Matrix::identity());
+	restartButtonSave->postMult(Matrix::scale(20, 20, 1));
+	restartButtonSave->postMult(Matrix::translate(Vec3(30, 0, 0)));
+
+	cameraAction->addChild(restartButtonSave.get());
+
 	// création d'un noeud racine de type group contenant les caméras
 	ref_ptr<Group> root = new Group();
 
