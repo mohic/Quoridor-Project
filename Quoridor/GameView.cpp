@@ -24,16 +24,25 @@ GameView *GameView::getInstance()
 
 void GameView::initMessage()
 {
-	message = new osgText::Text();
-	message->setCharacterSize(3);
-	message->setPosition(Vec3(-98, -1.5, 0));
-	message->setText(Model::getInstance()->getMessage());
-	message->setColor(COLOR_MESSAGE);
+	// initialisation du message utilisateur
+	userMessage = new osgText::Text();
+	userMessage->setCharacterSize(3);
+	userMessage->setPosition(Vec3(-98, -3, 0));
+	userMessage->setText(Model::getInstance()->getUserMessage());
+	userMessage->setColor(COLOR_MESSAGE);
+
+	// initialisation du message d'erreur
+	errorMessage = new osgText::Text();
+	errorMessage->setCharacterSize(3);
+	errorMessage->setPosition(Vec3(-98, 0, 0));
+	errorMessage->setText(Model::getInstance()->getErrorMessage());
+	errorMessage->setColor(COLOR_MESSAGE);
 }
 
 void GameView::refreshMessage()
 {
-	message->setText(Model::getInstance()->getMessage());
+	userMessage->setText(Model::getInstance()->getUserMessage());
+	errorMessage->setText(Model::getInstance()->getErrorMessage());
 }
 
 void GameView::createAndConfigureViewer()
@@ -66,8 +75,8 @@ void GameView::createAndConfigureCameraDisplayArea()
 	cameraDisplayArea = new Camera();
 
 	cameraDisplayArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
-	cameraDisplayArea->setProjectionMatrixAsOrtho(-100, 100, -8, 8, 0.5, 5);
-	cameraDisplayArea->setViewport(new Viewport(10, 10, FENETRE_WIDTH - (FENETRE_WIDTH / 3) - 20, 90));
+	cameraDisplayArea->setProjectionMatrixAsOrtho(-100, 100, -8, 8, 0.5, 5); // TODO: rapport largeur/hauteur == 200/16
+	cameraDisplayArea->setViewport(new Viewport(10, 10, FENETRE_WIDTH - (FENETRE_WIDTH / 3) - 20, 90)); // TODO: (FENETRE_WIDTH - (FENETRE_WIDTH / 3) - 20)/90
 	cameraDisplayArea->setReferenceFrame(Camera::ABSOLUTE_RF);
 	cameraDisplayArea->setClearColor(COLOR_PLATEAU);
 }
@@ -110,9 +119,11 @@ void GameView::createArrowButton()
 
 	geodeBaseArrow->addDrawable(baseArrow.get());
 
-	arrowButton = new Group();
+	arrowButton = new MatrixTransform();
 	arrowButton->addChild(topArrowTransform.get());
 	arrowButton->addChild(geodeBaseArrow.get());
+	arrowButton->setMatrix(Matrix::identity());
+	arrowButton->postMult(Matrix::scale(15, 15, 2));
 }
 
 void GameView::createClassicButton()
@@ -260,7 +271,12 @@ void GameView::drawMessage()
 
 	initMessage();
 
-	geodeMessage->addDrawable(message);
+	// message utilisateur
+	geodeMessage->addDrawable(userMessage);
+	cameraDisplayArea->addChild(geodeMessage.get());
+
+	// message d'erreur
+	geodeMessage->addDrawable(errorMessage);
 	cameraDisplayArea->addChild(geodeMessage.get());
 }
 
@@ -269,27 +285,23 @@ void GameView::drawArrowAndDirectionButtons()
 	ref_ptr<MatrixTransform> arrowUp = new MatrixTransform();
 	arrowUp->addChild(arrowButton.get());
 	arrowUp->setMatrix(Matrix::identity());
-	arrowUp->postMult(Matrix::scale(15, 15, 2));
 	arrowUp->postMult(Matrix::translate(Vec3(-60, 20, 0)));
 
 	ref_ptr<MatrixTransform> arrowLeft = new MatrixTransform();
 	arrowLeft->addChild(arrowButton.get());
 	arrowLeft->setMatrix(Matrix::identity());
-	arrowLeft->postMult(Matrix::scale(15, 15, 2));
 	arrowLeft->postMult(Matrix::rotate(inDegrees(90.0), Z_AXIS));
 	arrowLeft->postMult(Matrix::translate(Vec3(-80, 0, 0)));
 
 	ref_ptr<MatrixTransform> arrowDown = new MatrixTransform();
 	arrowDown->addChild(arrowButton.get());
 	arrowDown->setMatrix(Matrix::identity());
-	arrowDown->postMult(Matrix::scale(15, 15, 2));
 	arrowDown->postMult(Matrix::rotate(inDegrees(180.0), Z_AXIS));
 	arrowDown->postMult(Matrix::translate(Vec3(-60, -20, 0)));
 
 	ref_ptr<MatrixTransform> arrowRight = new MatrixTransform();
 	arrowRight->addChild(arrowButton.get());;
 	arrowRight->setMatrix(Matrix::identity());
-	arrowRight->postMult(Matrix::scale(15, 15, 2));
 	arrowRight->postMult(Matrix::rotate(inDegrees(-90.0), Z_AXIS));
 	arrowRight->postMult(Matrix::translate(Vec3(-40, 0, 0)));
 

@@ -14,7 +14,6 @@
 */
 class Model
 {
-	//TODO: faire 2 messages: 1 pour donner à qui c'est le tour et l'autre pour dire les différentes erreurs
 public:
 	enum Direction { LEFT, RIGHT, UP, DOWN };	// différente direction possible pour le pion
 	enum Mode { BARRIERE, PIONS };				// différent mode de jeu possible
@@ -29,7 +28,8 @@ private:
 	bool partieTerminee;						// true si la partie est terminée, sinon false
 	int joueurEnCours;							// joueur qui doit jouer
 	Mode currentMode;							// mode courant du jeu
-	std::string message;						// message à afficher à l'utilisateur
+	std::string userMessage;					// message à afficher à l'utilisateur
+	std::string	errorMessage;					// message d'erreur à afficher à l'utilisateur
 
 	/**
 		méthode de teste si une barrière peut être positionnée à un endroit donné
@@ -136,26 +136,46 @@ public:
 	{
 		joueurEnCours = joueur;
 
-		if (!partieTerminee)
-			message = "Au tour du joueur " + std::to_string(joueur);
+		if (!partieTerminee) {
+			userMessage = "Au tour du joueur " + std::to_string(joueur);
+			errorMessage = "";
+		}
 	}
 
 	/**
 		méthode de récupération du message d'utilisateur
 		@return le message d'utilisateur
 	*/
-	std::string getMessage()
+	std::string getUserMessage()
 	{
-		return message;
+		return userMessage;
+	}
+
+	/**
+		méthode de récupération du message d'erreur
+		@return le message d'erreur
+	*/
+	std::string getErrorMessage()
+	{
+		return errorMessage;
 	}
 
 	/**
 		méthode de définition du message d'utilisateur
 		@param nouveauMessage le nouveau message d'utilisateur
 	*/
-	void setMessage(std::string nouveauMessage)
+	void setUserMessage(std::string message)
 	{
-		message = nouveauMessage;
+		userMessage = message;
+	}
+
+	/**
+		méthode de définition du message d'erreur
+		@param nouveauMessage le nouveau message d'erreur
+	*/
+	void setErrorMessage(std::string message)
+	{
+		errorMessage = message;
 	}
 	
 	/**

@@ -27,7 +27,8 @@ private:
 	static GameView *instance;						// instance de la vue pour le pattern singleton
 	GameView();										// constructeur privé
 
-	osg::ref_ptr<osgText::Text> message;			// message à afficher à l'utilisateur
+	osg::ref_ptr<osgText::Text> userMessage;		// message à afficher à l'utilisateur
+	osg::ref_ptr<osgText::Text> errorMessage;		// message d'erreur à afficher à l'utilisateur
 
 	osg::Vec3 center;								// centre pointé par la caméra
 	osg::Vec3 up;									// orientation de la caméra
@@ -40,7 +41,7 @@ private:
 	osg::ref_ptr<osg::Camera> cameraActionsArea;	// caméra de la zone des bouton d'actions
 	osg::ref_ptr<osg::Geode> geodeVirtualFence;		// géode de la barrière virtuelle
 
-	osg::ref_ptr<osg::Group> arrowButton;			// bouton en forme de flèche
+	osg::ref_ptr<osg::MatrixTransform> arrowButton;	// bouton en forme de flèche
 	osg::ref_ptr<osg::Geode> classicButton;			// bouton classique
 
 	void initMessage();								// initialise le message utilisateur

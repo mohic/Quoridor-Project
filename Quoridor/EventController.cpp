@@ -84,12 +84,18 @@ void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 					ofs.close();
 				}
 			} else if (testButtonColision(Button::MODE, position)) { // changer de mode
+				// tester si le joueur a placé toutes ses barrières
+				if (Model::getInstance()->getBarrierePlacee(Model::getInstance()->getJoueurEnCours()).size() >= (unsigned int)Config::getInstance()->getNbrBarriereJoueur()) {
+					Model::getInstance()->setErrorMessage("Vous n'avez plus de barrière disponible");
+					return;
+				} else
+					Model::getInstance()->setErrorMessage("");
+
+				// changer le mode
 				if (Model::getInstance()->getMode() == Model::Mode::PIONS)
 					Model::getInstance()->setMode(Model::Mode::BARRIERE);
-				else {
+				else
 					Model::getInstance()->setMode(Model::Mode::PIONS);
-					Controller::getInstance()->removeVirtualBarriere();
-				}
 			} else if (Model::getInstance()->getMode() == Model::Mode::PIONS) { // mode pions
 				if (testButtonColision(Button::ARROW_UP, position)) // zone flèche haut
 					mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::UP);
@@ -158,7 +164,7 @@ bool EventController::testButtonColision(Button button, Point position)
 
 void EventController::handleKeyboard(int key)
 {
-	if (key == GUIEventAdapter::KeySymbol::KEY_R) { // recommencer la partie
+	if (key == GUIEventAdapter::KeySymbol::KEY_R || key == 'R') { // recommencer la partie
 		Model::getInstance()->recommencerPartie();
 		return;
 	}
@@ -167,7 +173,14 @@ void EventController::handleKeyboard(int key)
 	if (Model::getInstance()->getPartieTerminee())
 		return;
 
-	if (key == GUIEventAdapter::KeySymbol::KEY_M) { // changer de mode
+	if (key == GUIEventAdapter::KeySymbol::KEY_M || key == 'M') { // changer de mode
+		// tester si le joueur a placé toutes ses barrières
+		if (Model::getInstance()->getBarrierePlacee(Model::getInstance()->getJoueurEnCours()).size() >= (unsigned int)Config::getInstance()->getNbrBarriereJoueur()) {
+			Model::getInstance()->setErrorMessage("Vous n'avez plus de barrière disponible");
+			return;
+		} else
+			Model::getInstance()->setErrorMessage("");
+
 		if (Model::getInstance()->getMode() == Model::Mode::PIONS)
 			Model::getInstance()->setMode(Model::Mode::BARRIERE);
 		else {
@@ -229,7 +242,7 @@ void EventController::handleKeyboard(int key)
 			case GUIEventAdapter::KeySymbol::KEY_Right: // si appuyé sur la touche "flèche de droite"
 				Model::getInstance()->deplacerVirtualBarriere(Model::Direction::RIGHT);
 				break;
-			case GUIEventAdapter::KeySymbol::KEY_S: // si appuyé sur la touche "S"
+			case GUIEventAdapter::KeySymbol::KEY_S || 'S': // si appuyé sur la touche "S"
 				Model::getInstance()->changerSensVirtualBarriere();
 				break;
 			case GUIEventAdapter::KeySymbol::KEY_Return: // si appuyé sur la touche "Entrée"

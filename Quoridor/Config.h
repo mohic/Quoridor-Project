@@ -1,6 +1,7 @@
 #pragma once
 
-#include <osg/Vec4>
+#include <osg\Vec3>
+#include <osg\Vec4>
 #include "ArgumentInvalidException.h"
 
 /************************\
@@ -8,11 +9,11 @@
 * Configuration générale *
 *                        *
 \************************/
-#define FENETRE_X		50	// position x de la fenêtre à l'écran
-#define FENETRE_Y		50	// position y de la fenêtre à l'écran
-#define FENETRE_HEIGHT	700	// hauteur de la fenêtre
-#define FENETRE_WIDTH	600	// largeur de la fenêtre
-#define POSITION_CENTRE Vec3(0, 0, 0)
+#define FENETRE_X		50				// position x de la fenêtre à l'écran
+#define FENETRE_Y		50				// position y de la fenêtre à l'écran
+#define FENETRE_HEIGHT	700				// hauteur de la fenêtre
+#define FENETRE_WIDTH	600				// largeur de la fenêtre
+#define POSITION_CENTRE Vec3(0, 0, 0)	// position du centre
 
 /**********\
 *          *

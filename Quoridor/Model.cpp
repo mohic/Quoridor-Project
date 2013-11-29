@@ -31,7 +31,8 @@ Model::Model()
 	currentMode = Mode::PIONS;
 
 	// initialisation du message utilisateur
-	message = "Bienvenue";
+	userMessage = "Au tour du joueur 1";
+	errorMessage = "Bienvenue";
 }
 
 bool Model::testerPassagePion(Point position, Direction direction)
@@ -53,8 +54,6 @@ bool Model::testerPassagePion(Point position, Direction direction)
 
 bool Model::deplacerPion(int joueur, Direction direction)
 {
-	//TODO: sauter au dessus du pion adverse si possible
-
 	// récupération de l'emplacement initial du pion du joueur
 	Point p = pions[joueur - 1];
 	bool succeed = true;
@@ -97,7 +96,7 @@ bool Model::deplacerPion(int joueur, Direction direction)
 
 	// si échec du déplacement
 	if (!succeed) {
-		message = "Mouvement impossible";
+		errorMessage = "Mouvement impossible";
 		return false;
 	}
 
@@ -113,7 +112,7 @@ bool Model::deplacerPion(int joueur, Direction direction)
 
 	// vérifier victoire
 	if ((joueur == 1 && pions[joueur - 1].getY() == Config::getInstance()->getNbrCases() - 1) || (joueur == 2 && pions[joueur - 1].getY() == 0)) {
-		message = "Le joueur " + to_string(joueur) + " gagne la partie";
+		userMessage = "Le joueur " + to_string(joueur) + " gagne la partie";
 		partieTerminee = true;
 	}
 
@@ -160,8 +159,10 @@ bool Model::placerBarriere(int joueur, Point position, bool vertical)
 		return false;
 
 	// tester si la barrière ne sort pas des limites et n'est pas en colision avec une autre
-	if (!testerPositionnementBarriere(position, vertical, true))
+	if (!testerPositionnementBarriere(position, vertical, true)) {
+		errorMessage = "Impossible de placer une barrière à cet endroit";
 		return false;
+	}
 
 	// ajouter les barrières dans les barrières placées
 	barrierePlacee[joueur - 1].push_back(position);
@@ -310,8 +311,9 @@ ostream &operator<<(ostream &stream, Model const &model)
 	// enregistrement du mode
 	stream << model.currentMode << ' ';
 
-	// enregistrement du message affiché
-	stream << model.message;
+	// enregistrement des messages affichés
+	stream << model.userMessage;
+	stream << model.errorMessage;
 
 	return stream;
 }
@@ -415,8 +417,9 @@ istream &operator>>(istream &stream, Model &model)
 	stream >> r;
 	model.currentMode = (Model::Mode)r;
 
-	// chargement du message affiché
-	getline(stream, model.message);
+	// chargement des messages affichés
+	getline(stream, model.userMessage);
+	getline(stream, model.errorMessage);
 
 	return stream;
 }
