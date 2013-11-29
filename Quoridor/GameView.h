@@ -1,4 +1,6 @@
 #pragma once
+#pragma warning (disable : 4250) // supprime le warning venant de OSG avec l'include osgDB\readFile
+								 // qui avertit que tel classe hérite de l'autre classe par dominance
 
 #include <osg\Geode>
 #include <osg\MatrixTransform>

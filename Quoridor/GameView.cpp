@@ -369,8 +369,6 @@ void GameView::drawCommandsButtons()
 
 ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 {
-	StateSet *stateset;
-
 	// création et configuration du viewer
 	createAndConfigureViewer();
 
