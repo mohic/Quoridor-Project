@@ -22,11 +22,43 @@
 class GameView
 {
 private:
-	static GameView *instance;				// instance de la vue pour le pattern singleton
-	GameView();								// constructeur privé
-	void initMessage();						// initialise le message utilisateur
+	static GameView *instance;						// instance de la vue pour le pattern singleton
+	GameView();										// constructeur privé
 
-	osg::ref_ptr<osgText::Text> message;	// message à afficher à l'utilisateur
+	osg::ref_ptr<osgText::Text> message;			// message à afficher à l'utilisateur
+
+	osg::Vec3 center;								// centre pointé par la caméra
+	osg::Vec3 up;									// orientation de la caméra
+	osg::Vec3 eyeOrtho;								// position de la caméra en vue orthographique
+	osg::Vec3 eyePrimitive;							// position de la caméra en vue primitive
+
+	osg::ref_ptr<osgViewer::Viewer> viewer;			// le viewer
+	osg::ref_ptr<osg::Camera> cameraGameArea;		// caméra servant à afficher la zone de jeu
+	osg::ref_ptr<osg::Camera> cameraDisplayArea;	// caméra de la zone de texte
+	osg::ref_ptr<osg::Camera> cameraActionsArea;	// caméra de la zone des bouton d'actions
+	osg::ref_ptr<osg::Geode> geodeVirtualFence;		// géode de la barrière virtuelle
+
+	osg::ref_ptr<osg::Group> arrowButton;			// bouton en forme de flèche
+	osg::ref_ptr<osg::Geode> classicButton;			// bouton classique
+
+	void initMessage();								// initialise le message utilisateur
+
+	void createAndConfigureViewer();				// crée et configure le viewer
+	void createAndConfigureCameraGameArea();		// crée et configure la caméra représentant la zone de jeu
+	void createAndConfigureCameraDisplayArea();		// crée et configure la caméra représentant la zone d'affichage
+	void createAndConfigureCameraActionsArea();		// crée et configure la caméra représentant la zone des actions
+
+	void createArrowButton();						// crée un bouton en forme de flèche
+	void createClassicButton();						// crée un bouton classique
+
+	void drawPlate();								// dessine le plateau
+	void drawCases();								// dessine les cases
+	void drawFences();								// dessine les barrières
+	void drawVirtualFence();						// dessine la barrière virtuelle
+	void drawPawns();								// dessine les pions
+	void drawMessage();								// dessine le message
+	void drawArrowAndDirectionButtons();			// dessine les boutons flèchés et le bouton changer de sens
+	void drawCommandsButtons();						// dessine les différents boutons de commandes
 
 public:
 	/**
