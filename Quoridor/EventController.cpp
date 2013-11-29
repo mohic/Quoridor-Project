@@ -132,7 +132,8 @@ void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 
 bool EventController::testButtonColision(Button button, Point position)
 {
-	// TODO: améliorer les if si dessous pour obtenir les coordonnées directement depuis l'objet
+	//TODO: améliorer les if si dessous pour obtenir les coordonnées directement depuis l'objet
+	//TODO: à corriger depuis le changement de disposition
 	switch (button)
 	{
 		case EventController::ARROW_UP:

@@ -55,7 +55,8 @@
 #define RED		Vec4(  1,   0,   0, 1)	// couleur rouge
 #define BLUE	Vec4(  0,   0,   1, 1)	// couleur bleu
 #define BROWN	Vec4(.41, .25, .17, 1)	// couleur brune
-#define BEIGE	Vec4(.96, .96, .86, 1)	// couleur beige
+#define GREY	Vec4(.13, .13, .13, 1)	// couleur grise
+#define WHITE	Vec4(  1,   1,   1, 1)	// couleur beige
 #define BLACK	Vec4(  0,   0,   0, 1)	// couleur noire
 
 
@@ -65,13 +66,14 @@
 *                            *
 \****************************/
 
-#define COLOR_PLATEAU			BEIGE	// couleur de plateau
+#define COLOR_PLATEAU			WHITE	// couleur de plateau
 #define COLOR_CASE				BROWN	// couleur des cases
 #define COLOR_BARRIERE			BLACK	// couleur des barrières
 #define COLOR_VIRTUAL_BARRIERE	RED		// couleur de la barrière virtuelle (servant à choisir un emplacement pour la future barrière)
 #define COLOR_PION_1			RED		// couleur du pion 1
 #define COLOR_PION_2			BLUE	// couleur du pion 2
-#define COLOR_MESSAGE			BLACK	// couleur du message
+#define COLOR_MESSAGE			WHITE	// couleur du message
+#define COLOR_BORDER			GREY	// couleur des bordures
 
 /**********************\
 *                      *

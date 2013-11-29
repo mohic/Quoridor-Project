@@ -84,13 +84,16 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\textures\plateau.jpg">
-      <Filter>Fichiers de ressources</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <Font Include="resources\fonts\messages.ttf">
       <Filter>Fichiers de ressources</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\textures\plate.jpg">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="resources\textures\arrow.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
   </ItemGroup>
 </Project>

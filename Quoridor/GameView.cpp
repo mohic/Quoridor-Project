@@ -55,8 +55,18 @@ void GameView::createAndConfigureViewer()
 	viewer = new osgViewer::Viewer();
 
 	viewer->setUpViewInWindow(FENETRE_X, FENETRE_Y, FENETRE_WIDTH, FENETRE_HEIGHT);
-	viewer->getCamera()->setClearColor(BLACK);
+	viewer->getCamera()->setClearColor(COLOR_BORDER);
 	viewer->getCamera()->setAllowEventFocus(false);
+
+	// changer le titre de la fenêtre
+	osgViewer::Viewer::Windows windows; // variable servant à contenir la liste des différentes fenêtre créée par OSG
+										// sous forme d'un vecteur. Avec la configuration par défaut, OSG crée autant
+										// de fenêtre en plein écran que d'écran branché à l'ordinateur exécutant le
+										// programme.
+	viewer->getWindows(windows); // obtenir la liste des différentes fenêtre d'OSG
+
+	for (unsigned int i = 0; i < windows.size(); i++) // définir un titre pour chacune des fenêtres
+		windows[i]->setWindowName("Quoridor - 3BIN - IPL");
 }
 
 void GameView::createAndConfigureCameraGameArea()
@@ -68,7 +78,7 @@ void GameView::createAndConfigureCameraGameArea()
 	cameraGameArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_PLATEAU_BOTTOM, CAMERA_PLATEAU_TOP, CAMERA_NEAR, CAMERA_FAR);
 	cameraGameArea->setViewport(new Viewport(ESPACEMENT, ESPACEMENT + MESSAGE_HEIGHT + ESPACEMENT, PLATEAU_TAILLE, PLATEAU_TAILLE));
 	cameraGameArea->setReferenceFrame(Camera::ABSOLUTE_RF);
-	cameraGameArea->setClearColor(BLUE);
+	cameraGameArea->setClearColor(BLACK);
 
 	// TODO: vue perspective
 	//cameraPlateau->setViewMatrixAsLookAt(eyePlateau, center, up);
@@ -83,7 +93,7 @@ void GameView::createAndConfigureCameraDisplayArea()
 	cameraDisplayArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_MESSAGE_BOTTOM, CAMERA_MESSAGE_TOP, CAMERA_NEAR, CAMERA_FAR);
 	cameraDisplayArea->setViewport(new Viewport(ESPACEMENT, ESPACEMENT, FENETRE_WIDTH - ESPACEMENT - ESPACEMENT, MESSAGE_HEIGHT));
 	cameraDisplayArea->setReferenceFrame(Camera::ABSOLUTE_RF);
-	cameraDisplayArea->setClearColor(BEIGE);
+	cameraDisplayArea->setClearColor(BLACK);
 }
 
 void GameView::createAndConfigureCameraActionsArea()
@@ -94,14 +104,21 @@ void GameView::createAndConfigureCameraActionsArea()
 	cameraActionsArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_ACTIONS_BOTTOM, CAMERA_ACTIONS_TOP, CAMERA_NEAR, CAMERA_FAR);
 	cameraActionsArea->setViewport(new Viewport((ESPACEMENT * 2) + PLATEAU_TAILLE, (ESPACEMENT *2 ) + MESSAGE_HEIGHT, ACTIONS_WIDTH, PLATEAU_TAILLE));
 	cameraActionsArea->setReferenceFrame(Camera::ABSOLUTE_RF);
-	cameraActionsArea->setClearColor(BEIGE);
+	cameraActionsArea->setClearColor(BLACK);
 }
 
 void GameView::createArrowButton()
 {
+	//TODO: texture
+	//ref_ptr<Texture2D> texture = new Texture2D();
+
+	//ref_ptr<Image> img = osgDB::readImageFile("resources/textures/arrow.png");
+	//bool textureFound = img != 0;
+	//texture->setImage(img);
+
 	ref_ptr<ShapeDrawable> topArrow = new ShapeDrawable();
 	topArrow->setShape(new Cone(Vec3(0, 0, .3), .8, 1));
-	topArrow->setColor(BLACK);
+	/*if (!textureFound)*/ topArrow->setColor(WHITE);
 
 	ref_ptr<Geode> geodeTopArrow = new Geode();
 	StateSet *stateset = geodeTopArrow->getOrCreateStateSet();
@@ -115,7 +132,7 @@ void GameView::createArrowButton()
 
 	ref_ptr<ShapeDrawable> baseArrow = new ShapeDrawable();
 	baseArrow->setShape(new Box(Vec3(0, -.3, 0), .8, 1, 1));
-	baseArrow->setColor(BLACK);
+	/*if (!textureFound)*/ baseArrow->setColor(WHITE);
 
 	ref_ptr<Geode> geodeBaseArrow = new Geode();
 	
@@ -124,18 +141,20 @@ void GameView::createArrowButton()
 
 	geodeBaseArrow->addDrawable(baseArrow.get());
 
+	// regrouper les différents éléments d'une flèche
 	arrowButton = new MatrixTransform();
 	arrowButton->addChild(topArrowTransform.get());
 	arrowButton->addChild(geodeBaseArrow.get());
 	arrowButton->setMatrix(Matrix::identity());
 	arrowButton->postMult(Matrix::scale(15, 15, 2));
+	//if (textureFound) stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 }
 
 void GameView::createClassicButton()
 {
 	ref_ptr<ShapeDrawable> button = new ShapeDrawable();
 	button->setShape(new Box(POSITION_CENTRE, 1.5, 1, 1));
-	button->setColor(BLACK);
+	button->setColor(WHITE);
 
 	classicButton = new Geode();
 
@@ -147,11 +166,6 @@ void GameView::createClassicButton()
 
 void GameView::drawPlate()
 {
-	ref_ptr<Texture2D> textPlateau = new Texture2D();
-
-	ref_ptr<Image> imgPlateau = osgDB::readImageFile("resources/textures/plateau.jpg");
-	textPlateau->setImage(imgPlateau);
-
 	ref_ptr<ShapeDrawable> plateau = new ShapeDrawable();
 	plateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTaillePlateau(), Config::getInstance()->getTaillePlateau(), 5));
 	plateau->setColor(COLOR_PLATEAU);
@@ -160,10 +174,15 @@ void GameView::drawPlate()
 
 	StateSet *stateset = geodePlateau->getOrCreateStateSet();
 	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
-	stateset->setTextureAttributeAndModes(0, textPlateau, StateAttribute::Values::ON);
 
 	geodePlateau->addDrawable(plateau.get());
 	cameraGameArea->addChild(geodePlateau.get());
+
+	ref_ptr<Texture2D> textPlateau = new Texture2D();
+
+	ref_ptr<Image> imgPlateau = osgDB::readImageFile("resources/textures/plate.jpg");
+	textPlateau->setImage(imgPlateau);
+	stateset->setTextureAttributeAndModes(0, textPlateau, StateAttribute::Values::ON);
 }
 
 void GameView::drawCases()
@@ -290,30 +309,25 @@ void GameView::drawArrowAndDirectionButtons()
 	ref_ptr<MatrixTransform> arrowUp = new MatrixTransform();
 	arrowUp->addChild(arrowButton.get());
 	arrowUp->setMatrix(Matrix::identity());
-	arrowUp->postMult(Matrix::translate(Vec3(-60, 20, 0)));
+	arrowUp->postMult(Matrix::translate(Vec3(0, 20, 0)));
 
 	ref_ptr<MatrixTransform> arrowLeft = new MatrixTransform();
 	arrowLeft->addChild(arrowButton.get());
 	arrowLeft->setMatrix(Matrix::identity());
 	arrowLeft->postMult(Matrix::rotate(inDegrees(90.0), Z_AXIS));
-	arrowLeft->postMult(Matrix::translate(Vec3(-80, 0, 0)));
+	arrowLeft->postMult(Matrix::translate(Vec3(-20, 0, 0)));
 
 	ref_ptr<MatrixTransform> arrowDown = new MatrixTransform();
 	arrowDown->addChild(arrowButton.get());
 	arrowDown->setMatrix(Matrix::identity());
 	arrowDown->postMult(Matrix::rotate(inDegrees(180.0), Z_AXIS));
-	arrowDown->postMult(Matrix::translate(Vec3(-60, -20, 0)));
+	arrowDown->postMult(Matrix::translate(Vec3(0, -20, 0)));
 
 	ref_ptr<MatrixTransform> arrowRight = new MatrixTransform();
 	arrowRight->addChild(arrowButton.get());;
 	arrowRight->setMatrix(Matrix::identity());
 	arrowRight->postMult(Matrix::rotate(inDegrees(-90.0), Z_AXIS));
-	arrowRight->postMult(Matrix::translate(Vec3(-40, 0, 0)));
-
-	cameraActionsArea->addChild(arrowUp.get());
-	cameraActionsArea->addChild(arrowLeft.get());
-	cameraActionsArea->addChild(arrowDown.get());
-	cameraActionsArea->addChild(arrowRight.get());
+	arrowRight->postMult(Matrix::translate(Vec3(20, 0, 0)));
 
 	// dessin du bouton de changement de sens
 	ref_ptr<ShapeDrawable> buttonSens = new ShapeDrawable();
@@ -331,9 +345,21 @@ void GameView::drawArrowAndDirectionButtons()
 	transformButtonSens->addChild(geodeButtonSens.get());
 	transformButtonSens->setMatrix(Matrix::identity());
 	transformButtonSens->postMult(Matrix::scale(11, 10, 1));
-	transformButtonSens->postMult(Matrix::translate(Vec3(-60, 0, 0)));
 
-	cameraActionsArea->addChild(transformButtonSens.get());
+	// matrixTransform contenant les touches de directions et de changements de sens
+	ref_ptr<MatrixTransform> arrows = new MatrixTransform();
+
+	arrows->addChild(arrowUp.get());
+	arrows->addChild(arrowLeft.get());
+	arrows->addChild(arrowDown.get());
+	arrows->addChild(arrowRight.get());
+	arrows->addChild(transformButtonSens.get());
+
+	arrows->setMatrix(Matrix::identity());
+	arrows->postMult(Matrix::scale(2.5, 2.5, 1));
+	arrows->postMult(Matrix::translate(0, 270, 0));
+
+	cameraActionsArea->addChild(arrows.get());
 }
 
 void GameView::drawCommandsButtons()

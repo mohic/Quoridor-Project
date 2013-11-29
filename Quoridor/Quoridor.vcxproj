@@ -96,10 +96,11 @@
     <ResourceCompile Include="Quoridor.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\textures\plateau.jpg" />
+    <Font Include="resources\fonts\messages.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="resources\fonts\messages.ttf" />
+    <Image Include="resources\textures\arrow.png" />
+    <Image Include="resources\textures\plate.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
