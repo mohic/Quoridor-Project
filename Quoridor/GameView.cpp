@@ -52,11 +52,19 @@ void GameView::refreshMessage()
 
 void GameView::createAndConfigureViewer()
 {
+	ref_ptr<Texture2D> texture = new Texture2D();
+	ref_ptr<Image> img = osgDB::readImageFile("resources/textures/background.jpg");
+	bool textureFound = img != 0;
+	texture->setImage(img);
+
 	viewer = new osgViewer::Viewer();
 
 	viewer->setUpViewInWindow(FENETRE_X, FENETRE_Y, FENETRE_WIDTH, FENETRE_HEIGHT);
-	viewer->getCamera()->setClearColor(COLOR_BORDER);
 	viewer->getCamera()->setAllowEventFocus(false);
+	viewer->getCamera()->setClearColor(COLOR_BORDER);
+
+	StateSet *stateset = viewer->getCamera()->getOrCreateStateSet();
+	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	// changer le titre de la fenêtre
 	osgViewer::Viewer::Windows windows; // variable servant à contenir la liste des différentes fenêtre créée par OSG
@@ -166,23 +174,25 @@ void GameView::createClassicButton()
 
 void GameView::drawPlate()
 {
+	ref_ptr<Texture2D> texture = new Texture2D();
+	ref_ptr<Image> img = osgDB::readImageFile("resources/textures/plate.jpg");
+	bool textureFound = img != 0;
+	texture->setImage(img);
+
 	ref_ptr<ShapeDrawable> plateau = new ShapeDrawable();
 	plateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTaillePlateau(), Config::getInstance()->getTaillePlateau(), 5));
-	plateau->setColor(COLOR_PLATEAU);
+	if (!textureFound) plateau->setColor(COLOR_PLATEAU);
 
 	ref_ptr<Geode> geodePlateau = new Geode();
 
 	StateSet *stateset = geodePlateau->getOrCreateStateSet();
 	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
+	if (textureFound) stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	geodePlateau->addDrawable(plateau.get());
 	cameraGameArea->addChild(geodePlateau.get());
 
-	ref_ptr<Texture2D> textPlateau = new Texture2D();
-
-	ref_ptr<Image> imgPlateau = osgDB::readImageFile("resources/textures/plate.jpg");
-	textPlateau->setImage(imgPlateau);
-	stateset->setTextureAttributeAndModes(0, textPlateau, StateAttribute::Values::ON);
+	
 }
 
 void GameView::drawCases()
@@ -254,7 +264,6 @@ void GameView::drawVirtualFence()
 	geodeVirtualFence = new Geode();
 
 	StateSet *stateset = geodeVirtualFence->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	geodeVirtualFence->addDrawable(virtualFence.get());
 }
@@ -332,7 +341,7 @@ void GameView::drawArrowAndDirectionButtons()
 	// dessin du bouton de changement de sens
 	ref_ptr<ShapeDrawable> buttonSens = new ShapeDrawable();
 	buttonSens->setShape(new Box(POSITION_CENTRE, 1));
-	buttonSens->setColor(BLACK);
+	buttonSens->setColor(WHITE);
 
 	ref_ptr<Geode> geodeButtonSens = new Geode();
 

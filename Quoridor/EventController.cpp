@@ -243,7 +243,8 @@ void EventController::handleKeyboard(int key)
 			case GUIEventAdapter::KeySymbol::KEY_Right: // si appuyé sur la touche "flèche de droite"
 				Model::getInstance()->deplacerVirtualBarriere(Model::Direction::RIGHT);
 				break;
-			case GUIEventAdapter::KeySymbol::KEY_S || 'S': // si appuyé sur la touche "S"
+			case 'S': // si appuyé sur la touche "S"
+			case GUIEventAdapter::KeySymbol::KEY_S: // si appuyé sur la touche "S"
 				Model::getInstance()->changerSensVirtualBarriere();
 				break;
 			case GUIEventAdapter::KeySymbol::KEY_Return: // si appuyé sur la touche "Entrée"
