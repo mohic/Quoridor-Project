@@ -24,17 +24,22 @@ GameView *GameView::getInstance()
 
 void GameView::initMessage()
 {
+	// création de la police d'écriture
+	ref_ptr<osgText::Font> font = osgText::readFontFile("resources/fonts/messages.ttf");
+
 	// initialisation du message utilisateur
 	userMessage = new osgText::Text();
-	userMessage->setCharacterSize(3);
-	userMessage->setPosition(Vec3(-98, -3, 0));
+	userMessage->setFont(font);
+	userMessage->setCharacterSize(FONT_SIZE);
+	userMessage->setPosition(Vec3(-98, 1, 0));
 	userMessage->setText(Model::getInstance()->getUserMessage());
 	userMessage->setColor(COLOR_MESSAGE);
 
 	// initialisation du message d'erreur
 	errorMessage = new osgText::Text();
-	errorMessage->setCharacterSize(3);
-	errorMessage->setPosition(Vec3(-98, 0, 0));
+	errorMessage->setFont(font);
+	errorMessage->setCharacterSize(FONT_SIZE);
+	errorMessage->setPosition(Vec3(-98, -5.5, 0));
 	errorMessage->setText(Model::getInstance()->getErrorMessage());
 	errorMessage->setColor(COLOR_MESSAGE);
 }
@@ -60,10 +65,10 @@ void GameView::createAndConfigureCameraGameArea()
 
 	// vue orthographique
 	cameraGameArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
-	cameraGameArea->setProjectionMatrixAsOrtho(-100, 100, -100, 100, 0.5, 5);
-	cameraGameArea->setViewport(new Viewport(10, FENETRE_HEIGHT - (FENETRE_WIDTH - 10), FENETRE_WIDTH - 20, FENETRE_WIDTH - 20));
+	cameraGameArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_PLATEAU_BOTTOM, CAMERA_PLATEAU_TOP, CAMERA_NEAR, CAMERA_FAR);
+	cameraGameArea->setViewport(new Viewport(ESPACEMENT, ESPACEMENT + MESSAGE_HEIGHT + ESPACEMENT, PLATEAU_TAILLE, PLATEAU_TAILLE));
 	cameraGameArea->setReferenceFrame(Camera::ABSOLUTE_RF);
-	cameraGameArea->setClearColor(BLACK);
+	cameraGameArea->setClearColor(BLUE);
 
 	// TODO: vue perspective
 	//cameraPlateau->setViewMatrixAsLookAt(eyePlateau, center, up);
@@ -75,10 +80,10 @@ void GameView::createAndConfigureCameraDisplayArea()
 	cameraDisplayArea = new Camera();
 
 	cameraDisplayArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
-	cameraDisplayArea->setProjectionMatrixAsOrtho(-100, 100, -8, 8, 0.5, 5); // TODO: rapport largeur/hauteur == 200/16
-	cameraDisplayArea->setViewport(new Viewport(10, 10, FENETRE_WIDTH - (FENETRE_WIDTH / 3) - 20, 90)); // TODO: (FENETRE_WIDTH - (FENETRE_WIDTH / 3) - 20)/90
+	cameraDisplayArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_MESSAGE_BOTTOM, CAMERA_MESSAGE_TOP, CAMERA_NEAR, CAMERA_FAR);
+	cameraDisplayArea->setViewport(new Viewport(ESPACEMENT, ESPACEMENT, FENETRE_WIDTH - ESPACEMENT - ESPACEMENT, MESSAGE_HEIGHT));
 	cameraDisplayArea->setReferenceFrame(Camera::ABSOLUTE_RF);
-	cameraDisplayArea->setClearColor(COLOR_PLATEAU);
+	cameraDisplayArea->setClearColor(BEIGE);
 }
 
 void GameView::createAndConfigureCameraActionsArea()
@@ -86,10 +91,10 @@ void GameView::createAndConfigureCameraActionsArea()
 	cameraActionsArea = new Camera();
 
 	cameraActionsArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
-	cameraActionsArea->setProjectionMatrixAsOrtho(-100, 100, -40, 40, 0.5, 5);
-	cameraActionsArea->setViewport(new Viewport(10 + FENETRE_WIDTH - (FENETRE_WIDTH / 3) - 10, 10, FENETRE_WIDTH - (10 + FENETRE_WIDTH - (FENETRE_WIDTH / 3) - 10) - 10, 90));
+	cameraActionsArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_ACTIONS_BOTTOM, CAMERA_ACTIONS_TOP, CAMERA_NEAR, CAMERA_FAR);
+	cameraActionsArea->setViewport(new Viewport((ESPACEMENT * 2) + PLATEAU_TAILLE, (ESPACEMENT *2 ) + MESSAGE_HEIGHT, ACTIONS_WIDTH, PLATEAU_TAILLE));
 	cameraActionsArea->setReferenceFrame(Camera::ABSOLUTE_RF);
-	cameraActionsArea->setClearColor(COLOR_PLATEAU);
+	cameraActionsArea->setClearColor(BEIGE);
 }
 
 void GameView::createArrowButton()
@@ -144,7 +149,7 @@ void GameView::drawPlate()
 {
 	ref_ptr<Texture2D> textPlateau = new Texture2D();
 
-	ref_ptr<Image> imgPlateau = osgDB::readImageFile("resources/plateau.jpg");
+	ref_ptr<Image> imgPlateau = osgDB::readImageFile("resources/textures/plateau.jpg");
 	textPlateau->setImage(imgPlateau);
 
 	ref_ptr<ShapeDrawable> plateau = new ShapeDrawable();

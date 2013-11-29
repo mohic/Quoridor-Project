@@ -9,11 +9,42 @@
 * Configuration générale *
 *                        *
 \************************/
-#define FENETRE_X		50				// position x de la fenêtre à l'écran
-#define FENETRE_Y		50				// position y de la fenêtre à l'écran
-#define FENETRE_HEIGHT	700				// hauteur de la fenêtre
-#define FENETRE_WIDTH	600				// largeur de la fenêtre
-#define POSITION_CENTRE Vec3(0, 0, 0)	// position du centre
+
+// fenêtre générale
+#define FENETRE_X				50														// position x de la fenêtre à l'écran
+#define FENETRE_Y				50														// position y de la fenêtre à l'écran
+#define FENETRE_HEIGHT			700														// hauteur de la fenêtre
+#define FENETRE_WIDTH			800														// largeur de la fenêtre
+
+// centre de l'univers
+#define POSITION_CENTRE			Vec3(0, 0, 0)											// position du centre
+
+// caméra générale + espacement des différentes zones
+#define CAMERA_NEAR				0.5														// distance d'affichage minimal de la caméra
+#define CAMERA_FAR				5														// distance d'affichage maximal de la caméra
+#define CAMERA_LEFT				-100													// coordonnée de gauche du plan de délimitation
+#define CAMERA_RIGHT			100														// coordonnée de droite du plan de délimitation
+#define ESPACEMENT				10														// espacement entre les différentes zones de jeu
+
+// spécificités de la caméra des messages
+#define CAMERA_MESSAGE_BOTTOM	-8														// coordonnée du bas du plan de délimitation du message
+#define CAMERA_MESSAGE_TOP		8														// coordonnée du haut du plan de délimitation du message
+//TODO: changer le 16/200 pour qu'il s'autocalcule via camera_message_bottom etc
+#define MESSAGE_HEIGHT			((16.0 / 200) * (FENETRE_WIDTH - (ESPACEMENT * 2)))		// hauteur de la zone des différents messages
+
+// spécificités de la caméra du plateau
+#define CAMERA_PLATEAU_BOTTOM	CAMERA_LEFT												// coordonnée du bas du plan de délimitation du plateau
+#define CAMERA_PLATEAU_TOP		CAMERA_RIGHT											// coordonnée du haut du plan de délimitation du plateau
+#define PLATEAU_TAILLE			(FENETRE_HEIGHT - MESSAGE_HEIGHT - (ESPACEMENT * 3))	// taille du plateau
+
+// spécificités de la caméra des actions
+#define ACTIONS_WIDTH			(FENETRE_WIDTH - (PLATEAU_TAILLE + (ESPACEMENT * 3)))	// largeur du viewport des actions
+//TODO: changer les 200 en rapport avec left-right camera
+#define CAMERA_ACTIONS_BOTTOM	-(((PLATEAU_TAILLE / ACTIONS_WIDTH) * 200) / 2)			// coordonnée du bas du plan de délimitation des actions
+#define CAMERA_ACTIONS_TOP		(((PLATEAU_TAILLE / ACTIONS_WIDTH) * 200) / 2)			// coordonnée du haut du plan de délimitation des action
+
+// spécificités des textes
+#define FONT_SIZE				5														// taille de la police
 
 /**********\
 *          *
