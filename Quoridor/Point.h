@@ -38,5 +38,6 @@ public:
 	{
 		return y;
 	}
-};
 
+	friend bool operator==(Point const &p1, Point const &p2);
+};

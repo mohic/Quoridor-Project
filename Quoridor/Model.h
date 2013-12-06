@@ -1,5 +1,6 @@
 #pragma once
 
+//#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -30,6 +31,22 @@ private:
 	Mode currentMode;							// mode courant du jeu
 	std::string userMessage;					// message à afficher à l'utilisateur
 	std::string	errorMessage;					// message d'erreur à afficher à l'utilisateur
+
+	std::vector<Point> caseVerifiee;			// case déjà vérifiée lors de l'analyse du bloquage d'un pion
+
+	/**
+		méthode testant si les pions peuvent atteindre l'arrivée
+		@return true si tous les pions peuvent atteindre la ligne d'arrivée, sinon false
+	*/
+	bool testerBlocagePions();
+
+	/**
+		méthode servant pour le test si un pion est bloqué de façon récursive
+		@param joueur Le joueur à tester
+		@parem caseATester case à tester
+		@return true si le pion n'est pas bloqué, sinon false
+	*/
+	bool testerBlocagePion(int joueur, Point caseATester);
 
 	/**
 		méthode de teste si une barrière peut être positionnée à un endroit donné

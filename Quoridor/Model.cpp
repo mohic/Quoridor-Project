@@ -40,13 +40,13 @@ bool Model::testerPassagePion(Point position, Direction direction)
 	switch (direction)
 	{
 		case Model::LEFT:
-			return !placePrises[position.getX() * 2 - 1][position.getY() * 2];
+			return position.getX() > 0 && !placePrises[position.getX() * 2 - 1][position.getY() * 2];
 		case Model::RIGHT:
-			return !placePrises[position.getX() * 2 + 1][position.getY() * 2];
+			return position.getX() < Config::getInstance()->getNbrCases() - 1 && !placePrises[position.getX() * 2 + 1][position.getY() * 2];
 		case Model::UP:
-			return !placePrises[position.getX() * 2][position.getY() * 2 - 1];
+			return position.getY() > 0 && !placePrises[position.getX() * 2][position.getY() * 2 - 1];
 		case Model::DOWN:
-			return !placePrises[position.getX() * 2][position.getY() * 2 + 1];
+			return position.getY() < Config::getInstance()->getNbrCases() - 1 && !placePrises[position.getX() * 2][position.getY() * 2 + 1];
 	}
 
 	return false;
@@ -62,7 +62,7 @@ bool Model::deplacerPion(int joueur, Direction direction)
 	{
 		case Model::UP: // si le pion doit se déplacer en haut
 			// teste si le pion est tout en haut ou bloqué par une barrière
-			if (p.getY() <= 0 || !testerPassagePion(p, Direction::UP))
+			if (!testerPassagePion(p, Direction::UP))
 				succeed = false;
 			else
 				pions[joueur - 1] = Point(p.getX(), p.getY() - 1);
@@ -70,7 +70,7 @@ bool Model::deplacerPion(int joueur, Direction direction)
 			break;
 		case Model::DOWN: // si le pion doit se déplacer en bas
 			// teste si le pion est tout en bas ou bloqué par une barrière
-			if (p.getY() >= Config::getInstance()->getNbrCases() - 1 || !testerPassagePion(p, Direction::DOWN))
+			if (!testerPassagePion(p, Direction::DOWN))
 				succeed = false;
 			else
 				pions[joueur - 1] = Point(p.getX(), p.getY() + 1);
@@ -78,7 +78,7 @@ bool Model::deplacerPion(int joueur, Direction direction)
 			break;
 		case Model::LEFT: // si le pion doit se déplacer à gauche
 			// teste si le pion est tout à gauche ou bloqué par une barrière
-			if (p.getX() <= 0 || !testerPassagePion(p, Direction::LEFT))
+			if (!testerPassagePion(p, Direction::LEFT))
 				succeed = false;
 			else
 				pions[joueur - 1] = Point(p.getX() - 1, p.getY());
@@ -86,7 +86,7 @@ bool Model::deplacerPion(int joueur, Direction direction)
 			break;
 		case Model::RIGHT: // si le pion doit se déplacer à droite
 			// teste si le pion est tout à droite ou bloqué par une barrière
-			if (p.getX() >= Config::getInstance()->getNbrCases() - 1 || !testerPassagePion(p, Direction::RIGHT))
+			if (!testerPassagePion(p, Direction::RIGHT))
 				succeed = false;
 			else
 				pions[joueur - 1] = Point(p.getX() + 1, p.getY());
@@ -181,6 +181,30 @@ bool Model::placerBarriere(int joueur, Point position, bool vertical)
 		placePrises[position.getX() * 2 + 2][position.getY() * 2 - 1] = true;
 	}
 
+	// tester si le placement ne bloque pas un des joueurs, si c'est le cas, retour en arrière
+	if (!testerBlocagePions()) {
+		// retirer les barrières dans les barrières placées
+		barrierePlacee[joueur - 1].pop_back();
+
+		// supprimer l'enregistrement du sens des barrières placées
+		sensBarrierePlacee[joueur - 1].pop_back();
+
+		// supprimer l'enregistrement des emplacements de barrières déjà prit
+		if (vertical) {
+			placePrises[position.getX() * 2 - 1][position.getY() * 2] = false;
+			placePrises[position.getX() * 2 - 1][position.getY() * 2 + 1] = false;
+			placePrises[position.getX() * 2 - 1][position.getY() * 2 + 2] = false;
+		} else {
+			placePrises[position.getX() * 2][position.getY() * 2 - 1] = false;
+			placePrises[position.getX() * 2 + 1][position.getY() * 2 - 1] = false;
+			placePrises[position.getX() * 2 + 2][position.getY() * 2 - 1] = false;
+		}
+
+		errorMessage = "Placer une barrière ici bloque un des deux joueurs";
+
+		return false;
+	}
+
 	return true;
 }
 
@@ -226,6 +250,63 @@ bool Model::changerSensVirtualBarriere()
 	}
 	
 	return true;
+}
+
+bool Model::testerBlocagePions()
+{
+	caseVerifiee = vector<Point>();
+
+	if(testerBlocagePion(1, pions[0])) {
+		caseVerifiee = vector<Point>();
+
+		return testerBlocagePion(2, pions[1]);
+	}
+
+	return false;
+}
+
+bool Model::testerBlocagePion(int joueur, Point caseATester)
+{
+	// condition de sortie si la case est en dehors du tableau
+	if (caseATester.getX() < 0
+			|| caseATester.getX() > Config::getInstance()->getNbrCases()
+			|| caseATester.getY() > Config::getInstance()->getNbrCases()
+			|| caseATester.getY() < 0)
+		return false;
+
+	// condition de sortie si la case a déjà été vérifiée
+	vector<Point>::iterator it = find(caseVerifiee.begin(), caseVerifiee.end(), caseATester);
+
+	if (it != caseVerifiee.end())
+		return false;
+
+	// ajouter la case courante dans les case déjà vérifiée
+	caseVerifiee.push_back(caseATester);
+
+	// condition de sortie si la ligne d'arrivée est atteinte
+	if ((joueur == 1 && caseATester.getY() == Config::getInstance()->getNbrCases() - 1)
+			|| (joueur == 2 && caseATester.getY() == 0))
+		return true;
+
+	// condition de sortie si plus aucune possibilité
+	bool left  = false;
+	bool right = false;
+	bool down  = false;
+	bool up    = false;
+
+	if (testerPassagePion(caseATester, Direction::LEFT))
+		left = testerBlocagePion(joueur, Point(caseATester.getX() - 1, caseATester.getY()));
+
+	if (testerPassagePion(caseATester, Direction::RIGHT))
+		right = testerBlocagePion(joueur, Point(caseATester.getX() + 1, caseATester.getY()));
+
+	if (testerPassagePion(caseATester, Direction::DOWN))
+		down = testerBlocagePion(joueur, Point(caseATester.getX(), caseATester.getY() + 1));
+
+	if (testerPassagePion(caseATester, Direction::UP))
+		up = testerBlocagePion(joueur, Point(caseATester.getX(), caseATester.getY() - 1));
+
+	return left || right || down || up;
 }
 
 ostream &operator<<(ostream &stream, Model const &model)
