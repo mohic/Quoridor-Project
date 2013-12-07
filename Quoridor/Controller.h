@@ -1,5 +1,5 @@
 #pragma once
-//TODO: changer les set en get pour garder la logique des autres méthodes
+
 #include <vector>
 #include <osg\MatrixTransform>
 #include <osg\Camera>
