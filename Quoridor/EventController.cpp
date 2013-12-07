@@ -53,119 +53,26 @@ void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 		IntersectionVisitor iv(intersector.get());
 
 		// vérification que le clic se passe dans la zone du viewport des boutons d'actions
-		if (ea->getX() >= 10 + FENETRE_WIDTH - (FENETRE_WIDTH / 3) - 10
-			&& ea->getX() <= 10 + FENETRE_WIDTH - 10
-			&& ea->getY() >= 10
-			&& ea->getY() <= 90 + 10)
+		const Viewport *vp = GameView::getInstance()->getActionViewport();
+
+		if (ea->getX() >= vp->x() && ea->getX() <= (vp->x() + vp->width())
+			&& ea->getY() >= vp->y() && ea->getY() <= (vp->y() + vp->height()))
 				node->accept(iv);
 
+		// si le clique à lieu sur un objet contenu dans le viewport des boutons d'actions
 		if (intersector->containsIntersections()) {
 			LineSegmentIntersector::Intersection result = intersector->getFirstIntersection();
 
 			Point position = Point(result.getWorldIntersectPoint().x(), result.getWorldIntersectPoint().y());
 
-			if (testButtonColision(Button::RESTART, position)) // recommencer une partie
-				Model::getInstance()->recommencerPartie();
-
-			// tester si le jeu est terminé
-			if (Model::getInstance()->getPartieTerminee())
-				return;
-
-			if (testButtonColision(Button::LOAD, position)) { // charger une partie
-				ifstream ifs = ifstream(Config::getInstance()->getSaveFileName());
-
-				if (ifs) {
-					ifs >> *Model::getInstance();
-					ifs.close();
-				}
-			} else if (testButtonColision(Button::SAVE, position)) { // enregistrer une partie
-				ofstream ofs = ofstream(Config::getInstance()->getSaveFileName());
-
-				if (ofs) {
-					ofs << *Model::getInstance();
-					ofs.close();
-				}
-			} else if (testButtonColision(Button::MODE, position)) { // changer de mode
-				// tester si le joueur a placé toutes ses barrières
-				if (Model::getInstance()->getBarrierePlacee(Model::getInstance()->getJoueurEnCours()).size() >= (unsigned int)Config::getInstance()->getNbrBarriereJoueur()) {
-					Model::getInstance()->setErrorMessage("Vous n'avez plus de barrière disponible");
-					return;
-				} else
-					Model::getInstance()->setErrorMessage("");
-
-				// changer le mode
-				if (Model::getInstance()->getMode() == Model::Mode::PIONS)
-					Model::getInstance()->setMode(Model::Mode::BARRIERE);
-				else
-					Model::getInstance()->setMode(Model::Mode::PIONS);
-			} else if (Model::getInstance()->getMode() == Model::Mode::PIONS) { // mode pions
-				if (testButtonColision(Button::ARROW_UP, position)) // zone flèche haut
-					mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::UP);
-				else if (testButtonColision(Button::ARROW_DOWN, position)) // zone flèche bas
-					mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::DOWN);
-				else if(testButtonColision(Button::ARROW_LEFT, position)) // zone flèche gauche
-					mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::LEFT);
-				else if (testButtonColision(Button::ARROW_RIGHT, position)) // zone flèche droite
-					mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::RIGHT);
-			} else { // mode barrière
-				if (testButtonColision(Button::ARROW_UP, position)) // zone flèche haut
-					Model::getInstance()->deplacerVirtualBarriere(Model::Direction::UP);
-				else if (testButtonColision(Button::ARROW_DOWN, position)) // zone flèche bas
-					Model::getInstance()->deplacerVirtualBarriere(Model::Direction::DOWN);
-				else if(testButtonColision(Button::ARROW_LEFT, position)) // zone flèche gauche
-					Model::getInstance()->deplacerVirtualBarriere(Model::Direction::LEFT);
-				else if (testButtonColision(Button::ARROW_RIGHT, position)) // zone flèche droite
-					Model::getInstance()->deplacerVirtualBarriere(Model::Direction::RIGHT);
-				else if (testButtonColision(Button::SENS, position)) // changer le sens de la barrière virtuelle
-					Model::getInstance()->changerSensVirtualBarriere();
-				else if (testButtonColision(Button::VALIDATE, position)) // valider la barrière virtuelle
-				{
-					mustChangePlayer = Model::getInstance()->placerBarriere(Model::getInstance()->getJoueurEnCours(), Model::getInstance()->getVirtualBarriere(), Model::getInstance()->getSensVirtualBarriere());
-
-					if (mustChangePlayer) {
-						Model::getInstance()->setMode(Model::Mode::PIONS);
-						Controller::getInstance()->removeVirtualBarriere();
-					}
-				}
-			}
+			buttonClicked(GameView::getInstance()->testerCollisionAvecBouton(position));
 		}
 	}
 }
 
-bool EventController::testButtonColision(Button button, Point position)
+void EventController::buttonClicked(Config::Button button)
 {
-	//TODO: améliorer les if si dessous pour obtenir les coordonnées directement depuis l'objet
-	//TODO: à corriger depuis le changement de disposition
-	switch (button)
-	{
-		case EventController::ARROW_UP:
-			return position.getX() > -70 && position.getX() < -50 && position.getY() < 35 && position.getY() > 9;
-		case EventController::ARROW_DOWN:
-			return position.getX() > -70 && position.getX() < -50 && position.getY() < -8 && position.getY() > -33;
-		case EventController::ARROW_LEFT:
-			return position.getX() > -95 && position.getX() < -68 && position.getY() < 10 && position.getY() > -10;
-		case EventController::ARROW_RIGHT:
-			return position.getX() > -52 && position.getX() < -25 && position.getY() < 10 && position.getY() > -10;
-		case EventController::SENS:
-			return position.getX() > -65 && position.getX() < -54 && position.getY() < 4 && position.getY() > -3;
-		case EventController::MODE:
-			return position.getX() > -15 && position.getX() < 15 && position.getY() < 30 && position.getY() > 12;
-		case EventController::VALIDATE:
-			return position.getX() > -15 && position.getX() < 15 && position.getY() < -10 && position.getY() > -27;
-		case EventController::LOAD:
-			return position.getX() > 45 && position.getX() < 75 && position.getY() < 30 && position.getY() > 12;
-		case EventController::SAVE:
-			return position.getX() > 45 && position.getX() < 75 && position.getY() < -10 && position.getY() > -27;
-		case EventController::RESTART:
-			return position.getX() > 14 && position.getX() < 45 && position.getY() < 10 && position.getY() > -7;
-	}
-
-	return false;
-}
-
-void EventController::handleKeyboard(int key)
-{
-	if (key == GUIEventAdapter::KeySymbol::KEY_R || key == 'R') { // recommencer une partie
+	if (button == Config::Button::RESTART) { // recommencer une partie
 		Model::getInstance()->recommencerPartie();
 		return;
 	}
@@ -174,14 +81,13 @@ void EventController::handleKeyboard(int key)
 	if (Model::getInstance()->getPartieTerminee())
 		return;
 
-	switch (key)
+	// autres touches
+	switch (button)
 	{	
-		case 'Z':
-		case GUIEventAdapter::KeySymbol::KEY_Z: // annuler un coup
+		case Config::Button::CANCEL: // annuler un coup
 			Model::getInstance()->annulerDernierCoup();
 			return;
-		case 'M':
-		case GUIEventAdapter::KeySymbol::KEY_M: // changer de mode
+		case Config::Button::MODE: // changer de mode
 			// tester si le joueur a placé toutes ses barrières
 			if (Model::getInstance()->getBarrierePlacee(Model::getInstance()->getJoueurEnCours()).size() >= (unsigned int)Config::getInstance()->getNbrBarriereJoueur()) {
 				Model::getInstance()->setErrorMessage("Vous n'avez plus de barrière disponible");
@@ -197,7 +103,7 @@ void EventController::handleKeyboard(int key)
 			}
 
 			return;
-		case GUIEventAdapter::KeySymbol::KEY_F6: // enregistrer une partie
+		case Config::Button::SAVE: // enregistrer une partie
 			{
 				ofstream ofs = ofstream(Config::getInstance()->getSaveFileName());
 
@@ -208,7 +114,7 @@ void EventController::handleKeyboard(int key)
 
 				return;
 			}
-		case GUIEventAdapter::KeySymbol::KEY_F7: // charger une partie
+		case Config::Button::LOAD: // charger une partie
 			{
 				ifstream ifs = ifstream(Config::getInstance()->getSaveFileName());
 
@@ -222,41 +128,40 @@ void EventController::handleKeyboard(int key)
 	}
 
 	if (Model::getInstance()->getMode() == Model::Mode::PIONS) { // mode pions
-		switch(key)
+		switch(button)
 		{
-			case GUIEventAdapter::KeySymbol::KEY_Up: // si appuyé sur la touche "flèche du haut"
+			case Config::Button::ARROW_UP: // déplacer le pion vers le haut
 				mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::UP);
 				break;
-			case GUIEventAdapter::KeySymbol::KEY_Down: // si appuyé sur la touche "flèche du bas"
+			case Config::Button::ARROW_DOWN: // déplacer le pion vers le bas
 				mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::DOWN);
 				break;	
-			case GUIEventAdapter::KeySymbol::KEY_Left: // si appuyé sur la touche "flèche de gauche"
+			case Config::Button::ARROW_LEFT: // déplacer le pion vers la gauche
 				mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::LEFT);
 				break;
-			case GUIEventAdapter::KeySymbol::KEY_Right: // si appuyé sur la touche "flèche de droite"
+			case Config::Button::ARROW_RIGHT: // déplacer le pion vers la droite
 				mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::RIGHT);
 				break;
 		}
 	} else { // mode barrière
-		switch (key)
+		switch (button)
 		{
-			case GUIEventAdapter::KeySymbol::KEY_Up: // si appuyé sur la touche "flèche du haut"
+			case Config::Button::ARROW_UP: // déplacer la barrière vers le haut
 				Model::getInstance()->deplacerVirtualBarriere(Model::Direction::UP);
 				break;
-			case GUIEventAdapter::KeySymbol::KEY_Down: // si appuyé sur la touche "flèche du base"
+			case Config::Button::ARROW_DOWN: // déplacer la barrière vers le bas
 				Model::getInstance()->deplacerVirtualBarriere(Model::Direction::DOWN);
 				break;
-			case GUIEventAdapter::KeySymbol::KEY_Left: // si appuyé sur la touche "flèche de gauche"
+			case Config::Button::ARROW_LEFT: // déplacer la barrière vers la gauche
 				Model::getInstance()->deplacerVirtualBarriere(Model::Direction::LEFT);
 				break;
-			case GUIEventAdapter::KeySymbol::KEY_Right: // si appuyé sur la touche "flèche de droite"
+			case Config::Button::ARROW_RIGHT: // déplacer la barrière vers la droite
 				Model::getInstance()->deplacerVirtualBarriere(Model::Direction::RIGHT);
 				break;
-			case 'S': // si appuyé sur la touche "S" majuscule
-			case GUIEventAdapter::KeySymbol::KEY_S: // si appuyé sur la touche "S"
+			case Config::Button::SENS: // changer de sens
 				Model::getInstance()->changerSensVirtualBarriere();
 				break;
-			case GUIEventAdapter::KeySymbol::KEY_Return: // si appuyé sur la touche "Entrée"
+			case Config::Button::VALIDATE: // valider le placement
 				mustChangePlayer = Model::getInstance()->placerBarriere(Model::getInstance()->getJoueurEnCours(), Model::getInstance()->getVirtualBarriere(), Model::getInstance()->getSensVirtualBarriere());
 
 				if (mustChangePlayer) {
@@ -266,6 +171,51 @@ void EventController::handleKeyboard(int key)
 
 				break;
 		}
+	}
+}
+
+void EventController::handleKeyboard(int key)
+{
+	switch (key)
+	{
+		case 'R':
+		case GUIEventAdapter::KeySymbol::KEY_R:
+			buttonClicked(Config::Button::RESTART);
+			break;
+		case 'Z':
+		case GUIEventAdapter::KeySymbol::KEY_Z:
+			buttonClicked(Config::Button::CANCEL);
+			break;
+		case 'M':
+		case GUIEventAdapter::KeySymbol::KEY_M:
+			buttonClicked(Config::Button::MODE);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_F6:
+			buttonClicked(Config::Button::SAVE);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_F7:
+			buttonClicked(Config::Button::LOAD);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_Up:
+			buttonClicked(Config::Button::ARROW_UP);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_Down:
+			buttonClicked(Config::Button::ARROW_DOWN);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_Left:
+			buttonClicked(Config::Button::ARROW_LEFT);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_Right:
+			buttonClicked(Config::Button::ARROW_RIGHT);
+			break;
+		case 'S':
+		case GUIEventAdapter::KeySymbol::KEY_S:
+			buttonClicked(Config::Button::SENS);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_KP_Enter:
+		case GUIEventAdapter::KeySymbol::KEY_Return:
+			buttonClicked(Config::Button::VALIDATE);
+			break;
 	}
 }
 

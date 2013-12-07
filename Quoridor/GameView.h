@@ -63,6 +63,8 @@ private:
 	void drawArrowAndDirectionButtons();			// dessine les boutons flèchés et le bouton changer de sens
 	void drawCommandsButtons();						// dessine les différents boutons de commandes
 
+	Config::Button checkButton(std::string name);	// vérifie quel bouton à été cliqué
+
 public:
 	/**
 		méthode de récupération de l'instance de GameView
@@ -80,4 +82,20 @@ public:
 		méthode de rafraîchissement du message
 	*/
 	void refreshMessage();
+
+	/**
+		obtenir le viewport de la caméra des boutons d'actions
+		@return le viewport de la caméra des boutons d'actions
+	*/
+	const osg::Viewport *getActionViewport()
+	{
+		return cameraActionsArea->getViewport();
+	}
+
+	/**
+		tester si le point entre en collision avec un bouton contenu dans le viewport de la caméra des boutons d'actions
+		@param position le point à tester
+		@return quel bouton a été cliqué
+	*/
+	Config::Button testerCollisionAvecBouton(Point position);
 };

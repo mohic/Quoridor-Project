@@ -319,24 +319,28 @@ void GameView::drawArrowAndDirectionButtons()
 	arrowUp->addChild(arrowButton.get());
 	arrowUp->setMatrix(Matrix::identity());
 	arrowUp->postMult(Matrix::translate(Vec3(0, 20, 0)));
+	arrowUp->setName("upArrowButton");
 
 	ref_ptr<MatrixTransform> arrowLeft = new MatrixTransform();
 	arrowLeft->addChild(arrowButton.get());
 	arrowLeft->setMatrix(Matrix::identity());
 	arrowLeft->postMult(Matrix::rotate(inDegrees(90.0), Z_AXIS));
 	arrowLeft->postMult(Matrix::translate(Vec3(-20, 0, 0)));
+	arrowLeft->setName("leftArrowButton");
 
 	ref_ptr<MatrixTransform> arrowDown = new MatrixTransform();
 	arrowDown->addChild(arrowButton.get());
 	arrowDown->setMatrix(Matrix::identity());
 	arrowDown->postMult(Matrix::rotate(inDegrees(180.0), Z_AXIS));
 	arrowDown->postMult(Matrix::translate(Vec3(0, -20, 0)));
+	arrowDown->setName("downArrowButton");
 
 	ref_ptr<MatrixTransform> arrowRight = new MatrixTransform();
 	arrowRight->addChild(arrowButton.get());;
 	arrowRight->setMatrix(Matrix::identity());
 	arrowRight->postMult(Matrix::rotate(inDegrees(-90.0), Z_AXIS));
 	arrowRight->postMult(Matrix::translate(Vec3(20, 0, 0)));
+	arrowRight->setName("rightArrowButton");
 
 	// dessin du bouton de changement de sens
 	ref_ptr<ShapeDrawable> buttonSens = new ShapeDrawable();
@@ -354,6 +358,7 @@ void GameView::drawArrowAndDirectionButtons()
 	transformButtonSens->addChild(geodeButtonSens.get());
 	transformButtonSens->setMatrix(Matrix::identity());
 	transformButtonSens->postMult(Matrix::scale(11, 10, 1));
+	transformButtonSens->setName("sensButton");
 
 	// matrixTransform contenant les touches de directions et de changements de sens
 	ref_ptr<MatrixTransform> arrows = new MatrixTransform();
@@ -379,6 +384,7 @@ void GameView::drawCommandsButtons()
 	transformButtonMode->setMatrix(Matrix::identity());
 	transformButtonMode->postMult(Matrix::scale(20, 20, 1));
 	transformButtonMode->postMult(Matrix::translate(Vec3(0, 20, 0)));
+	transformButtonMode->setName("modeButton");
 
 	cameraActionsArea->addChild(transformButtonMode.get());
 
@@ -388,6 +394,7 @@ void GameView::drawCommandsButtons()
 	transformButtonValidate->setMatrix(Matrix::identity());
 	transformButtonValidate->postMult(Matrix::scale(20, 20, 1));
 	transformButtonValidate->postMult(Matrix::translate(Vec3(0, -20, 0)));
+	transformButtonValidate->setName("validateButton");
 
 	cameraActionsArea->addChild(transformButtonValidate.get());
 
@@ -397,6 +404,7 @@ void GameView::drawCommandsButtons()
 	transformButtonLoad->setMatrix(Matrix::identity());
 	transformButtonLoad->postMult(Matrix::scale(20, 20, 1));
 	transformButtonLoad->postMult(Matrix::translate(Vec3(60, 20, 0)));
+	transformButtonLoad->setName("loadButton");
 
 	cameraActionsArea->addChild(transformButtonLoad.get());
 
@@ -406,17 +414,89 @@ void GameView::drawCommandsButtons()
 	transformButtonSave->setMatrix(Matrix::identity());
 	transformButtonSave->postMult(Matrix::scale(20, 20, 1));
 	transformButtonSave->postMult(Matrix::translate(Vec3(60, -20, 0)));
+	transformButtonSave->setName("saveButton");
 
 	cameraActionsArea->addChild(transformButtonSave.get());
 
 	// dessin du bouton pour recommencer une partie
-	ref_ptr<MatrixTransform> restartButtonSave = new MatrixTransform();
-	restartButtonSave->addChild(classicButton.get());
-	restartButtonSave->setMatrix(Matrix::identity());
-	restartButtonSave->postMult(Matrix::scale(20, 20, 1));
-	restartButtonSave->postMult(Matrix::translate(Vec3(30, 0, 0)));
+	ref_ptr<MatrixTransform> transformButtonRestart = new MatrixTransform();
+	transformButtonRestart->addChild(classicButton.get());
+	transformButtonRestart->setMatrix(Matrix::identity());
+	transformButtonRestart->postMult(Matrix::scale(20, 20, 1));
+	transformButtonRestart->postMult(Matrix::translate(Vec3(30, 0, 0)));
+	transformButtonRestart->setName("restartButton");
 
-	cameraActionsArea->addChild(restartButtonSave.get());
+	cameraActionsArea->addChild(transformButtonRestart.get());
+}
+
+Config::Button GameView::testerCollisionAvecBouton(Point position)
+{
+	Config::Button result = Config::Button::UNKNOWN;
+
+	// REMARQUE: getChildIndex renvoie le nombre d'enfants si l'enfant passé en paramètre
+	//           n'a pas été trouvé donc le 0 permet de dire renvoie d'office le nombre
+	//           d'enfants contenu dans la caméra des boutons d'actions
+	for (unsigned int i = 0; i < cameraActionsArea->getChildIndex(0); i++)
+	{
+		ref_ptr<Node> n = cameraActionsArea->getChild(i);
+		BoundingSphere bs = n->getBound();
+
+		// tester si position est dans le noeud
+		if (!bs.contains(Vec3(position.getX(), position.getY(), 0)))
+			continue;
+
+		// vérifier sur quel bouton...
+		if (n->getName() != "") // si simple bouton
+			result = checkButton(n->getName());
+		else { // si container
+			//TODO: problème du au fait que les coordonnées doivent être relative au MatrixTransform et pas au viewport
+			ref_ptr<MatrixTransform> mt = dynamic_cast<MatrixTransform *>(n.get());
+
+			for (unsigned int j = 0; j < mt->getChildIndex(0); j++)
+			{
+				ref_ptr<Node> n_mt = mt->getChild(j);
+				BoundingSphere bs_mt = n_mt->getBound();
+
+				if (!bs_mt.contains(Vec3(position.getX(), position.getY(), 0)))
+					continue;
+
+				result = checkButton(n_mt->getName());
+			}
+		}
+
+		if (result != Config::Button::UNKNOWN) // si bouton trouvé, arrêter de chercher
+			break;
+	}
+
+	return result;
+}
+
+Config::Button GameView::checkButton(std::string name)
+{
+	if (name == "restartButton") // bouton redémarrer
+		return Config::Button::RESTART;
+	else if (name == "saveButton") // bouton enregistrer une partie
+		return Config::Button::SAVE;
+	else if (name == "loadButton") // bouton charger une partie
+		return Config::Button::LOAD;
+	else if (name == "validateButton") // bouton valider le placement d'une barrière
+		return Config::Button::VALIDATE;
+	else if (name == "modeButton") // bouton changer de mode
+		return Config::Button::MODE;
+	else if (name == "upArrowButton") // bouton flèche vers le haut
+		return Config::Button::ARROW_UP;
+	else if (name == "leftArrowButton") // bouton flèche vers la gauche
+		return Config::Button::ARROW_LEFT;
+	else if (name == "downArrowButton") // bouton flèche vers le bas
+		return Config::Button::ARROW_DOWN;
+	else if (name == "rightArrowButton") // bouton flèche vers la droite
+		return Config::Button::ARROW_RIGHT;
+	else if (name == "sensButton") // bouton changement de sens
+		return Config::Button::SENS;
+	else if (name == "cancelButton") // bouton annuler le dernier coup
+		return Config::Button::CANCEL;
+
+	return Config::Button::UNKNOWN; // bouton inconnu
 }
 
 ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
