@@ -78,6 +78,7 @@
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="PositionUpdater.cpp" />
     <ClCompile Include="GameView.cpp" />
+    <ClCompile Include="SaveLoad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArgumentInvalidException.h" />
@@ -91,6 +92,7 @@
     <ClInclude Include="PositionUpdater.h" />
     <ClInclude Include="GameView.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SaveLoad.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Quoridor.rc" />
