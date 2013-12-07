@@ -2,6 +2,7 @@
 
 //#include <algorithm>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include "Config.h"
@@ -20,6 +21,7 @@ public:
 	enum Mode { BARRIERE, PIONS };				// différent mode de jeu possible
 
 private:
+	// variables enregistrées lors de la sauvegarde
 	Point pions[2];								// position du pion de chaque joueur. La première dimension est le joueur, la deuxième la position X et Y
 	std::vector<Point> barrierePlacee[2];		// barrières placées pour chaque joueur
 	std::vector<bool> sensBarrierePlacee[2];	// sens des barrières placées pour chaque joueur. true = vertical, false = horizontal
@@ -32,6 +34,8 @@ private:
 	std::string userMessage;					// message à afficher à l'utilisateur
 	std::string	errorMessage;					// message d'erreur à afficher à l'utilisateur
 
+	// variables non enregistrées lors de la sauvegarde
+	std::vector<std::string> coups;				// contient les différents états précédents de la partie
 	std::vector<Point> caseVerifiee;			// case déjà vérifiée lors de l'analyse du bloquage d'un pion
 
 	/**
@@ -64,6 +68,12 @@ private:
 		@return true si le pion peut être déplacé, sinon false
 	*/
 	bool testerPassagePion(Point position, Direction direction);
+
+	/**
+		méthode enregistrant le coups joué
+		@param action True si doit ajouter à la liste des coups joué, sinon false. Permet d'ajouter le coups à la liste et si le coups est interdit, de le retirer
+	*/
+	void coupsJoue(bool action);
 
 	static Model *instance;	// instance de la vue pour le pattern singleton
 	Model();				// constructeur privé
@@ -259,6 +269,12 @@ public:
 		@return true si le sens de la barrière virtuelle peut-être changé, sinon false
 	*/
 	bool changerSensVirtualBarriere();
+
+	/**
+		annuler le dernier coup
+		@return False si plus aucun coups à annuler, sinon true
+	*/
+	bool annulerDernierCoup();
 
 	/**
 		méthode enregistement de la partie dans un flux

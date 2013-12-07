@@ -33,6 +33,9 @@ Model::Model()
 	// initialisation du message utilisateur
 	userMessage = "Au tour du joueur 1";
 	errorMessage = "Bienvenue";
+
+	// initialisation du vecteur contenant les différents coups joués
+	coups = vector<string>();
 }
 
 bool Model::testerPassagePion(Point position, Direction direction)
@@ -54,6 +57,8 @@ bool Model::testerPassagePion(Point position, Direction direction)
 
 bool Model::deplacerPion(int joueur, Direction direction)
 {
+	coupsJoue(true);
+
 	// récupération de l'emplacement initial du pion du joueur
 	Point p = pions[joueur - 1];
 	bool succeed = true;
@@ -97,6 +102,8 @@ bool Model::deplacerPion(int joueur, Direction direction)
 	// si échec du déplacement
 	if (!succeed) {
 		errorMessage = "Mouvement impossible";
+		coupsJoue(false);
+
 		return false;
 	}
 
@@ -106,6 +113,8 @@ bool Model::deplacerPion(int joueur, Direction direction)
 	if (pions[joueur - 1].getX() == pions[autreJoueur - 1].getX() && pions[joueur - 1].getY() == pions[autreJoueur - 1].getY()) {
 		if (!deplacerPion(joueur, direction)) {
 			pions[joueur - 1] = p; // remettre le pion à sa position initiale
+			coupsJoue(false);
+
 			return false;
 		}
 	}
@@ -154,13 +163,21 @@ bool Model::testerPositionnementBarriere(Point position, bool vertical, bool col
 
 bool Model::placerBarriere(int joueur, Point position, bool vertical)
 {
+	coupsJoue(true);
+
 	// si je joueur a placé toutes ses barrières
-	if(barrierePlacee[joueur - 1].size() >= (unsigned int)Config::getInstance()->getNbrBarriereJoueur())
+	if(barrierePlacee[joueur - 1].size() >= (unsigned int)Config::getInstance()->getNbrBarriereJoueur()) {
+		errorMessage = "Toutes les barrières sont placées";
+		coupsJoue(false);
+
 		return false;
+	}
 
 	// tester si la barrière ne sort pas des limites et n'est pas en colision avec une autre
 	if (!testerPositionnementBarriere(position, vertical, true)) {
 		errorMessage = "Impossible de placer une barrière à cet endroit";
+		coupsJoue(false);
+
 		return false;
 	}
 
@@ -201,6 +218,7 @@ bool Model::placerBarriere(int joueur, Point position, bool vertical)
 		}
 
 		errorMessage = "Placer une barrière ici bloque un des deux joueurs";
+		coupsJoue(false);
 
 		return false;
 	}
@@ -309,6 +327,37 @@ bool Model::testerBlocagePion(int joueur, Point caseATester)
 	return left || right || down || up;
 }
 
+void Model::coupsJoue(bool action)
+{
+	if (action) {
+		stringstream ss;
+	
+		ss << *this;
+
+		coups.push_back(ss.str());
+	} else {
+		if (!coups.empty())
+			coups.pop_back();
+	}
+}
+
+bool Model::annulerDernierCoup()
+{
+	// si plus de coups
+	if (coups.empty())
+		return false;
+
+	// si un coup peut être annulé
+	stringstream ss;
+
+	ss << coups.back();
+	coups.pop_back(); // supprimer l'élément du tableau
+
+	ss >> *this;
+
+	return true;
+}
+
 ostream &operator<<(ostream &stream, Model const &model)
 {
 	Point p;
@@ -393,8 +442,8 @@ ostream &operator<<(ostream &stream, Model const &model)
 	stream << model.currentMode << ' ';
 
 	// enregistrement des messages affichés
-	stream << model.userMessage;
-	stream << model.errorMessage;
+	stream << model.userMessage << endl;
+	stream << model.errorMessage << endl;
 
 	return stream;
 }
@@ -500,6 +549,7 @@ istream &operator>>(istream &stream, Model &model)
 
 	// chargement des messages affichés
 	getline(stream, model.userMessage);
+	model.userMessage.erase(0, 1); // supprimer le 1er caractère
 	getline(stream, model.errorMessage);
 
 	return stream;

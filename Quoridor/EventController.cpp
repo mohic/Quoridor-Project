@@ -161,11 +161,9 @@ bool EventController::testButtonColision(Button button, Point position)
 	return false;
 }
 
-//TODO: résoudre le problème des touches avec capslock
-
 void EventController::handleKeyboard(int key)
 {
-	if (key == GUIEventAdapter::KeySymbol::KEY_R || key == 'R') { // recommencer la partie
+	if (key == GUIEventAdapter::KeySymbol::KEY_R || key == 'R') { // recommencer une partie
 		Model::getInstance()->recommencerPartie();
 		return;
 	}
@@ -174,42 +172,51 @@ void EventController::handleKeyboard(int key)
 	if (Model::getInstance()->getPartieTerminee())
 		return;
 
-	if (key == GUIEventAdapter::KeySymbol::KEY_M || key == 'M') { // changer de mode
-		// tester si le joueur a placé toutes ses barrières
-		if (Model::getInstance()->getBarrierePlacee(Model::getInstance()->getJoueurEnCours()).size() >= (unsigned int)Config::getInstance()->getNbrBarriereJoueur()) {
-			Model::getInstance()->setErrorMessage("Vous n'avez plus de barrière disponible");
+	switch (key)
+	{	
+		case 'Z':
+		case GUIEventAdapter::KeySymbol::KEY_Z: // annuler un coup
+			Model::getInstance()->annulerDernierCoup();
 			return;
-		} else
-			Model::getInstance()->setErrorMessage("");
+		case 'M':
+		case GUIEventAdapter::KeySymbol::KEY_M: // changer de mode
+			// tester si le joueur a placé toutes ses barrières
+			if (Model::getInstance()->getBarrierePlacee(Model::getInstance()->getJoueurEnCours()).size() >= (unsigned int)Config::getInstance()->getNbrBarriereJoueur()) {
+				Model::getInstance()->setErrorMessage("Vous n'avez plus de barrière disponible");
+				return;
+			} else
+				Model::getInstance()->setErrorMessage("");
 
-		if (Model::getInstance()->getMode() == Model::Mode::PIONS)
-			Model::getInstance()->setMode(Model::Mode::BARRIERE);
-		else {
-			Model::getInstance()->setMode(Model::Mode::PIONS);
-			Controller::getInstance()->removeVirtualBarriere();
-		}
+			if (Model::getInstance()->getMode() == Model::Mode::PIONS)
+				Model::getInstance()->setMode(Model::Mode::BARRIERE);
+			else {
+				Model::getInstance()->setMode(Model::Mode::PIONS);
+				Controller::getInstance()->removeVirtualBarriere();
+			}
 
-		return;
-	}
+			return;
+		case GUIEventAdapter::KeySymbol::KEY_F6: // enregistrer une partie
+			{
+				ofstream ofs = ofstream(Config::getInstance()->getSaveFileName());
 
-	if (key == GUIEventAdapter::KeySymbol::KEY_F6) { // enregistrer une partie
-		ofstream ofs = ofstream(Config::getInstance()->getSaveFileName());
+				if (ofs) {
+					ofs << *Model::getInstance();
+					ofs.close();
+				}
 
-		if (ofs) {
-			ofs << *Model::getInstance();
-			ofs.close();
-		}
+				return;
+			}
+		case GUIEventAdapter::KeySymbol::KEY_F7: // charger une partie
+			{
+				ifstream ifs = ifstream(Config::getInstance()->getSaveFileName());
 
-		return;
-	} else if (key == GUIEventAdapter::KeySymbol::KEY_F7) { // charger une partie
-		ifstream ifs = ifstream(Config::getInstance()->getSaveFileName());
+				if (ifs) {
+					ifs >> *Model::getInstance();
+					ifs.close();
+				}
 
-		if (ifs) {
-			ifs >> *Model::getInstance();
-			ifs.close();
-		}
-
-		return;
+				return;
+			}
 	}
 
 	if (Model::getInstance()->getMode() == Model::Mode::PIONS) { // mode pions
@@ -243,7 +250,7 @@ void EventController::handleKeyboard(int key)
 			case GUIEventAdapter::KeySymbol::KEY_Right: // si appuyé sur la touche "flèche de droite"
 				Model::getInstance()->deplacerVirtualBarriere(Model::Direction::RIGHT);
 				break;
-			case 'S': // si appuyé sur la touche "S"
+			case 'S': // si appuyé sur la touche "S" majuscule
 			case GUIEventAdapter::KeySymbol::KEY_S: // si appuyé sur la touche "S"
 				Model::getInstance()->changerSensVirtualBarriere();
 				break;
