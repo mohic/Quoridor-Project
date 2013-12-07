@@ -85,13 +85,18 @@ public:
 	*/
 	static Model *getInstance();
 
-	//TODO documentation
+	/**
+		obtenir si une partie est terminée ou non
+		@return true si la partie est terminée, sinon false
+	*/
 	bool getPartieTerminee()
 	{
 		return partieTerminee;
 	}
 
-	//TODO documentation
+	/**
+		recommencer une partie
+	*/
 	void recommencerPartie()
 	{
 		delete instance;

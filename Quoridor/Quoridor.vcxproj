@@ -93,6 +93,7 @@
     <ClInclude Include="GameView.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SaveLoad.h" />
+    <ClInclude Include="StateException.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Quoridor.rc" />
@@ -108,4 +109,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="Quoridor.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -40,7 +40,7 @@ void EventController::operator()(Node *node, NodeVisitor *nv)
 	// changer de joueur si nécessaire
 	if (mustChangePlayer) {
 		Model::getInstance()->setJoueurEnCours(Model::getInstance()->getJoueurEnCours() == 1 ? 2 : 1);
-		mustChangePlayer = true;
+		refreshScene();
 	}
 }
 
@@ -99,7 +99,7 @@ void EventController::buttonClicked(Config::Button button)
 				Model::getInstance()->setMode(Model::Mode::BARRIERE);
 			else {
 				Model::getInstance()->setMode(Model::Mode::PIONS);
-				Controller::getInstance()->removeVirtualBarriere();
+				Controller::getInstance()->hideVirtualBarriere();
 			}
 
 			return;
@@ -166,7 +166,7 @@ void EventController::buttonClicked(Config::Button button)
 
 				if (mustChangePlayer) {
 					Model::getInstance()->setMode(Model::Mode::PIONS);
-					Controller::getInstance()->removeVirtualBarriere();
+					Controller::getInstance()->hideVirtualBarriere();
 				}
 
 				break;
@@ -224,13 +224,12 @@ void EventController::refreshScene()
 	// rafraîchit le message
 	GameView::getInstance()->refreshMessage();
 
-	// rafraîchit la vue
-	Controller::getInstance()->getBarrieres();
-	Controller::getInstance()->getPions();
-
-	// si mode barrière, dessiner aussi la barrière virtuelle
+	// si mode barrière, ajouter la barrière virtuelle au graphe de scène
 	if (Model::getInstance()->getMode() == Model::Mode::BARRIERE)
-		Controller::getInstance()->getVirtualBarriere();
+		Controller::getInstance()->showVirtualBarriere();
 	else // sinon ne pas la dessiner (la retirer si déjà dessiner)
-		Controller::getInstance()->removeVirtualBarriere();
+		Controller::getInstance()->hideVirtualBarriere();
+
+	// rafraîchit la vue
+	Controller::getInstance()->computeAllPositions();
 }

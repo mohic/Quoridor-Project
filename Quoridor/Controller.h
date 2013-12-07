@@ -6,6 +6,7 @@
 #include "Config.h"
 #include "Model.h"
 #include "Point.h"
+#include "StateException.h"
 
 /**
 	Controlleur du jeu
@@ -24,6 +25,12 @@ private:
 	osg::ref_ptr<osg::MatrixTransform> pions[2];						// pions sur le jeu
 	osg::ref_ptr<osg::MatrixTransform> virtualBarriere;					// sert à afficher une barrière servant à choisir où placer la barrière
 
+	bool isInitialized;													// détermine si le controlleur a été initialisé ou non
+
+	void computePions();												// calculer la position des pions
+	void computeVirtualBarriere();										// calculer la position de la barrière virtuelle
+	void computeBarrieres();											// calculer la position des barrières
+
 public:
 	/**
 		méthode de récuperation de l'instance du controller
@@ -33,15 +40,12 @@ public:
 
 	/**
 		méthode de définition de la barrière virtuelle
-		@param node la nouvelle barrière virtuelle à définir 
+		@param virtualBarriere la nouvelle barrière virtuelle à définir 
 	*/
-	void setVirtualBarriere(osg::ref_ptr<osg::Node> node);
-
-	/**
-		méthode de définition de la caméra
-		@param camera la nouvelle caméra à définir 
-	*/
-	void setCamera(osg::ref_ptr<osg::Camera> camera);
+	void setVirtualBarriere(osg::ref_ptr<osg::MatrixTransform> virtualBarriere)
+	{
+		this->virtualBarriere = virtualBarriere;
+	}
 
 	/**
 		méthode de définition des cases
@@ -54,25 +58,49 @@ public:
 	}
 
 	/**
-		méthode de récupération des pion
-		@return le vecteur de la MatrixTransform des pions
+		méthode de définition des barrières
+		@param position la position de la barrière dans le jeu. Le x définit à quel joueur appartient la barrière, le y la position
+		@param barriere la barrière
 	*/
-	std::vector<osg::ref_ptr<osg::MatrixTransform>> getPions();
+	void setBarriere(Point position, osg::ref_ptr<osg::MatrixTransform> barriere)
+	{
+		if (position.getX() < 1 || position.getX() > 2)
+			throw new ArgumentInvalidException("Numéro de joueur incorrect");
+
+		barrieres[position.getX() - 1][position.getY()] = barriere;
+	}
 
 	/**
-		méthode de récupération des barrières
-		@return le vecteur de la MatrixTransform des barrières
+		méthode de définition des pions
+		@param joueur le joueur
+		@param pion le pion
 	*/
-	std::vector<osg::ref_ptr<osg::MatrixTransform>> getBarrieres();
+	void setPion(int joueur, osg::ref_ptr<osg::MatrixTransform> pion)
+	{
+		if (joueur < 1 || joueur > 2)
+			throw new ArgumentInvalidException("Numéro de joueur incorrect");
+
+		pions[joueur - 1] = pion;
+	}
 
 	/**
-		méthode de récupération de la barrière virtuelle
-		@return le MatrixTransform de la barrière virtuelle
+		initialise le controlleur en ajoutant les différents éléments à la caméra et en calculant les différents positions
+		@param camera la caméra contenant les différents éléments
 	*/
-	osg::ref_ptr<osg::MatrixTransform> getVirtualBarriere();
+	void initialize(osg::ref_ptr<osg::Camera> camera);
 
 	/**
-		méthode de suppression d'une barrière virtuelle de l'affichage
+		afficher la barrière virtuelle
 	*/
-	void removeVirtualBarriere();
+	void showVirtualBarriere();
+
+	/**
+		cacher la barrière virtuelle
+	*/
+	void hideVirtualBarriere();
+
+	/**
+		calculer toutes les positions
+	*/
+	void computeAllPositions();
 };

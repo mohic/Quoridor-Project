@@ -249,10 +249,16 @@ void GameView::drawFences()
 
 	geodeBarriere->addDrawable(barriere.get());
 
-	vector<ref_ptr<MatrixTransform>> barrieres = Controller::getInstance()->getBarrieres();
+	for (int joueur = 1; joueur <= 2; joueur++)
+	{
+		for (int i = 0; i < Config::getInstance()->getNbrBarriereJoueur(); i++)
+		{
+			ref_ptr<MatrixTransform> mt = new MatrixTransform();
+			mt->addChild(geodeBarriere.get());
 
-	for (unsigned int i = 0; i < barrieres.size(); i++)
-		barrieres[i]->addChild(geodeBarriere.get());
+			Controller::getInstance()->setBarriere(Point(joueur, i), mt.get());
+		}
+	}
 }
 
 void GameView::drawVirtualFence()
@@ -266,6 +272,11 @@ void GameView::drawVirtualFence()
 	StateSet *stateset = geodeVirtualFence->getOrCreateStateSet();
 
 	geodeVirtualFence->addDrawable(virtualFence.get());
+
+	ref_ptr<MatrixTransform> mt = new MatrixTransform();
+	mt->addChild(geodeVirtualFence.get());
+
+	Controller::getInstance()->setVirtualBarriere(mt);
 }
 
 void GameView::drawPawns()
@@ -289,10 +300,13 @@ void GameView::drawPawns()
 	geodePion1->addDrawable(pion1.get());
 	geodePion2->addDrawable(pion2.get());
 
-	vector<ref_ptr<MatrixTransform>> pions = Controller::getInstance()->getPions();
+	ref_ptr<MatrixTransform> mt1 = new MatrixTransform();
+	mt1->addChild(geodePion1.get());
+	ref_ptr<MatrixTransform> mt2 = new MatrixTransform();
+	mt2->addChild(geodePion2.get());
 
-	pions[0]->addChild(geodePion1.get());
-	pions[1]->addChild(geodePion2.get());
+	Controller::getInstance()->setPion(1, mt1);
+	Controller::getInstance()->setPion(2, mt2);
 }
 
 void GameView::drawMessage()
@@ -506,7 +520,6 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// création et configuration de la caméra de la zone de jeu
 	createAndConfigureCameraGameArea();
-	Controller::getInstance()->setCamera(cameraGameArea.get());
 
 	// création et configuration de la caméra d'affichage des messages
 	createAndConfigureCameraDisplayArea();
@@ -525,7 +538,6 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// dessin de la barrière virtuelle
 	drawVirtualFence();
-	Controller::getInstance()->setVirtualBarriere(geodeVirtualFence.get());
 
 	// dessin des pions
 	drawPawns();
@@ -544,6 +556,9 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// dessin des différents boutons de commandes
 	drawCommandsButtons();
+
+	// initialisation du controller
+	Controller::getInstance()->initialize(cameraGameArea.get());
 
 	// création d'un noeud racine de type group contenant les caméras
 	ref_ptr<Group> root = new Group();
