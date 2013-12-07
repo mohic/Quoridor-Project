@@ -29,9 +29,11 @@ void EventController::operator()(Node *node, NodeVisitor *nv)
 	{
 		case GUIEventAdapter::PUSH:
 			handleMouse(ea, node);
+			refreshScene();
 			break;
 		case GUIEventAdapter::KEYDOWN:
 			handleKeyboard(ea->getKey());
+			refreshScene();
 			break;
 	}
 
@@ -265,4 +267,20 @@ void EventController::handleKeyboard(int key)
 				break;
 		}
 	}
+}
+
+void EventController::refreshScene()
+{
+	// rafraîchit le message
+	GameView::getInstance()->refreshMessage();
+
+	// rafraîchit la vue
+	Controller::getInstance()->getBarrieres();
+	Controller::getInstance()->getPions();
+
+	// si mode barrière, dessiner aussi la barrière virtuelle
+	if (Model::getInstance()->getMode() == Model::Mode::BARRIERE)
+		Controller::getInstance()->getVirtualBarriere();
+	else // sinon ne pas la dessiner (la retirer si déjà dessiner)
+		Controller::getInstance()->removeVirtualBarriere();
 }

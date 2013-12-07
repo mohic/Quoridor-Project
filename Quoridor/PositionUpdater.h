@@ -2,8 +2,8 @@
 
 #include <osg\NodeCallBack>
 #include <osg\MatrixTransform>
-#include "Controller.h"
-#include "GameView.h"
+//#include "Controller.h"
+//#include "GameView.h"
 
 /**
 	Controlleur servant à redessiner la scène à chaque frame

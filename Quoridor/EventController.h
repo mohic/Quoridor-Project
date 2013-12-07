@@ -6,6 +6,7 @@
 #include <osgGA\EventVisitor>
 #include <osgUtil\LineSegmentIntersector>
 #include "Controller.h"
+#include "GameView.h"
 #include "Model.h"
 
 /**
@@ -24,6 +25,7 @@ private:
 	bool testButtonColision(Button button, Point position);														// test si la position est contenue dans la zone du bouton. true si dans la zone du bouton, sinon false
 	void handleMouse(osg::ref_ptr<osgGA::GUIEventAdapter> ea, osg::Node *node);									// effectue des traitements pour les événements souris
 	void handleKeyboard(int key);																				// effectue des traitements pour les événements clavier
+	void refreshScene();																						// rafraîchit le graphe de scène
 	
 public:
 	/**
