@@ -97,6 +97,8 @@ vector<ref_ptr<MatrixTransform>> Controller::getBarrieres()
 
 	int py = -pxInit + Config::getInstance()->getTailleRainure() * 2 + Config::getInstance()->getTailleCase();
 
+	//TODO: calculer QUE lorsque de nouvelles barrières ont été placées
+
 	// placement des barrières dans la zone rangement du joueur 1
 	for (int i = 0; i < barriereZoneJ1; i++)
 	{
@@ -175,6 +177,8 @@ vector<ref_ptr<MatrixTransform>> Controller::getBarrieres()
 
 ref_ptr<MatrixTransform> Controller::getVirtualBarriere()
 {
+	//TODO: calculer QUE lorsque la barrière virtuelle a bougé
+
 	// calculer les barrières virtuelles
 	Point p = Model::getInstance()->getVirtualBarriere();
 	virtualBarriere->setMatrix(Matrix::identity());
