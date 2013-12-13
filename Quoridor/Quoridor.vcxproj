@@ -102,7 +102,17 @@
   <ItemGroup>
     <Image Include="resources\textures\arrow.png" />
     <Image Include="resources\textures\background.jpg" />
+    <Image Include="resources\textures\direction.png" />
+    <Image Include="resources\textures\direction_no.png" />
+    <Image Include="resources\textures\fence.png" />
+    <Image Include="resources\textures\load.png" />
+    <Image Include="resources\textures\pawn.png" />
     <Image Include="resources\textures\plate.jpg" />
+    <Image Include="resources\textures\restart.png" />
+    <Image Include="resources\textures\save.png" />
+    <Image Include="resources\textures\undo.png" />
+    <Image Include="resources\textures\validate_no.png" />
+    <Image Include="resources\textures\valide.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

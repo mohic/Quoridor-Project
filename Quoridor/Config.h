@@ -104,7 +104,7 @@ private:
 	std::string saveFileName;	// nom du fichier de sauvegarde
 
 public:
-	enum Button { UNKNOWN, ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, MODE, SENS, VALIDATE, LOAD, SAVE, RESTART, CANCEL };	// types de bouton
+	enum Button { UNKNOWN, ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, MODE, DIRECTION, VALIDATE, LOAD, SAVE, RESTART, CANCEL };	// types de bouton
 
 	/**
 		méthode de récupération de l'instance de la config

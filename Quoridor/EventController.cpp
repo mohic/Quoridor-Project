@@ -72,6 +72,9 @@ void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 
 void EventController::buttonClicked(Config::Button button)
 {
+	if (button == Config::Button::UNKNOWN)
+		return;
+
 	if (button == Config::Button::RESTART) { // recommencer une partie
 		Model::getInstance()->recommencerPartie();
 		return;
@@ -158,7 +161,7 @@ void EventController::buttonClicked(Config::Button button)
 			case Config::Button::ARROW_RIGHT: // déplacer la barrière vers la droite
 				Model::getInstance()->deplacerVirtualBarriere(Model::Direction::RIGHT);
 				break;
-			case Config::Button::SENS: // changer de sens
+			case Config::Button::DIRECTION: // changer de direction
 				Model::getInstance()->changerSensVirtualBarriere();
 				break;
 			case Config::Button::VALIDATE: // valider le placement
@@ -210,7 +213,7 @@ void EventController::handleKeyboard(int key)
 			break;
 		case 'S':
 		case GUIEventAdapter::KeySymbol::KEY_S:
-			buttonClicked(Config::Button::SENS);
+			buttonClicked(Config::Button::DIRECTION);
 			break;
 		case GUIEventAdapter::KeySymbol::KEY_KP_Enter:
 		case GUIEventAdapter::KeySymbol::KEY_Return:

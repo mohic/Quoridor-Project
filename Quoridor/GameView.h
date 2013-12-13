@@ -41,7 +41,6 @@ private:
 	osg::ref_ptr<osg::Camera> cameraActionsArea;	// caméra de la zone des bouton d'actions
 	osg::ref_ptr<osg::Geode> geodeVirtualFence;		// géode de la barrière virtuelle
 
-	osg::ref_ptr<osg::MatrixTransform> arrowButton;	// bouton en forme de flèche
 	osg::ref_ptr<osg::Geode> classicButton;			// bouton classique
 
 	void initMessage();								// initialise le message utilisateur
@@ -51,7 +50,6 @@ private:
 	void createAndConfigureCameraDisplayArea();		// crée et configure la caméra représentant la zone d'affichage
 	void createAndConfigureCameraActionsArea();		// crée et configure la caméra représentant la zone des actions
 
-	void createArrowButton();						// crée un bouton en forme de flèche
 	void createClassicButton();						// crée un bouton classique
 
 	void drawPlate();								// dessine le plateau
