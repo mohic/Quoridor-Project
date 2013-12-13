@@ -5,6 +5,8 @@ using namespace osg;
 
 GameView *GameView::instance = 0;
 
+//TODO: bug annuler juste après un saut
+
 GameView::GameView()
 {
 	// configuration des caméras
@@ -113,14 +115,6 @@ void GameView::createAndConfigureCameraActionsArea()
 	cameraActionsArea->setViewport(new Viewport((ESPACEMENT * 2) + PLATEAU_TAILLE, (ESPACEMENT *2 ) + MESSAGE_HEIGHT, ACTIONS_WIDTH, PLATEAU_TAILLE));
 	cameraActionsArea->setReferenceFrame(Camera::ABSOLUTE_RF);
 	cameraActionsArea->setClearColor(BLACK);
-
-	//ref_ptr<Texture2D> texture = new Texture2D();
-	//ref_ptr<Image> img = osgDB::readImageFile("resources/textures/background.jpg");
-	//bool textureFound = img != 0;
-	//texture->setImage(img);
-
-	//StateSet * stateset = cameraActionsArea->getOrCreateStateSet();
-	//stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 }
 
 void GameView::createClassicButton()
@@ -358,7 +352,7 @@ void GameView::drawArrowAndDirectionButtons()
 	direction->setName("directionButton");
 
 	texture = new Texture2D();
-	img = osgDB::readImageFile("resources/textures/direction.png");
+	img = osgDB::readImageFile("resources/textures/direction_no.png");
 	texture->setImage(img);
 
 	stateset = direction->getOrCreateStateSet();
@@ -409,7 +403,7 @@ void GameView::drawCommandsButtons()
 	transformButtonValidate->setName("validateButton");
 
 	texture = new Texture2D();
-	img = osgDB::readImageFile("resources/textures/validate.png");
+	img = osgDB::readImageFile("resources/textures/validate_no.png");
 	texture->setImage(img);
 
 	stateset = transformButtonValidate->getOrCreateStateSet();
@@ -477,7 +471,7 @@ Config::Button GameView::testerCollisionAvecBouton(Point position)
 	for (unsigned int i = 0; i < cameraActionsArea->getChildIndex(0); i++)
 	{
 		ref_ptr<Node> n = cameraActionsArea->getChild(i);
-		BoundingSphere bs = n->getBound();
+		BoundingSphere bs = n->getBound(); //TODO problème sur les flèches de direction si l'on clique trop prêt du changement de direction
 
 		// tester si position est dans le noeud
 		if (!bs.contains(Vec3(position.getX(), position.getY(), 0)))
@@ -536,6 +530,86 @@ Config::Button GameView::checkButton(std::string name)
 		return Config::Button::CANCEL;
 
 	return Config::Button::UNKNOWN; // bouton inconnu
+}
+
+void GameView::refreshButtons()
+{
+	ref_ptr<Texture2D> texture;
+	ref_ptr<Image> img;
+	StateSet *stateset;
+
+	for (unsigned int i = 0; i < cameraActionsArea->getChildIndex(0); i++) {
+		ref_ptr<Node> n = cameraActionsArea->getChild(i);
+
+		// si container
+		if (n->getName() == "") {
+			ref_ptr<MatrixTransform> mt = dynamic_cast<MatrixTransform *>(n.get());
+
+			if (mt != 0) {
+				for (unsigned int j = 0; j < mt->getChildIndex(0); j++)
+				{
+					ref_ptr<Node> nn = mt->getChild(j);
+					
+					if (nn->getName() == "directionButton") {
+						n = nn;
+						break;
+					}
+				}
+			}
+		}
+
+		// si pas un bouton qui change de texture -> l'ignorer
+		if (n->getName() != "directionButton" && n->getName() != "modeButton" && n->getName() != "validateButton")
+			continue;
+
+		if (Model::getInstance()->getMode() == Model::Mode::PIONS) {
+			if (n->getName() == "validateButton") {
+				texture = new Texture2D();
+				img = osgDB::readImageFile("resources/textures/validate_no.png");
+				texture->setImage(img);
+
+				stateset = n->getOrCreateStateSet();
+				stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+			} else if (n->getName() == "modeButton") {
+				texture = new Texture2D();
+				img = osgDB::readImageFile("resources/textures/fence.png");
+				texture->setImage(img);
+
+				stateset = n->getOrCreateStateSet();
+				stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+			} else if (n->getName() == "directionButton") {
+				texture = new Texture2D();
+				img = osgDB::readImageFile("resources/textures/direction_no.png");
+				texture->setImage(img);
+
+				stateset = n->getOrCreateStateSet();
+				stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+			}
+		} else {
+			if (n->getName() == "validateButton") {
+				texture = new Texture2D();
+				img = osgDB::readImageFile("resources/textures/validate.png");
+				texture->setImage(img);
+
+				stateset = n->getOrCreateStateSet();
+				stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+			} else if (n->getName() == "modeButton") {
+				texture = new Texture2D();
+				img = osgDB::readImageFile("resources/textures/pawn.png");
+				texture->setImage(img);
+
+				stateset = n->getOrCreateStateSet();
+				stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+			} else if (n->getName() == "directionButton") {
+				texture = new Texture2D();
+				img = osgDB::readImageFile("resources/textures/direction.png");
+				texture->setImage(img);
+
+				stateset = n->getOrCreateStateSet();
+				stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+			}
+		}
+	}
 }
 
 ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()

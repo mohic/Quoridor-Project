@@ -29,19 +29,17 @@ void EventController::operator()(Node *node, NodeVisitor *nv)
 	{
 		case GUIEventAdapter::PUSH:
 			handleMouse(ea, node);
-			refreshScene();
 			break;
 		case GUIEventAdapter::KEYDOWN:
 			handleKeyboard(ea->getKey());
-			refreshScene();
 			break;
 	}
 
 	// changer de joueur si nécessaire
-	if (mustChangePlayer) {
+	if (mustChangePlayer)
 		Model::getInstance()->setJoueurEnCours(Model::getInstance()->getJoueurEnCours() == 1 ? 2 : 1);
-		refreshScene();
-	}
+
+	refreshScene();
 }
 
 void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
@@ -89,6 +87,8 @@ void EventController::buttonClicked(Config::Button button)
 	{	
 		case Config::Button::CANCEL: // annuler un coup
 			Model::getInstance()->annulerDernierCoup();
+			GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons pour correspondre au changement de mode
+
 			return;
 		case Config::Button::MODE: // changer de mode
 			// tester si le joueur a placé toutes ses barrières
@@ -104,6 +104,8 @@ void EventController::buttonClicked(Config::Button button)
 				Model::getInstance()->setMode(Model::Mode::PIONS);
 				Controller::getInstance()->hideVirtualBarriere();
 			}
+
+			GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons pour correspondre au changement de mode
 
 			return;
 		case Config::Button::SAVE: // enregistrer une partie
@@ -169,6 +171,7 @@ void EventController::buttonClicked(Config::Button button)
 
 				if (mustChangePlayer) {
 					Model::getInstance()->setMode(Model::Mode::PIONS);
+					GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons pour correspondre au changement de mode
 					Controller::getInstance()->hideVirtualBarriere();
 				}
 

@@ -96,4 +96,7 @@ public:
 		@return quel bouton a été cliqué
 	*/
 	Config::Button testerCollisionAvecBouton(Point position);
+
+	//TODO: __
+	void refreshButtons();
 };
