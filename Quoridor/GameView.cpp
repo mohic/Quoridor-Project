@@ -113,6 +113,14 @@ void GameView::createAndConfigureCameraActionsArea()
 	cameraActionsArea->setViewport(new Viewport((ESPACEMENT * 2) + PLATEAU_TAILLE, (ESPACEMENT *2 ) + MESSAGE_HEIGHT, ACTIONS_WIDTH, PLATEAU_TAILLE));
 	cameraActionsArea->setReferenceFrame(Camera::ABSOLUTE_RF);
 	cameraActionsArea->setClearColor(BLACK);
+
+	//ref_ptr<Texture2D> texture = new Texture2D();
+	//ref_ptr<Image> img = osgDB::readImageFile("resources/textures/background.jpg");
+	//bool textureFound = img != 0;
+	//texture->setImage(img);
+
+	//StateSet * stateset = cameraActionsArea->getOrCreateStateSet();
+	//stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 }
 
 void GameView::createClassicButton()
