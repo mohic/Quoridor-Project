@@ -104,9 +104,6 @@
     <Image Include="resources\textures\fence.png">
       <Filter>Fichiers de ressources</Filter>
     </Image>
-    <Image Include="resources\textures\valide.png">
-      <Filter>Fichiers de ressources</Filter>
-    </Image>
     <Image Include="resources\textures\direction.png">
       <Filter>Fichiers de ressources</Filter>
     </Image>
@@ -129,6 +126,9 @@
       <Filter>Fichiers de ressources</Filter>
     </Image>
     <Image Include="resources\textures\load.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="resources\textures\validate.png">
       <Filter>Fichiers de ressources</Filter>
     </Image>
   </ItemGroup>
