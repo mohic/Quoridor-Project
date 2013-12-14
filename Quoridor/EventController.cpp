@@ -74,9 +74,6 @@ void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 
 void EventController::buttonClicked(Config::Button button)
 {
-	//TODO: remove me
-	cout << "Action: " << button << endl;
-
 	if (button == Config::Button::UNKNOWN) // si aucun bouton, ne rien faire
 		return;
 
@@ -91,6 +88,8 @@ void EventController::buttonClicked(Config::Button button)
 				Model::getInstance()->setView(Model::View::PERSPECTIVE);
 			else
 				Model::getInstance()->setView(Model::View::PARALLELE);
+
+			GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons
 
 			return;
 		case Config::ZOOM_IN:
@@ -110,7 +109,7 @@ void EventController::buttonClicked(Config::Button button)
 	{	
 		case Config::Button::CANCEL: // annuler un coup
 			Model::getInstance()->annulerDernierCoup();
-			GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons pour correspondre au changement de mode
+			GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons
 
 			return;
 		case Config::Button::MODE: // changer de mode
@@ -128,7 +127,7 @@ void EventController::buttonClicked(Config::Button button)
 				Controller::getInstance()->hideVirtualBarriere();
 			}
 
-			GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons pour correspondre au changement de mode
+			GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons
 
 			return;
 		case Config::Button::SAVE: // enregistrer une partie
@@ -194,7 +193,7 @@ void EventController::buttonClicked(Config::Button button)
 
 				if (mustChangePlayer) {
 					Model::getInstance()->setMode(Model::Mode::PIONS);
-					GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons pour correspondre au changement de mode
+					GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons
 					Controller::getInstance()->hideVirtualBarriere();
 				}
 

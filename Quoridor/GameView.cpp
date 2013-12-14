@@ -465,12 +465,12 @@ void GameView::drawCommandsButtons()
 	button->postMult(Matrix::translate(Vec3(-50, -115, 0)));
 	button->setName("viewButton");
 
-	//texture = new Texture2D();
-	//img = osgDB::readImageFile("resources/textures/restart.png");
-	//texture->setImage(img);
+	texture = new Texture2D();
+	img = osgDB::readImageFile("resources/textures/perspective.png");
+	texture->setImage(img);
 
-	//stateset = button->getOrCreateStateSet();
-	//stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+	stateset = button->getOrCreateStateSet();
+	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	cameraActionsArea->addChild(button.get());
 
@@ -481,12 +481,12 @@ void GameView::drawCommandsButtons()
 	button->postMult(Matrix::translate(Vec3(50, -60, 0)));
 	button->setName("zoomInButton");
 
-	//texture = new Texture2D();
-	//img = osgDB::readImageFile("resources/textures/restart.png");
-	//texture->setImage(img);
+	texture = new Texture2D();
+	img = osgDB::readImageFile("resources/textures/zoom_in.png");
+	texture->setImage(img);
 
-	//stateset = button->getOrCreateStateSet();
-	//stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+	stateset = button->getOrCreateStateSet();
+	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	cameraActionsArea->addChild(button.get());
 
@@ -497,12 +497,12 @@ void GameView::drawCommandsButtons()
 	button->postMult(Matrix::translate(Vec3(50, -150, 0)));
 	button->setName("zoomOutButton");
 
-	//texture = new Texture2D();
-	//img = osgDB::readImageFile("resources/textures/restart.png");
-	//texture->setImage(img);
+	texture = new Texture2D();
+	img = osgDB::readImageFile("resources/textures/zoom_out.png");
+	texture->setImage(img);
 
-	//stateset = button->getOrCreateStateSet();
-	//stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+	stateset = button->getOrCreateStateSet();
+	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	cameraActionsArea->addChild(button.get());
 }
@@ -610,9 +610,23 @@ void GameView::refreshButtons()
 			}
 		}
 
-		// si pas un bouton qui change de texture -> l'ignorer
-		if (n->getName() != "directionButton" && n->getName() != "modeButton" && n->getName() != "validateButton")
-			continue;
+		if (n->getName() == "viewButton") {
+			if (Model::getInstance()->getView() == Model::View::PARALLELE) {
+				texture = new Texture2D();
+				img = osgDB::readImageFile("resources/textures/perspective.png");
+				texture->setImage(img);
+
+				stateset = n->getOrCreateStateSet();
+				stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+			} else {
+				texture = new Texture2D();
+				img = osgDB::readImageFile("resources/textures/parallel.png");
+				texture->setImage(img);
+
+				stateset = n->getOrCreateStateSet();
+				stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+			}
+		}
 
 		if (Model::getInstance()->getMode() == Model::Mode::PIONS) {
 			if (n->getName() == "validateButton") {

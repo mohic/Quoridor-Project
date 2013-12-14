@@ -131,5 +131,17 @@
     <Image Include="resources\textures\validate.png">
       <Filter>Fichiers de ressources</Filter>
     </Image>
+    <Image Include="resources\textures\zoom_in.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="resources\textures\zoom_out.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="resources\textures\parallel.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="resources\textures\perspective.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
   </ItemGroup>
 </Project>
