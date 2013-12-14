@@ -63,7 +63,7 @@ void GameView::createAndConfigureViewer()
 	viewer->setUpViewInWindow(FENETRE_X, FENETRE_Y, FENETRE_WIDTH, FENETRE_HEIGHT);
 	viewer->getCamera()->setAllowEventFocus(false);
 	viewer->getCamera()->setClearColor(COLOR_BORDER);
-	
+
 	// changer le titre de la fenêtre
 	osgViewer::Viewer::Windows windows; // variable servant à contenir la liste des différentes fenêtre créée par OSG
 										// sous forme d'un vecteur. Avec la configuration par défaut, OSG crée autant
@@ -148,17 +148,29 @@ void GameView::drawPlate()
 
 void GameView::drawCases()
 {
+	ref_ptr<Texture2D> texture;
+	ref_ptr<Image> img;
+
+	// création de la texture d'une case
+	texture = new Texture2D();
+	img = osgDB::readImageFile("resources/textures/case.jpg");
+	texture->setImage(img);
+
+	// création de l'apparence d'une case
 	ref_ptr<ShapeDrawable> casePlateau = new ShapeDrawable();
 	casePlateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleCase(), Config::getInstance()->getTailleCase(), 8));
 	casePlateau->setColor(COLOR_CASE);
 	
+	// création de la géode avec ajout de la texture
 	ref_ptr<Geode> geodeCase = new Geode();
 	
 	StateSet *stateset = geodeCase->getOrCreateStateSet();
 	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
+	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	geodeCase->addDrawable(casePlateau.get());
 
+	// création et positionnement de toutes les cases
 	ref_ptr<MatrixTransform> caseTransform;
 
 	int pxInit =  - ((Config::getInstance()->getNbrCases() - 1) / 2 * Config::getInstance()->getTailleCase()) // retire le décalage par rapport à chaque case
@@ -865,6 +877,7 @@ string GameView::obtenirNomBoutonCollision(Point position)
 	for (unsigned int i = 0; i < cameraActionsArea->getChildIndex(0); i++)
 	{
 		ref_ptr<Node> n = cameraActionsArea->getChild(i);
+
 		BoundingSphere bs = n->getBound(); //TODO problème sur les flèches de direction si l'on clique trop prêt du changement de direction
 
 		// tester si position est dans le noeud
@@ -897,6 +910,7 @@ string GameView::obtenirNomBoutonCollision(Point position)
 
 Config::Button GameView::testerCollisionAvecBouton(Point position)
 {
+	// TODO: utiliser la méthode obtenir nom bouton collision pour éviter une répétition de code
 	Config::Button result = Config::Button::UNKNOWN;
 
 	// REMARQUE: getChildIndex renvoie le nombre d'enfants si l'enfant passé en paramètre

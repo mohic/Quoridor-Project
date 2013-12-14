@@ -87,6 +87,9 @@ void EventController::handleMouseClick(Point position)
 
 bool EventController::highlightButton(osg::ref_ptr<osg::Switch> sw, std::string name)
 {
+	if (sw == 0) // si pas un switch
+		return false;
+
 	if (sw->getName() != name) // si pas le bouton sur lequel on est
 		return false;
 

@@ -101,24 +101,41 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\arrow.png" />
-    <Image Include="resources\textures\background.jpg" />
+    <Image Include="resources\textures\arrow_hover.png" />
+    <Image Include="resources\textures\case.jpg" />
     <Image Include="resources\textures\direction.png" />
+    <Image Include="resources\textures\direction_hover.png" />
     <Image Include="resources\textures\direction_no.png" />
+    <Image Include="resources\textures\direction_no_hover.png" />
     <Image Include="resources\textures\fence.png" />
+    <Image Include="resources\textures\fence_hover.png" />
     <Image Include="resources\textures\load.png" />
+    <Image Include="resources\textures\load_hover.png" />
     <Image Include="resources\textures\parallel.png" />
+    <Image Include="resources\textures\parallel_hover.png" />
     <Image Include="resources\textures\pawn.png" />
+    <Image Include="resources\textures\pawn_hover.png" />
     <Image Include="resources\textures\perspective.png" />
+    <Image Include="resources\textures\perspective_hover.png" />
     <Image Include="resources\textures\plate.jpg" />
     <Image Include="resources\textures\restart.png" />
+    <Image Include="resources\textures\restart_hover.png" />
     <Image Include="resources\textures\save.png" />
+    <Image Include="resources\textures\save_hover.png" />
     <Image Include="resources\textures\turn_left.png" />
+    <Image Include="resources\textures\turn_left_hover.png" />
     <Image Include="resources\textures\turn_right.png" />
+    <Image Include="resources\textures\turn_right_hover.png" />
     <Image Include="resources\textures\undo.png" />
+    <Image Include="resources\textures\undo_hover.png" />
     <Image Include="resources\textures\validate.png" />
+    <Image Include="resources\textures\validate_hover.png" />
     <Image Include="resources\textures\validate_no.png" />
+    <Image Include="resources\textures\validate_no_hover.png" />
     <Image Include="resources\textures\zoom_in.png" />
+    <Image Include="resources\textures\zoom_in_hover.png" />
     <Image Include="resources\textures\zoom_out.png" />
+    <Image Include="resources\textures\zoom_out_hover.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
