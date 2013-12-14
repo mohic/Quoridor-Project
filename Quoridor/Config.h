@@ -60,12 +60,13 @@
 *          *
 \**********/
 
-#define RED		Vec4(  1,   0,   0, 1)	// couleur rouge
-#define BLUE	Vec4(  0,   0,   1, 1)	// couleur bleu
-#define BROWN	Vec4(.41, .25, .17, 1)	// couleur brune
-#define GREY	Vec4(.13, .13, .13, 1)	// couleur grise
-#define WHITE	Vec4(  1,   1,   1, 1)	// couleur beige
-#define BLACK	Vec4(  0,   0,   0, 1)	// couleur noire
+#define TRANSPARENT	Vec4(  0,   0,   0, 0)	// couleur transparente
+#define RED			Vec4(  1,   0,   0, 1)	// couleur rouge
+#define BLUE		Vec4(  0,   0,   1, 1)	// couleur bleu
+#define BROWN		Vec4(.41, .25, .17, 1)	// couleur brune
+#define GREY		Vec4(.13, .13, .13, 1)	// couleur grise
+#define WHITE		Vec4(  1,   1,   1, 1)	// couleur blanche
+#define BLACK		Vec4(  0,   0,   0, 1)	// couleur noire
 
 
 /****************************\

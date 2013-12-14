@@ -85,12 +85,26 @@ void EventController::handleMouseClick(Point position)
 	handleMouseMove(position);
 }
 
+bool EventController::highlightButton(osg::ref_ptr<osg::Switch> sw, std::string name)
+{
+	if (sw->getName() != name) // si pas le bouton sur lequel on est
+		return false;
+
+	for (unsigned int j = 0; j < sw->getChildIndex(0); j++)
+	{
+		hoverButton = sw;
+		sw->setValue(j, !sw->getValue(j));
+	}
+
+	return true;
+}
+
 void EventController::handleMouseMove(Point position)
 {
 	if (position.getX() == 0 && position.getY() == 0) { // si hors d'un bouton
-		if (hoverButton == 0) // si aucun bouton n'est affiché en "éclairé"
+		if (hoverButton == 0) // si aucun bouton n'est affiché en surbrillance
 			return;
-		else { // si au moins un bouton est affiché en "éclairé", remise en mode normal
+		else { // si au moins un bouton est affiché en surbrillance, remise en mode normal
 			for (unsigned int j = 0; j < hoverButton->getChildIndex(0); j++)
 				hoverButton->setValue(j, !hoverButton->getValue(j));
 
@@ -101,13 +115,13 @@ void EventController::handleMouseMove(Point position)
 	}
 
 	// obtenir le nom du bouton sur lequel on se trouve
-	string str = GameView::getInstance()->obtenirNomBoutonCollision(position);
+	string name = GameView::getInstance()->obtenirNomBoutonCollision(position);
 
 	// cette condition permet d'éviter un problème lorsque l'on passe très vite avec la souris
 	// entre plusieurs boutons
 
-	if (hoverButton != 0) { // si déjà un bouton "éclairé"...
-		if (str != hoverButton->getName()) { // ... et différent de l'actuel, nettoyer
+	if (hoverButton != 0) { // si déjà un bouton en surbrillance...
+		if (name != hoverButton->getName()) { // ... et différent de l'actuel, nettoyer
 			for (unsigned int j = 0; j < hoverButton->getChildIndex(0); j++)
 				hoverButton->setValue(j, !hoverButton->getValue(j));
 
@@ -116,26 +130,26 @@ void EventController::handleMouseMove(Point position)
 			return;
 	}
 
-	// chercher après le bouton où l'on se trouve et l'éclairer
+	// chercher après le bouton où l'on se trouve et le mettre en surbrillance
 	ref_ptr<Camera> camera = GameView::getInstance()->getActionsCamera();
 
 	for (unsigned int i = 0; i < camera->getChildIndex(0); i++) // parcours des enfants
 	{
 		ref_ptr<Switch> sw = camera->getChild(i)->asSwitch();
 
-		if (sw == 0) // ignorer ceux qui ne sont pas des switch
-			continue;
+		if (sw != 0) { // si est un switch
+			if (highlightButton(sw, name))
+				return;
+		} else { // si container
+			ref_ptr<MatrixTransform> mt = dynamic_cast<MatrixTransform *>(camera->getChild(i));
 
-		if (sw->getName() != str) // si pas le bouton sur lequel on est
-			continue;
+			for (unsigned int j = 0; j < mt->getChildIndex(0); j++) {
+				ref_ptr<Switch> sw2 = mt->getChild(j)->asSwitch();
 
-		for (unsigned int j = 0; j < sw->getChildIndex(0); j++)
-		{
-			hoverButton = sw;
-			sw->setValue(j, !sw->getValue(j));
+				if (highlightButton(sw2, name))
+					return;
+			}
 		}
-
-		break;
 	}
 }
 

@@ -58,20 +58,12 @@ void GameView::refreshMessage()
 
 void GameView::createAndConfigureViewer()
 {
-	//ref_ptr<Texture2D> texture = new Texture2D();
-	//ref_ptr<Image> img = osgDB::readImageFile("resources/textures/background.jpg");
-	//bool textureFound = img != 0;
-	//texture->setImage(img);
-
 	viewer = new osgViewer::Viewer();
 
 	viewer->setUpViewInWindow(FENETRE_X, FENETRE_Y, FENETRE_WIDTH, FENETRE_HEIGHT);
 	viewer->getCamera()->setAllowEventFocus(false);
 	viewer->getCamera()->setClearColor(COLOR_BORDER);
-
-	//StateSet *stateset = viewer->getCamera()->getOrCreateStateSet();
-	//stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
-
+	
 	// changer le titre de la fenêtre
 	osgViewer::Viewer::Windows windows; // variable servant à contenir la liste des différentes fenêtre créée par OSG
 										// sous forme d'un vecteur. Avec la configuration par défaut, OSG crée autant
@@ -361,8 +353,8 @@ void GameView::drawArrowAndDirectionButtons()
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
 	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
-	button->postMult(Matrix::rotate(inDegrees(90.0), Z_AXIS));
-	button->postMult(Matrix::translate(Vec3(0, 60, 0)));
+	button->postMult(Matrix::rotate(inDegrees(180.0), Z_AXIS));
+	button->postMult(Matrix::translate(Vec3(-60, 0, 0)));
 
 	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, textureHover, StateAttribute::Values::ON);
