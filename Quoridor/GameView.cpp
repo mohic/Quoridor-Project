@@ -13,6 +13,7 @@ GameView::GameView()
 {
 	// configuration des caméras
 	center         = POSITION_CENTRE;
+	eye            = Vec3(0, 0, 1);
 	up             = Vec3(0, 1, 0);
 	eyeOrtho       = Vec3(0, 0, 1);
 	eyePerspective = Vec3(0, -130, 150);
@@ -91,7 +92,7 @@ void GameView::createAndConfigureCameraDisplayArea()
 {
 	cameraDisplayArea = new Camera();
 
-	cameraDisplayArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
+	cameraDisplayArea->setViewMatrixAsLookAt(eye, center, up);
 	cameraDisplayArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_MESSAGE_BOTTOM, CAMERA_MESSAGE_TOP, CAMERA_NEAR, CAMERA_FAR);
 	cameraDisplayArea->setViewport(new Viewport(ESPACEMENT, ESPACEMENT, FENETRE_WIDTH - ESPACEMENT - ESPACEMENT, MESSAGE_HEIGHT));
 	cameraDisplayArea->setReferenceFrame(Camera::ABSOLUTE_RF);
@@ -102,7 +103,7 @@ void GameView::createAndConfigureCameraActionsArea()
 {
 	cameraActionsArea = new Camera();
 
-	cameraActionsArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
+	cameraActionsArea->setViewMatrixAsLookAt(eye, center, up);
 	cameraActionsArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_ACTIONS_BOTTOM, CAMERA_ACTIONS_TOP, CAMERA_NEAR, CAMERA_FAR);
 	cameraActionsArea->setViewport(new Viewport((ESPACEMENT * 2) + PLATEAU_TAILLE, (ESPACEMENT *2 ) + MESSAGE_HEIGHT, ACTIONS_WIDTH, PLATEAU_TAILLE));
 	cameraActionsArea->setReferenceFrame(Camera::ABSOLUTE_RF);
@@ -1117,6 +1118,8 @@ void GameView::turnRight()
 
 	if (Model::getInstance()->getView() == Model::View::PARALLELE) { // mode parallèle
 		//TODO: __
+		//eyeOrtho = Vec3(eyeOrtho.x() + cos(PI), eyeOrtho.y() + cos(PI), eyeOrtho.z());
+		//eyeOrtho = Vec3(50, 50, 0);
 	} else { // mode perspective
 		//TODO: __
 	}
