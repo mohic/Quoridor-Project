@@ -4,6 +4,8 @@
 #include <osg\Vec4>
 #include "ArgumentInvalidException.h"
 
+#define ABS(value)  ( (value) >=0 ? (value) : -(value) ) // fonction pour obtenir la valeur absolue d'un nombre donné
+
 /************************\
 *                        *
 * Configuration générale *
@@ -24,13 +26,15 @@
 #define CAMERA_FAR				5														// distance d'affichage maximal de la caméra
 #define CAMERA_LEFT				-100													// coordonnée de gauche du plan de délimitation
 #define CAMERA_RIGHT			100														// coordonnée de droite du plan de délimitation
+#define WIDTH_CAMERA			(ABS(CAMERA_LEFT) + ABS(CAMERA_RIGHT))					// largeur du plan de délimitation
 #define ESPACEMENT				10														// espacement entre les différentes zones de jeu
 
 // spécificités de la caméra des messages
-#define CAMERA_MESSAGE_BOTTOM	-8														// coordonnée du bas du plan de délimitation du message
-#define CAMERA_MESSAGE_TOP		8														// coordonnée du haut du plan de délimitation du message
-//TODO: changer le 16/200 pour qu'il s'autocalcule via camera_message_bottom etc
-#define MESSAGE_HEIGHT			((16.0 / 200) * (FENETRE_WIDTH - (ESPACEMENT * 2)))		// hauteur de la zone des différents messages
+#define CAMERA_MESSAGE_BOTTOM	-8														// coordonnée du bas du plan de délimitation des messages
+#define CAMERA_MESSAGE_TOP		8														// coordonnée du haut du plan de délimitation des messages
+#define HEIGHT_CAMERA_MESSAGE	(ABS(CAMERA_MESSAGE_BOTTOM) + ABS(CAMERA_MESSAGE_TOP))	// hauteur du plan de délimitation des messages
+#define MESSAGE_HEIGHT			(((HEIGHT_CAMERA_MESSAGE + 0.0) / WIDTH_CAMERA) \
+									* (FENETRE_WIDTH - (ESPACEMENT * 2)))				// hauteur de la zone des différents messages
 
 // spécificités de la caméra du plateau
 #define CAMERA_PLATEAU_BOTTOM	CAMERA_LEFT												// coordonnée du bas du plan de délimitation du plateau
@@ -39,9 +43,10 @@
 
 // spécificités de la caméra des actions
 #define ACTIONS_WIDTH			(FENETRE_WIDTH - (PLATEAU_TAILLE + (ESPACEMENT * 3)))	// largeur du viewport des actions
-//TODO: changer les 200 en rapport avec left-right camera
-#define CAMERA_ACTIONS_BOTTOM	-(((PLATEAU_TAILLE / ACTIONS_WIDTH) * 200) / 2)			// coordonnée du bas du plan de délimitation des actions
-#define CAMERA_ACTIONS_TOP		(((PLATEAU_TAILLE / ACTIONS_WIDTH) * 200) / 2)			// coordonnée du haut du plan de délimitation des action
+#define CAMERA_ACTIONS_BOTTOM	-(((PLATEAU_TAILLE / ACTIONS_WIDTH) * WIDTH_CAMERA) \
+									/ 2.0)												// coordonnée du bas du plan de délimitation des actions
+#define CAMERA_ACTIONS_TOP		(((PLATEAU_TAILLE / ACTIONS_WIDTH) * WIDTH_CAMERA) \
+									/ 2.0)												// coordonnée du haut du plan de délimitation des action
 
 // spécificités des textes
 #define FONT_SIZE				5														// taille de la police
@@ -104,7 +109,7 @@ private:
 	std::string saveFileName;	// nom du fichier de sauvegarde
 
 public:
-	enum Button { UNKNOWN, ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, MODE, DIRECTION, VALIDATE, LOAD, SAVE, RESTART, CANCEL };	// types de bouton
+	enum Button { UNKNOWN, ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, MODE, DIRECTION, VALIDATE, LOAD, SAVE, RESTART, CANCEL, VIEW }; // types de bouton
 
 	/**
 		méthode de récupération de l'instance de la config

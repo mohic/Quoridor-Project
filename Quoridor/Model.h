@@ -19,6 +19,7 @@ class Model
 public:
 	enum Direction { LEFT, RIGHT, UP, DOWN };	// différente direction possible pour le pion
 	enum Mode { BARRIERE, PIONS };				// différent mode de jeu possible
+	enum View { PARALLELE, PERSPECTIVE };		// différente vue possible
 
 private:
 	// variables enregistrées lors de la sauvegarde
@@ -31,6 +32,7 @@ private:
 	bool partieTerminee;						// true si la partie est terminée, sinon false
 	int joueurEnCours;							// joueur qui doit jouer
 	Mode currentMode;							// mode courant du jeu
+	View currentView;							// vue courante du jeu
 	std::string userMessage;					// message à afficher à l'utilisateur
 	std::string	errorMessage;					// message d'erreur à afficher à l'utilisateur
 
@@ -280,6 +282,18 @@ public:
 		@return False si plus aucun coups à annuler, sinon true
 	*/
 	bool annulerDernierCoup();
+
+	//TODO: doc
+	View getView()
+	{
+		return currentView;
+	}
+
+	//TODO: doc
+	void setView(View view)
+	{
+		currentView = view;
+	}
 
 	/**
 		méthode enregistement de la partie dans un flux

@@ -10,10 +10,10 @@ GameView *GameView::instance = 0;
 GameView::GameView()
 {
 	// configuration des caméras
-	center       = POSITION_CENTRE;
-	up           = Vec3(0, 1, 0);
-	eyeOrtho     = Vec3(0, 0, 1);
-	eyePrimitive = Vec3(0, -50, 100);
+	center         = POSITION_CENTRE;
+	up             = Vec3(0, 1, 0);
+	eyeOrtho       = Vec3(0, 0, 1);
+	eyePerspective = Vec3(0, -130, 150);
 }
 
 GameView *GameView::getInstance()
@@ -83,16 +83,12 @@ void GameView::createAndConfigureCameraGameArea()
 {
 	cameraGameArea = new Camera();
 
-	// vue orthographique
+	// vue parallèle (par défaut)
 	cameraGameArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
 	cameraGameArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_PLATEAU_BOTTOM, CAMERA_PLATEAU_TOP, CAMERA_NEAR, CAMERA_FAR);
 	cameraGameArea->setViewport(new Viewport(ESPACEMENT, ESPACEMENT + MESSAGE_HEIGHT + ESPACEMENT, PLATEAU_TAILLE, PLATEAU_TAILLE));
 	cameraGameArea->setReferenceFrame(Camera::ABSOLUTE_RF);
 	cameraGameArea->setClearColor(BLACK);
-
-	// TODO: vue perspective
-	//cameraPlateau->setViewMatrixAsLookAt(eyePlateau, center, up);
-	//cameraPlateau->setProjectionMatrixAsPerspective(70, 1, 0.1, 200);
 }
 
 void GameView::createAndConfigureCameraDisplayArea()
@@ -444,11 +440,11 @@ void GameView::drawCommandsButtons()
 	cameraActionsArea->addChild(transformButtonLoad.get());
 
 	// dessin du bouton pour recommencer une partie
+	//TODO: position
 	ref_ptr<MatrixTransform> transformButtonRestart = new MatrixTransform();
 	transformButtonRestart->addChild(classicButton.get());
 	transformButtonRestart->setMatrix(Matrix::identity());
-	//transformButtonRestart->postMult(Matrix::scale(20, 20, 1));
-	transformButtonRestart->postMult(Matrix::translate(Vec3(30, 0, 0)));
+	transformButtonRestart->postMult(Matrix::translate(Vec3(30, -100, 0)));
 	transformButtonRestart->setName("restartButton");
 
 	texture = new Texture2D();
@@ -459,6 +455,23 @@ void GameView::drawCommandsButtons()
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	cameraActionsArea->addChild(transformButtonRestart.get());
+
+	// dessin du bouton pour changer de style de vue
+	//TODO: position
+	ref_ptr<MatrixTransform> transformButtonView = new MatrixTransform();
+	transformButtonView->addChild(classicButton.get());
+	transformButtonView->setMatrix(Matrix::identity());
+	transformButtonView->postMult(Matrix::translate(Vec3(0, 0, 0)));
+	transformButtonView->setName("viewButton");
+
+	//texture = new Texture2D();
+	//img = osgDB::readImageFile("resources/textures/restart.png");
+	//texture->setImage(img);
+
+	//stateset = transformButtonRestart->getOrCreateStateSet();
+	//stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+
+	cameraActionsArea->addChild(transformButtonView.get());
 }
 
 Config::Button GameView::testerCollisionAvecBouton(Point position)
@@ -528,6 +541,8 @@ Config::Button GameView::checkButton(std::string name)
 		return Config::Button::DIRECTION;
 	else if (name == "cancelButton") // bouton annuler le dernier coup
 		return Config::Button::CANCEL;
+	else if (name == "viewButton") // bouton changer de vue
+		return Config::Button::VIEW;
 
 	return Config::Button::UNKNOWN; // bouton inconnu
 }
@@ -609,6 +624,18 @@ void GameView::refreshButtons()
 				stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 			}
 		}
+	}
+}
+
+void GameView::refreshView()
+{
+	cout << WIDTH_CAMERA << endl;
+	if (Model::getInstance()->getView() == Model::View::PARALLELE) { // si vue parallèle
+		cameraGameArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
+		cameraGameArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_PLATEAU_BOTTOM, CAMERA_PLATEAU_TOP, CAMERA_NEAR, CAMERA_FAR);
+	} else { // si vue perspective
+		cameraGameArea->setViewMatrixAsLookAt(eyePerspective, center, up);
+		cameraGameArea->setProjectionMatrixAsPerspective(70, 1, CAMERA_NEAR, CAMERA_FAR);
 	}
 }
 

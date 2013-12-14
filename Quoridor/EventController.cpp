@@ -5,6 +5,8 @@ using namespace osg;
 using namespace osgGA;
 using namespace osgUtil;
 
+//TODO: refresh que lorsqu'un élément à bougé (et pour refresh view, que quand la vue a changé)
+
 EventController::EventController()
 {
 }
@@ -29,17 +31,19 @@ void EventController::operator()(Node *node, NodeVisitor *nv)
 	{
 		case GUIEventAdapter::PUSH:
 			handleMouse(ea, node);
+			refreshScene();
 			break;
 		case GUIEventAdapter::KEYDOWN:
 			handleKeyboard(ea->getKey());
+			refreshScene();
 			break;
 	}
 
 	// changer de joueur si nécessaire
-	if (mustChangePlayer)
+	if (mustChangePlayer) {
 		Model::getInstance()->setJoueurEnCours(Model::getInstance()->getJoueurEnCours() == 1 ? 2 : 1);
-
-	refreshScene();
+		refreshScene();
+	}
 }
 
 void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
@@ -70,12 +74,25 @@ void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 
 void EventController::buttonClicked(Config::Button button)
 {
-	if (button == Config::Button::UNKNOWN)
+	//TODO: remove me
+	cout << "Action: " << button << endl;
+
+	if (button == Config::Button::UNKNOWN) // si aucun bouton, ne rien faire
 		return;
 
-	if (button == Config::Button::RESTART) { // recommencer une partie
-		Model::getInstance()->recommencerPartie();
-		return;
+	// boutons pouvant agir même quand le jeu est terminé
+	switch (button)
+	{
+		case Config::RESTART: // recommencer une partie
+			Model::getInstance()->recommencerPartie();
+			return;
+		case Config::VIEW:
+			if (Model::getInstance()->getView() == Model::View::PARALLELE)
+				Model::getInstance()->setView(Model::View::PERSPECTIVE);
+			else
+				Model::getInstance()->setView(Model::View::PARALLELE);
+
+			return;
 	}
 
 	// tester si le jeu est terminé
@@ -238,4 +255,5 @@ void EventController::refreshScene()
 
 	// rafraîchit la vue
 	Controller::getInstance()->computeAllPositions();
+	GameView::getInstance()->refreshView();
 }

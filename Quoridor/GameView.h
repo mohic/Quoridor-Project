@@ -33,7 +33,7 @@ private:
 	osg::Vec3 center;								// centre pointé par la caméra
 	osg::Vec3 up;									// orientation de la caméra
 	osg::Vec3 eyeOrtho;								// position de la caméra en vue orthographique
-	osg::Vec3 eyePrimitive;							// position de la caméra en vue primitive
+	osg::Vec3 eyePerspective;						// position de la caméra en vue perspective
 
 	osg::ref_ptr<osgViewer::Viewer> viewer;			// le viewer
 	osg::ref_ptr<osg::Camera> cameraGameArea;		// caméra servant à afficher la zone de jeu
@@ -97,6 +97,9 @@ public:
 	*/
 	Config::Button testerCollisionAvecBouton(Point position);
 
-	//TODO: __
+	//TODO: doc
 	void refreshButtons();
+
+	//TODO: doc
+	void refreshView();
 };

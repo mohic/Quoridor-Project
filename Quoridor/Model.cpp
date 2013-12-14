@@ -27,8 +27,9 @@ Model::Model()
 	// initialisation de partie terminée
 	partieTerminee = false;
 
-	// initialisation du mode
+	// initialisation du mode et de la vue
 	currentMode = Mode::PIONS;
+	currentView = View::PARALLELE;
 
 	// initialisation du message utilisateur
 	userMessage = "Au tour du joueur 1";
