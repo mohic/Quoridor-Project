@@ -116,6 +116,12 @@ void EventController::performAction(Config::Button button)
 		case Config::ZOOM_OUT:
 			GameView::getInstance()->zoomOut();
 			return;
+		case Config::TURN_LEFT:
+			GameView::getInstance()->turnLeft();
+			return;
+		case Config::TURN_RIGHT:
+			GameView::getInstance()->turnRight();
+			return;
 	}
 
 	// tester si le jeu est terminé
@@ -273,6 +279,14 @@ void EventController::handleKeyboard(int key)
 		case GUIEventAdapter::KeySymbol::KEY_Minus:
 		case GUIEventAdapter::KeySymbol::KEY_KP_Subtract:
 			performAction(Config::Button::ZOOM_OUT);
+			break;
+		case 'O':
+		case GUIEventAdapter::KeySymbol::KEY_O:
+			performAction(Config::Button::TURN_LEFT);
+			break;
+		case 'P':
+		case GUIEventAdapter::KeySymbol::KEY_P:
+			performAction(Config::Button::TURN_RIGHT);
 			break;
 	}
 }
