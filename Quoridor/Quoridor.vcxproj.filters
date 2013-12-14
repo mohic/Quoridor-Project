@@ -143,5 +143,11 @@
     <Image Include="resources\textures\perspective.png">
       <Filter>Fichiers de ressources</Filter>
     </Image>
+    <Image Include="resources\textures\turn_left.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="resources\textures\turn_right.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -112,6 +112,8 @@
     <Image Include="resources\textures\plate.jpg" />
     <Image Include="resources\textures\restart.png" />
     <Image Include="resources\textures\save.png" />
+    <Image Include="resources\textures\turn_left.png" />
+    <Image Include="resources\textures\turn_right.png" />
     <Image Include="resources\textures\undo.png" />
     <Image Include="resources\textures\validate.png" />
     <Image Include="resources\textures\validate_no.png" />

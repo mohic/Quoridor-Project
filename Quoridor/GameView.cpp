@@ -14,8 +14,9 @@ GameView::GameView()
 	center         = POSITION_CENTRE;
 	up             = Vec3(0, 1, 0);
 	eyeOrtho       = Vec3(0, 0, 1);
-	offset         = 0;
 	eyePerspective = Vec3(0, -130, 150);
+
+	offset         = 0;
 }
 
 GameView *GameView::getInstance()
@@ -289,6 +290,14 @@ void GameView::drawArrowAndDirectionButtons()
 	ref_ptr<Texture2D> texture;
 	ref_ptr<Image> img;
 	StateSet *stateset;
+	ref_ptr<MatrixTransform> button;
+
+	// matrixTransform contenant les touches de directions et de changements de direction
+	ref_ptr<MatrixTransform> arrows = new MatrixTransform();
+	arrows->setMatrix(Matrix::identity());
+	arrows->postMult(Matrix::translate(0, 270, 0));
+
+	cameraActionsArea->addChild(arrows.get());
 
 	// création de la texture d'une flèche
 	texture = new Texture2D();
@@ -296,82 +305,78 @@ void GameView::drawArrowAndDirectionButtons()
 	texture->setImage(img);
 
 	// flèche du haut
-	ref_ptr<MatrixTransform> arrowUp = new MatrixTransform();
-	arrowUp->addChild(classicButton.get());
-	arrowUp->setMatrix(Matrix::identity());
-	arrowUp->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
-	arrowUp->postMult(Matrix::rotate(inDegrees(90.0), Z_AXIS));
-	arrowUp->postMult(Matrix::translate(Vec3(0, 60, 0)));
-	arrowUp->setName("upArrowButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
+	button->postMult(Matrix::rotate(inDegrees(90.0), Z_AXIS));
+	button->postMult(Matrix::translate(Vec3(0, 60, 0)));
+	button->setName("upArrowButton");
 
-	stateset = arrowUp->getOrCreateStateSet();
+	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+
+	arrows->addChild(button.get());
 
 	// flèche de gauche
-	ref_ptr<MatrixTransform> arrowLeft = new MatrixTransform();
-	arrowLeft->addChild(classicButton.get());
-	arrowLeft->setMatrix(Matrix::identity());
-	arrowLeft->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
-	arrowLeft->postMult(Matrix::rotate(inDegrees(180.0), Z_AXIS));
-	arrowLeft->postMult(Matrix::translate(Vec3(-60, 0, 0)));
-	arrowLeft->setName("leftArrowButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
+	button->postMult(Matrix::rotate(inDegrees(180.0), Z_AXIS));
+	button->postMult(Matrix::translate(Vec3(-60, 0, 0)));
+	button->setName("leftArrowButton");
 
-	stateset = arrowLeft->getOrCreateStateSet();
+	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+
+	arrows->addChild(button.get());
 
 	// flèche du bas
-	ref_ptr<MatrixTransform> arrowDown = new MatrixTransform();
-	arrowDown->addChild(classicButton.get());
-	arrowDown->setMatrix(Matrix::identity());
-	arrowDown->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
-	arrowDown->postMult(Matrix::rotate(inDegrees(-90.0), Z_AXIS));
-	arrowDown->postMult(Matrix::translate(Vec3(0, -60, 0)));
-	arrowDown->setName("downArrowButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
+	button->postMult(Matrix::rotate(inDegrees(-90.0), Z_AXIS));
+	button->postMult(Matrix::translate(Vec3(0, -60, 0)));
+	button->setName("downArrowButton");
 
-	stateset = arrowDown->getOrCreateStateSet();
+	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+
+	arrows->addChild(button.get());
 
 	// flèche de droite
-	ref_ptr<MatrixTransform> arrowRight = new MatrixTransform();
-	arrowRight->addChild(classicButton.get());;
-	arrowRight->setMatrix(Matrix::identity());
-	arrowRight->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
-	arrowRight->postMult(Matrix::translate(Vec3(60, 0, 0)));
-	arrowRight->setName("rightArrowButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());;
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
+	button->postMult(Matrix::translate(Vec3(60, 0, 0)));
+	button->setName("rightArrowButton");
 
-	stateset = arrowRight->getOrCreateStateSet();
+	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
+	arrows->addChild(button.get());
+
 	// dessin du bouton de changement de sens
-	ref_ptr<MatrixTransform> direction = new MatrixTransform();
-	direction->addChild(classicButton.get());
-	direction->setMatrix(Matrix::identity());
-	direction->postMult(Matrix::scale(0.75, 0.75, 1));
-	direction->setName("directionButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::scale(0.75, 0.75, 1));
+	button->setName("directionButton");
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/direction_no.png");
 	texture->setImage(img);
 
-	stateset = direction->getOrCreateStateSet();
+	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
-	// matrixTransform contenant les touches de directions et de changements de direction
-	ref_ptr<MatrixTransform> arrows = new MatrixTransform();
-
-	arrows->addChild(arrowUp.get());
-	arrows->addChild(arrowLeft.get());
-	arrows->addChild(arrowDown.get());
-	arrows->addChild(arrowRight.get());
-	arrows->addChild(direction.get());
-
-	arrows->setMatrix(Matrix::identity());
-	arrows->postMult(Matrix::translate(0, 270, 0));
-
-	cameraActionsArea->addChild(arrows.get());
+	arrows->addChild(button.get());
 }
 
-void GameView::drawCommandsButtons()
+void GameView::drawGameButtons()
 {
 	ref_ptr<Texture2D> texture;
 	ref_ptr<Image> img;
@@ -410,6 +415,30 @@ void GameView::drawCommandsButtons()
 
 	cameraActionsArea->addChild(button.get());
 
+	// dessin du bouton pour recommencer une partie
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(0, -240, 0)));
+	button->setName("restartButton");
+
+	texture = new Texture2D();
+	img = osgDB::readImageFile("resources/textures/restart.png");
+	texture->setImage(img);
+
+	stateset = button->getOrCreateStateSet();
+	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+
+	cameraActionsArea->addChild(button.get());
+}
+
+void GameView::drawSaveAndLoadButtons()
+{
+	ref_ptr<Texture2D> texture;
+	ref_ptr<Image> img;
+	StateSet *stateset;
+	ref_ptr<MatrixTransform> button;
+
 	// dessin du bouton de sauvegarde d'une partie
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
@@ -441,22 +470,14 @@ void GameView::drawCommandsButtons()
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	cameraActionsArea->addChild(button.get());
+}
 
-	// dessin du bouton pour recommencer une partie
-	button = new MatrixTransform();
-	button->addChild(classicButton.get());
-	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(0, -240, 0)));
-	button->setName("restartButton");
-
-	texture = new Texture2D();
-	img = osgDB::readImageFile("resources/textures/restart.png");
-	texture->setImage(img);
-
-	stateset = button->getOrCreateStateSet();
-	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
-
-	cameraActionsArea->addChild(button.get());
+void GameView::drawViewButtons()
+{
+	ref_ptr<Texture2D> texture;
+	ref_ptr<Image> img;
+	StateSet *stateset;
+	ref_ptr<MatrixTransform> button;
 
 	// dessin du bouton pour changer de style de vue
 	button = new MatrixTransform();
@@ -499,6 +520,38 @@ void GameView::drawCommandsButtons()
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/zoom_out.png");
+	texture->setImage(img);
+
+	stateset = button->getOrCreateStateSet();
+	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+
+	cameraActionsArea->addChild(button.get());
+
+	// dessin du bouton pour tourner vers la gauche
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(-50, 40, 0)));
+	button->setName("turnLeftButton");
+
+	texture = new Texture2D();
+	img = osgDB::readImageFile("resources/textures/turn_left.png");
+	texture->setImage(img);
+
+	stateset = button->getOrCreateStateSet();
+	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+
+	cameraActionsArea->addChild(button.get());
+
+	// dessin du bouton pour tourner vers la droite
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(50, 40, 0)));
+	button->setName("turnRightButton");
+
+	texture = new Texture2D();
+	img = osgDB::readImageFile("resources/textures/turn_right.png");
 	texture->setImage(img);
 
 	stateset = button->getOrCreateStateSet();
@@ -580,6 +633,10 @@ Config::Button GameView::checkButton(std::string name)
 		return Config::Button::ZOOM_IN;
 	else if (name == "zoomOutButton") // bouton zoomer en arrière
 		return Config::Button::ZOOM_OUT;
+	else if (name == "turnLeftButton") // bouton tourner vers la gauche
+		return Config::Button::TURN_LEFT;
+	else if (name == "turnRightButton") // bouton tourner vers la droite
+		return Config::Button::TURN_RIGHT;
 
 	return Config::Button::UNKNOWN; // bouton inconnu
 }
@@ -711,6 +768,28 @@ void GameView::zoomOut()
 	}
 }
 
+void GameView::turnLeft()
+{
+	cout << "Turn Left" << endl;
+
+	if (Model::getInstance()->getView() == Model::View::PARALLELE) { // mode parallèle
+		//TODO: __
+	} else { // mode perspective
+		//TODO: __
+	}
+}
+
+void GameView::turnRight()
+{
+	cout << "Turn Right" << endl;
+
+	if (Model::getInstance()->getView() == Model::View::PARALLELE) { // mode parallèle
+		//TODO: __
+	} else { // mode perspective
+		//TODO: __
+	}
+}
+
 ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 {
 	// création et configuration du viewer
@@ -750,7 +829,9 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	drawArrowAndDirectionButtons();
 
 	// dessin des différents boutons de commandes
-	drawCommandsButtons();
+	drawGameButtons();
+	drawSaveAndLoadButtons();
+	drawViewButtons();
 
 	// initialisation du controller
 	Controller::getInstance()->initialize(cameraGameArea.get());

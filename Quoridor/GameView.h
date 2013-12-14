@@ -60,7 +60,9 @@ private:
 	void drawPawns();								// dessine les pions
 	void drawMessage();								// dessine le message
 	void drawArrowAndDirectionButtons();			// dessine les boutons flèchés et le bouton changer de sens
-	void drawCommandsButtons();						// dessine les différents boutons de commandes
+	void drawGameButtons();							// dessine les différents boutons servant à jouer
+	void drawSaveAndLoadButtons();					// dessine les différents boutons servant à l'enregistrement et au chargement du jeu
+	void drawViewButtons();							// dessine les différents boutons servant à la gestion de la vue du jeu
 
 	Config::Button checkButton(std::string name);	// vérifie quel bouton à été cliqué
 
@@ -106,4 +108,10 @@ public:
 
 	//TODO: doc
 	void zoomOut();
+
+	//TODO: doc
+	void turnLeft();
+
+	//TODO: doc
+	void turnRight();
 };
