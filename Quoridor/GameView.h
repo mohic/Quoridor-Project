@@ -82,13 +82,10 @@ public:
 	*/
 	void refreshMessage();
 
-	/**
-		obtenir le viewport de la caméra des boutons d'actions
-		@return le viewport de la caméra des boutons d'actions
-	*/
-	const osg::Viewport *getActionViewport()
+	//TODO: doc
+	osg::Camera *getActionsCamera()
 	{
-		return cameraActionsArea->getViewport();
+		return cameraActionsArea.get();
 	}
 
 	/**

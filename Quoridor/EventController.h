@@ -8,6 +8,7 @@
 #include "Controller.h"
 #include "GameView.h"
 #include "Model.h"
+#include "Point.h"
 
 /**
 	Controlleur des différents événements clavier/souris
@@ -17,13 +18,15 @@
 class EventController : public osg::NodeCallback
 {
 private:
-	bool mustChangePlayer;																						// indique si oui ou non il faut changer de joueur après l'action spécifique
-	bool modeBarriere;																							// indique si on est en mode barrière ou normal
+	bool mustChangePlayer;														// indique si oui ou non il faut changer de joueur après l'action spécifique
+	bool modeBarriere;															// indique si on est en mode barrière ou normal
 
-	void handleMouse(osg::ref_ptr<osgGA::GUIEventAdapter> ea, osg::Node *node);									// effectue des traitements pour les événements souris
-	void handleKeyboard(int key);																				// effectue des traitements pour les événements clavier
-	void refreshScene();																						// rafraîchit le graphe de scène
-	void buttonClicked(Config::Button button);																	// appelle les différentes méthodes en fonctions du bouton cliqué
+	void handleMouse(osg::ref_ptr<osgGA::GUIEventAdapter> ea, osg::Node *node);	// effectue des traitements pour les événements souris
+	void handleMouseClick(Point position);										// effectue des traitements pour les événements souris lors du clique
+	void handleMouseMove(Point position);										// effectue des traitements pour les événements souris lors du bougé
+	void handleKeyboard(int key);												// effectue des traitements pour les événements clavier
+	void refreshScene();														// rafraîchit le graphe de scène
+	void performAction(Config::Button button);									// appelle les différentes méthodes en fonctions de l'action à effectuer
 	
 public:
 	/**

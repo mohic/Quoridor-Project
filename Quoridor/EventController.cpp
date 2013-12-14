@@ -29,11 +29,12 @@ void EventController::operator()(Node *node, NodeVisitor *nv)
 	
 	switch (ea->getEventType())
 	{
-		case GUIEventAdapter::PUSH:
+		case GUIEventAdapter::EventType::PUSH: // clique de la souris
+		case GUIEventAdapter::EventType::MOVE: // bouger de la souris
 			handleMouse(ea, node);
 			refreshScene();
 			break;
-		case GUIEventAdapter::KEYDOWN:
+		case GUIEventAdapter::EventType::KEYDOWN: // touche pressée du clavier
 			handleKeyboard(ea->getKey());
 			refreshScene();
 			break;
@@ -48,31 +49,48 @@ void EventController::operator()(Node *node, NodeVisitor *nv)
 
 void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 {
-	if (ea->getButton() == GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON)
-	{
-		ref_ptr<LineSegmentIntersector> intersector = new LineSegmentIntersector(Intersector::CoordinateFrame::WINDOW, ea->getX(), ea->getY());
+	ref_ptr<LineSegmentIntersector> intersector = new LineSegmentIntersector(Intersector::CoordinateFrame::WINDOW, ea->getX(), ea->getY());
 
-		IntersectionVisitor iv(intersector.get());
+	IntersectionVisitor iv(intersector.get());
 
-		// vérification que le clic se passe dans la zone du viewport des boutons d'actions
-		const Viewport *vp = GameView::getInstance()->getActionViewport();
+	// vérification que l'action se passe dans la zone du viewport des boutons d'actions
+	ref_ptr<Viewport> vp = GameView::getInstance()->getActionsCamera()->getViewport();
 
-		if (ea->getX() >= vp->x() && ea->getX() <= (vp->x() + vp->width())
-			&& ea->getY() >= vp->y() && ea->getY() <= (vp->y() + vp->height()))
-				node->accept(iv);
+	if (ea->getX() >= vp->x() && ea->getX() <= (vp->x() + vp->width())
+		&& ea->getY() >= vp->y() && ea->getY() <= (vp->y() + vp->height()))
+			node->accept(iv);
+	else
+		return;
 
-		// si le clique à lieu sur un objet contenu dans le viewport des boutons d'actions
+	LineSegmentIntersector::Intersection result = intersector->getFirstIntersection();
+
+	Point position = Point(result.getWorldIntersectPoint().x(), result.getWorldIntersectPoint().y());
+
+	if (ea->getEventType() == GUIEventAdapter::EventType::MOVE) { // si l'action = la souris qui bouge
+		handleMouseMove(position);
+	} else if(ea->getEventType() == GUIEventAdapter::EventType::PUSH && ea->getButton() == GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON) { // si l'action = clique gauche
+		// si l'action a lieu sur un objet contenu dans le viewport des boutons d'actions
 		if (intersector->containsIntersections()) {
-			LineSegmentIntersector::Intersection result = intersector->getFirstIntersection();
-
-			Point position = Point(result.getWorldIntersectPoint().x(), result.getWorldIntersectPoint().y());
-
-			buttonClicked(GameView::getInstance()->testerCollisionAvecBouton(position));
+			handleMouseClick(position);
 		}
 	}
 }
 
-void EventController::buttonClicked(Config::Button button)
+void EventController::handleMouseClick(Point position)
+{
+	performAction(GameView::getInstance()->testerCollisionAvecBouton(position));
+}
+
+void EventController::handleMouseMove(Point position)
+{
+	//TODO: à faire
+	// position = 0, 0 si sur rien et si sur quelque chose, != 0, 0
+	cout << "Moved: (" << position.getX() << ", " << position.getY() << ')' << endl;
+
+	ref_ptr<Camera> camera = GameView::getInstance()->getActionsCamera();
+}
+
+void EventController::performAction(Config::Button button)
 {
 	if (button == Config::Button::UNKNOWN) // si aucun bouton, ne rien faire
 		return;
@@ -208,53 +226,53 @@ void EventController::handleKeyboard(int key)
 	{
 		case 'R':
 		case GUIEventAdapter::KeySymbol::KEY_R:
-			buttonClicked(Config::Button::RESTART);
+			performAction(Config::Button::RESTART);
 			break;
 		case 'Z':
 		case GUIEventAdapter::KeySymbol::KEY_Z:
-			buttonClicked(Config::Button::CANCEL);
+			performAction(Config::Button::CANCEL);
 			break;
 		case 'M':
 		case GUIEventAdapter::KeySymbol::KEY_M:
-			buttonClicked(Config::Button::MODE);
+			performAction(Config::Button::MODE);
 			break;
 		case GUIEventAdapter::KeySymbol::KEY_F6:
-			buttonClicked(Config::Button::SAVE);
+			performAction(Config::Button::SAVE);
 			break;
 		case GUIEventAdapter::KeySymbol::KEY_F7:
-			buttonClicked(Config::Button::LOAD);
+			performAction(Config::Button::LOAD);
 			break;
 		case GUIEventAdapter::KeySymbol::KEY_Up:
-			buttonClicked(Config::Button::ARROW_UP);
+			performAction(Config::Button::ARROW_UP);
 			break;
 		case GUIEventAdapter::KeySymbol::KEY_Down:
-			buttonClicked(Config::Button::ARROW_DOWN);
+			performAction(Config::Button::ARROW_DOWN);
 			break;
 		case GUIEventAdapter::KeySymbol::KEY_Left:
-			buttonClicked(Config::Button::ARROW_LEFT);
+			performAction(Config::Button::ARROW_LEFT);
 			break;
 		case GUIEventAdapter::KeySymbol::KEY_Right:
-			buttonClicked(Config::Button::ARROW_RIGHT);
+			performAction(Config::Button::ARROW_RIGHT);
 			break;
 		case 'S':
 		case GUIEventAdapter::KeySymbol::KEY_S:
-			buttonClicked(Config::Button::DIRECTION);
+			performAction(Config::Button::DIRECTION);
 			break;
 		case GUIEventAdapter::KeySymbol::KEY_KP_Enter:
 		case GUIEventAdapter::KeySymbol::KEY_Return:
-			buttonClicked(Config::Button::VALIDATE);
+			performAction(Config::Button::VALIDATE);
 			break;
 		case 'V':
 		case GUIEventAdapter::KeySymbol::KEY_V:
-			buttonClicked(Config::Button::VIEW);
+			performAction(Config::Button::VIEW);
 			break;
 		case GUIEventAdapter::KeySymbol::KEY_Plus:
 		case GUIEventAdapter::KeySymbol::KEY_KP_Add:
-			buttonClicked(Config::Button::ZOOM_IN);
+			performAction(Config::Button::ZOOM_IN);
 			break;
 		case GUIEventAdapter::KeySymbol::KEY_Minus:
 		case GUIEventAdapter::KeySymbol::KEY_KP_Subtract:
-			buttonClicked(Config::Button::ZOOM_OUT);
+			performAction(Config::Button::ZOOM_OUT);
 			break;
 	}
 }
