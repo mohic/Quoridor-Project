@@ -9,6 +9,8 @@ using namespace osgUtil;
 
 EventController::EventController()
 {
+	// initialisation des variables
+	hoverButton = 0;
 }
 
 void EventController::operator()(Node *node, NodeVisitor *nv)
@@ -78,16 +80,63 @@ void EventController::handleMouse(ref_ptr<GUIEventAdapter>ea, Node *node)
 
 void EventController::handleMouseClick(Point position)
 {
+	handleMouseMove(Point(0, 0)); // permet d'éviter une inversion lors du changement de texture sur des boutons tel que le changement de mode
 	performAction(GameView::getInstance()->testerCollisionAvecBouton(position));
+	handleMouseMove(position);
 }
 
 void EventController::handleMouseMove(Point position)
 {
-	//TODO: à faire
-	// position = 0, 0 si sur rien et si sur quelque chose, != 0, 0
-	cout << "Moved: (" << position.getX() << ", " << position.getY() << ')' << endl;
+	if (position.getX() == 0 && position.getY() == 0) { // si hors d'un bouton
+		if (hoverButton == 0) // si aucun bouton n'est affiché en "éclairé"
+			return;
+		else { // si au moins un bouton est affiché en "éclairé", remise en mode normal
+			for (unsigned int j = 0; j < hoverButton->getChildIndex(0); j++)
+				hoverButton->setValue(j, !hoverButton->getValue(j));
 
+			hoverButton = 0;
+
+			return;
+		}
+	}
+
+	// obtenir le nom du bouton sur lequel on se trouve
+	string str = GameView::getInstance()->obtenirNomBoutonCollision(position);
+
+	// cette condition permet d'éviter un problème lorsque l'on passe très vite avec la souris
+	// entre plusieurs boutons
+
+	if (hoverButton != 0) { // si déjà un bouton "éclairé"...
+		if (str != hoverButton->getName()) { // ... et différent de l'actuel, nettoyer
+			for (unsigned int j = 0; j < hoverButton->getChildIndex(0); j++)
+				hoverButton->setValue(j, !hoverButton->getValue(j));
+
+			hoverButton = 0;
+		} else // sinon ne rien faire
+			return;
+	}
+
+	// chercher après le bouton où l'on se trouve et l'éclairer
 	ref_ptr<Camera> camera = GameView::getInstance()->getActionsCamera();
+
+	for (unsigned int i = 0; i < camera->getChildIndex(0); i++) // parcours des enfants
+	{
+		ref_ptr<Switch> sw = camera->getChild(i)->asSwitch();
+
+		if (sw == 0) // ignorer ceux qui ne sont pas des switch
+			continue;
+
+		if (sw->getName() != str) // si pas le bouton sur lequel on est
+			continue;
+
+		for (unsigned int j = 0; j < sw->getChildIndex(0); j++)
+		{
+			hoverButton = sw;
+			sw->setValue(j, !sw->getValue(j));
+		}
+
+		break;
+	}
 }
 
 void EventController::performAction(Config::Button button)
@@ -131,7 +180,7 @@ void EventController::performAction(Config::Button button)
 	// autres touches
 	switch (button)
 	{	
-		case Config::Button::CANCEL: // annuler un coup
+		case Config::Button::UNDO: // annuler un coup
 			Model::getInstance()->annulerDernierCoup();
 			GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons
 
@@ -236,7 +285,7 @@ void EventController::handleKeyboard(int key)
 			break;
 		case 'Z':
 		case GUIEventAdapter::KeySymbol::KEY_Z:
-			performAction(Config::Button::CANCEL);
+			performAction(Config::Button::UNDO);
 			break;
 		case 'M':
 		case GUIEventAdapter::KeySymbol::KEY_M:

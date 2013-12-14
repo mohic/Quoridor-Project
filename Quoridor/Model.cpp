@@ -118,6 +118,8 @@ bool Model::deplacerPion(int joueur, Direction direction)
 
 			return false;
 		}
+
+		coupsJoue(false); // éviter d'enregistrer l'état intermédiaire du saut
 	}
 
 	// vérifier victoire

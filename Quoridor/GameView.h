@@ -2,6 +2,8 @@
 #pragma warning (disable : 4250) // supprime le warning venant de OSG avec l'include osgDB\readFile
 								 // qui avertit que tel classe hérite de l'autre classe par dominance
 
+#include <string>
+#include <vector>
 #include <osg\Geode>
 #include <osg\MatrixTransform>
 #include <osg\ShapeDrawable>
@@ -9,7 +11,6 @@
 #include <osgDB\ReadFile>
 #include <osgText\Text>
 #include <osgViewer\Viewer>
-#include <vector>
 #include "Config.h"
 #include "Controller.h"
 #include "EventController.h"
@@ -24,47 +25,49 @@
 class GameView
 {
 private:
-	static GameView *instance;						// instance de la vue pour le pattern singleton
-	GameView();										// constructeur privé
+	static GameView *instance;							// instance de la vue pour le pattern singleton
+	GameView();											// constructeur privé
 
-	osg::ref_ptr<osgText::Text> userMessage;		// message à afficher à l'utilisateur
-	osg::ref_ptr<osgText::Text> errorMessage;		// message d'erreur à afficher à l'utilisateur
+	osg::ref_ptr<osgText::Text> userMessage;			// message à afficher à l'utilisateur
+	osg::ref_ptr<osgText::Text> errorMessage;			// message d'erreur à afficher à l'utilisateur
 
-	osg::Vec3 center;								// centre pointé par la caméra
-	osg::Vec3 up;									// orientation de la caméra
-	osg::Vec3 eyeOrtho;								// position de la caméra en vue orthographique
-	int offset;										// sert pour le zoom da la caméra en vue parallèle
-	osg::Vec3 eyePerspective;						// position de la caméra en vue perspective
+	osg::Vec3 center;									// centre pointé par la caméra
+	osg::Vec3 up;										// orientation de la caméra
+	osg::Vec3 eyeOrtho;									// position de la caméra en vue orthographique
+	int offset;											// sert pour le zoom da la caméra en vue parallèle
+	osg::Vec3 eyePerspective;							// position de la caméra en vue perspective
 
-	osg::ref_ptr<osgViewer::Viewer> viewer;			// le viewer
-	osg::ref_ptr<osg::Camera> cameraGameArea;		// caméra servant à afficher la zone de jeu
-	osg::ref_ptr<osg::Camera> cameraDisplayArea;	// caméra de la zone de texte
-	osg::ref_ptr<osg::Camera> cameraActionsArea;	// caméra de la zone des bouton d'actions
-	osg::ref_ptr<osg::Geode> geodeVirtualFence;		// géode de la barrière virtuelle
+	osg::ref_ptr<osgViewer::Viewer> viewer;				// le viewer
+	osg::ref_ptr<osg::Camera> cameraGameArea;			// caméra servant à afficher la zone de jeu
+	osg::ref_ptr<osg::Camera> cameraDisplayArea;		// caméra de la zone de texte
+	osg::ref_ptr<osg::Camera> cameraActionsArea;		// caméra de la zone des bouton d'actions
+	osg::ref_ptr<osg::Geode> geodeVirtualFence;			// géode de la barrière virtuelle
 
-	osg::ref_ptr<osg::Geode> classicButton;			// bouton classique
+	osg::ref_ptr<osg::Geode> classicButton;				// bouton classique
 
-	void initMessage();								// initialise le message utilisateur
+	void initMessage();									// initialise le message utilisateur
 
-	void createAndConfigureViewer();				// crée et configure le viewer
-	void createAndConfigureCameraGameArea();		// crée et configure la caméra représentant la zone de jeu
-	void createAndConfigureCameraDisplayArea();		// crée et configure la caméra représentant la zone d'affichage
-	void createAndConfigureCameraActionsArea();		// crée et configure la caméra représentant la zone des actions
+	void createAndConfigureViewer();					// crée et configure le viewer
+	void createAndConfigureCameraGameArea();			// crée et configure la caméra représentant la zone de jeu
+	void createAndConfigureCameraDisplayArea();			// crée et configure la caméra représentant la zone d'affichage
+	void createAndConfigureCameraActionsArea();			// crée et configure la caméra représentant la zone des actions
 
-	void createClassicButton();						// crée un bouton classique
+	void createClassicButton();							// crée un bouton classique
 
-	void drawPlate();								// dessine le plateau
-	void drawCases();								// dessine les cases
-	void drawFences();								// dessine les barrières
-	void drawVirtualFence();						// dessine la barrière virtuelle
-	void drawPawns();								// dessine les pions
-	void drawMessage();								// dessine le message
-	void drawArrowAndDirectionButtons();			// dessine les boutons flèchés et le bouton changer de sens
-	void drawGameButtons();							// dessine les différents boutons servant à jouer
-	void drawSaveAndLoadButtons();					// dessine les différents boutons servant à l'enregistrement et au chargement du jeu
-	void drawViewButtons();							// dessine les différents boutons servant à la gestion de la vue du jeu
+	void drawPlate();									// dessine le plateau
+	void drawCases();									// dessine les cases
+	void drawFences();									// dessine les barrières
+	void drawVirtualFence();							// dessine la barrière virtuelle
+	void drawPawns();									// dessine les pions
+	void drawMessage();									// dessine le message
+	void drawArrowAndDirectionButtons();				// dessine les boutons flèchés et le bouton changer de sens
+	void drawGameButtons();								// dessine les différents boutons servant à jouer
+	void drawSaveAndLoadButtons();						// dessine les différents boutons servant à l'enregistrement et au chargement du jeu
+	void drawViewButtons();								// dessine les différents boutons servant à la gestion de la vue du jeu
 
-	Config::Button checkButton(std::string name);	// vérifie quel bouton à été cliqué
+	Config::Button checkButton(std::string name);		// vérifie quel bouton à été cliqué
+	void changeTexture(osg::ref_ptr<osg::Switch> sw,
+						std::string textureName);		// change la texture des différents éléments du switch
 
 public:
 	/**
@@ -89,6 +92,9 @@ public:
 	{
 		return cameraActionsArea.get();
 	}
+
+	//TODO: doc
+	std::string GameView::obtenirNomBoutonCollision(Point position);
 
 	/**
 		tester si le point entre en collision avec un bouton contenu dans le viewport de la caméra des boutons d'actions

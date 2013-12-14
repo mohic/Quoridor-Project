@@ -19,7 +19,7 @@ class EventController : public osg::NodeCallback
 {
 private:
 	bool mustChangePlayer;														// indique si oui ou non il faut changer de joueur après l'action spécifique
-	bool modeBarriere;															// indique si on est en mode barrière ou normal
+	osg::ref_ptr<osg::Switch> hoverButton;										// contient le bouton actuellement "éclairé", 0 si aucun
 
 	void handleMouse(osg::ref_ptr<osgGA::GUIEventAdapter> ea, osg::Node *node);	// effectue des traitements pour les événements souris
 	void handleMouseClick(Point position);										// effectue des traitements pour les événements souris lors du clique
