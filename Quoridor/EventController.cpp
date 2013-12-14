@@ -93,6 +93,12 @@ void EventController::buttonClicked(Config::Button button)
 				Model::getInstance()->setView(Model::View::PARALLELE);
 
 			return;
+		case Config::ZOOM_IN:
+			GameView::getInstance()->zoomIn();
+			return;
+		case Config::ZOOM_OUT:
+			GameView::getInstance()->zoomOut();
+			return;
 	}
 
 	// tester si le jeu est terminé
@@ -238,6 +244,18 @@ void EventController::handleKeyboard(int key)
 		case GUIEventAdapter::KeySymbol::KEY_KP_Enter:
 		case GUIEventAdapter::KeySymbol::KEY_Return:
 			buttonClicked(Config::Button::VALIDATE);
+			break;
+		case 'V':
+		case GUIEventAdapter::KeySymbol::KEY_V:
+			buttonClicked(Config::Button::VIEW);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_Plus:
+		case GUIEventAdapter::KeySymbol::KEY_KP_Add:
+			buttonClicked(Config::Button::ZOOM_IN);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_Minus:
+		case GUIEventAdapter::KeySymbol::KEY_KP_Subtract:
+			buttonClicked(Config::Button::ZOOM_OUT);
 			break;
 	}
 }

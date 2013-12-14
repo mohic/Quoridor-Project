@@ -6,6 +6,7 @@ using namespace osg;
 GameView *GameView::instance = 0;
 
 //TODO: bug annuler juste après un saut
+//TODO: bug en vue perspective sur la barrière virtuelle qui a deux couleurs
 
 GameView::GameView()
 {
@@ -13,6 +14,7 @@ GameView::GameView()
 	center         = POSITION_CENTRE;
 	up             = Vec3(0, 1, 0);
 	eyeOrtho       = Vec3(0, 0, 1);
+	offset         = 0;
 	eyePerspective = Vec3(0, -130, 150);
 }
 
@@ -374,104 +376,135 @@ void GameView::drawCommandsButtons()
 	ref_ptr<Texture2D> texture;
 	ref_ptr<Image> img;
 	StateSet *stateset;
+	ref_ptr<MatrixTransform> button;
 
 	// dessin du bouton de changement de mode
-	ref_ptr<MatrixTransform> transformButtonMode = new MatrixTransform();
-	transformButtonMode->addChild(classicButton.get());
-	transformButtonMode->setMatrix(Matrix::identity());
-	transformButtonMode->postMult(Matrix::translate(Vec3(-50, 130, 0)));
-	transformButtonMode->setName("modeButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(-50, 130, 0)));
+	button->setName("modeButton");
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/fence.png");
 	texture->setImage(img);
 
-	stateset = transformButtonMode->getOrCreateStateSet();
+	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
-	cameraActionsArea->addChild(transformButtonMode.get());
+	cameraActionsArea->addChild(button.get());
 
 	// dessin du bouton de validation de la barrière virtuelle
-	ref_ptr<MatrixTransform> transformButtonValidate = new MatrixTransform();
-	transformButtonValidate->addChild(classicButton.get());
-	transformButtonValidate->setMatrix(Matrix::identity());
-	transformButtonValidate->postMult(Matrix::translate(Vec3(50, 130, 0)));
-	transformButtonValidate->setName("validateButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(50, 130, 0)));
+	button->setName("validateButton");
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/validate_no.png");
 	texture->setImage(img);
 
-	stateset = transformButtonValidate->getOrCreateStateSet();
+	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
-	cameraActionsArea->addChild(transformButtonValidate.get());
+	cameraActionsArea->addChild(button.get());
 
 	// dessin du bouton de sauvegarde d'une partie
-	ref_ptr<MatrixTransform> transformButtonSave = new MatrixTransform();
-	transformButtonSave->addChild(classicButton.get());
-	transformButtonSave->setMatrix(Matrix::identity());
-	transformButtonSave->postMult(Matrix::translate(Vec3(-50, -325, 0)));
-	transformButtonSave->setName("saveButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(-50, -325, 0)));
+	button->setName("saveButton");
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/save.png");
 	texture->setImage(img);
 
-	stateset = transformButtonSave->getOrCreateStateSet();
+	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
-	cameraActionsArea->addChild(transformButtonSave.get());
+	cameraActionsArea->addChild(button.get());
 
 	// dessin du bouton de chargement d'une partie
-	ref_ptr<MatrixTransform> transformButtonLoad = new MatrixTransform();
-	transformButtonLoad->addChild(classicButton.get());
-	transformButtonLoad->setMatrix(Matrix::identity());
-	transformButtonLoad->postMult(Matrix::translate(Vec3(50, -325, 0)));
-	transformButtonLoad->setName("loadButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(50, -325, 0)));
+	button->setName("loadButton");
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/load.png");
 	texture->setImage(img);
 
-	stateset = transformButtonLoad->getOrCreateStateSet();
+	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
-	cameraActionsArea->addChild(transformButtonLoad.get());
+	cameraActionsArea->addChild(button.get());
 
 	// dessin du bouton pour recommencer une partie
-	//TODO: position
-	ref_ptr<MatrixTransform> transformButtonRestart = new MatrixTransform();
-	transformButtonRestart->addChild(classicButton.get());
-	transformButtonRestart->setMatrix(Matrix::identity());
-	transformButtonRestart->postMult(Matrix::translate(Vec3(30, -100, 0)));
-	transformButtonRestart->setName("restartButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(0, -240, 0)));
+	button->setName("restartButton");
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/restart.png");
 	texture->setImage(img);
 
-	stateset = transformButtonRestart->getOrCreateStateSet();
+	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
-	cameraActionsArea->addChild(transformButtonRestart.get());
+	cameraActionsArea->addChild(button.get());
 
 	// dessin du bouton pour changer de style de vue
-	//TODO: position
-	ref_ptr<MatrixTransform> transformButtonView = new MatrixTransform();
-	transformButtonView->addChild(classicButton.get());
-	transformButtonView->setMatrix(Matrix::identity());
-	transformButtonView->postMult(Matrix::translate(Vec3(0, 0, 0)));
-	transformButtonView->setName("viewButton");
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(-50, -115, 0)));
+	button->setName("viewButton");
 
 	//texture = new Texture2D();
 	//img = osgDB::readImageFile("resources/textures/restart.png");
 	//texture->setImage(img);
 
-	//stateset = transformButtonRestart->getOrCreateStateSet();
+	//stateset = button->getOrCreateStateSet();
 	//stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
-	cameraActionsArea->addChild(transformButtonView.get());
+	cameraActionsArea->addChild(button.get());
+
+	// dessin du bouton pour zoomer en avant
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(50, -60, 0)));
+	button->setName("zoomInButton");
+
+	//texture = new Texture2D();
+	//img = osgDB::readImageFile("resources/textures/restart.png");
+	//texture->setImage(img);
+
+	//stateset = button->getOrCreateStateSet();
+	//stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+
+	cameraActionsArea->addChild(button.get());
+
+	// dessin du bouton pour zoomer en arrière
+	button = new MatrixTransform();
+	button->addChild(classicButton.get());
+	button->setMatrix(Matrix::identity());
+	button->postMult(Matrix::translate(Vec3(50, -150, 0)));
+	button->setName("zoomOutButton");
+
+	//texture = new Texture2D();
+	//img = osgDB::readImageFile("resources/textures/restart.png");
+	//texture->setImage(img);
+
+	//stateset = button->getOrCreateStateSet();
+	//stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
+
+	cameraActionsArea->addChild(button.get());
 }
 
 Config::Button GameView::testerCollisionAvecBouton(Point position)
@@ -543,6 +576,10 @@ Config::Button GameView::checkButton(std::string name)
 		return Config::Button::CANCEL;
 	else if (name == "viewButton") // bouton changer de vue
 		return Config::Button::VIEW;
+	else if (name == "zoomInButton") // bouton zoomer en avant
+		return Config::Button::ZOOM_IN;
+	else if (name == "zoomOutButton") // bouton zoomer en arrière
+		return Config::Button::ZOOM_OUT;
 
 	return Config::Button::UNKNOWN; // bouton inconnu
 }
@@ -629,13 +666,34 @@ void GameView::refreshButtons()
 
 void GameView::refreshView()
 {
-	cout << WIDTH_CAMERA << endl;
 	if (Model::getInstance()->getView() == Model::View::PARALLELE) { // si vue parallèle
 		cameraGameArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
-		cameraGameArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_PLATEAU_BOTTOM, CAMERA_PLATEAU_TOP, CAMERA_NEAR, CAMERA_FAR);
+		cameraGameArea->setProjectionMatrixAsOrtho(CAMERA_LEFT - offset, CAMERA_RIGHT + offset, CAMERA_PLATEAU_BOTTOM - offset, CAMERA_PLATEAU_TOP + offset, CAMERA_NEAR, CAMERA_FAR);
 	} else { // si vue perspective
 		cameraGameArea->setViewMatrixAsLookAt(eyePerspective, center, up);
 		cameraGameArea->setProjectionMatrixAsPerspective(70, 1, CAMERA_NEAR, CAMERA_FAR);
+	}
+}
+
+void GameView::zoomIn()
+{
+	if (Model::getInstance()->getView() == Model::View::PARALLELE) { // mode parallèle
+		if (offset > -LIMIT_ORTHO)
+			offset -= 5;
+	} else { // mode perspective
+		if (eyePerspective.y() < LIMIT_PERSPECTIVE_MIN.y() && eyePerspective.z() > LIMIT_PERSPECTIVE_MIN.z())
+			eyePerspective = Vec3(eyePerspective.x(), eyePerspective.y() + 5, eyePerspective.z() - 5);
+	}
+}
+
+void GameView::zoomOut()
+{
+	if (Model::getInstance()->getView() == Model::View::PARALLELE) { // mode parallèle
+		if (offset < LIMIT_ORTHO)
+			offset += 5;
+	} else { // mode perspective
+		if (eyePerspective.y() > LIMIT_PERSPECTIVE_MAX.y() && eyePerspective.z() < LIMIT_PERSPECTIVE_MAX.z())
+			eyePerspective = Vec3(eyePerspective.x(), eyePerspective.y() - 5, eyePerspective.z() + 5);
 	}
 }
 

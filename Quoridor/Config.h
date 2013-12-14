@@ -28,6 +28,9 @@
 #define CAMERA_RIGHT			100														// coordonnée de droite du plan de délimitation
 #define WIDTH_CAMERA			(ABS(CAMERA_LEFT) + ABS(CAMERA_RIGHT))					// largeur du plan de délimitation
 #define ESPACEMENT				10														// espacement entre les différentes zones de jeu
+#define LIMIT_ORTHO				25														// limite du zoom en avant et en arrière de la caméra en vue parallèle
+#define LIMIT_PERSPECTIVE_MIN	Vec3(0, -85, 105)										// limite du zoom en avant de la caméra en vue perspective (le x n'est pas prit en compte)
+#define LIMIT_PERSPECTIVE_MAX	Vec3(0, -165, 185)										// limite du zoom en arrière de la caméra en vue perspective (le x n'est pas prit en compte)
 
 // spécificités de la caméra des messages
 #define CAMERA_MESSAGE_BOTTOM	-8														// coordonnée du bas du plan de délimitation des messages
@@ -109,7 +112,7 @@ private:
 	std::string saveFileName;	// nom du fichier de sauvegarde
 
 public:
-	enum Button { UNKNOWN, ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, MODE, DIRECTION, VALIDATE, LOAD, SAVE, RESTART, CANCEL, VIEW }; // types de bouton
+	enum Button { UNKNOWN, ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, MODE, DIRECTION, VALIDATE, LOAD, SAVE, RESTART, CANCEL, VIEW, ZOOM_IN, ZOOM_OUT }; // types de bouton
 
 	/**
 		méthode de récupération de l'instance de la config

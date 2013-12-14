@@ -33,6 +33,7 @@ private:
 	osg::Vec3 center;								// centre pointé par la caméra
 	osg::Vec3 up;									// orientation de la caméra
 	osg::Vec3 eyeOrtho;								// position de la caméra en vue orthographique
+	int offset;										// sert pour le zoom da la caméra en vue parallèle
 	osg::Vec3 eyePerspective;						// position de la caméra en vue perspective
 
 	osg::ref_ptr<osgViewer::Viewer> viewer;			// le viewer
@@ -102,4 +103,10 @@ public:
 
 	//TODO: doc
 	void refreshView();
+
+	//TODO: doc
+	void zoomIn();
+
+	//TODO: doc
+	void zoomOut();
 };
