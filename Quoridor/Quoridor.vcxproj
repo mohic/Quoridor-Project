@@ -75,7 +75,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Point.cpp" />
-    <ClCompile Include="PositionUpdater.cpp" />
     <ClCompile Include="GameView.cpp" />
     <ClCompile Include="SaveLoad.cpp" />
   </ItemGroup>
@@ -87,7 +86,6 @@
     <ClInclude Include="LoadException.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="PositionUpdater.h" />
     <ClInclude Include="GameView.h" />
     <ClInclude Include="SaveLoad.h" />
     <ClInclude Include="StateException.h" />

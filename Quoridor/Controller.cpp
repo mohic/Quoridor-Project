@@ -284,3 +284,18 @@ void Controller::updateFence(ref_ptr<MatrixTransform> mt, bool reset)
 			sw->setValue(j, !reset);
 	}
 }
+
+void Controller::annulerDernierCoup()
+{
+	// reset de l'apparence des barrières
+	for (unsigned int i = 0; i < barrieres[0].size(); i++)
+		updateFence(barrieres[0][i], true);
+
+	for (unsigned int i = 0; i < barrieres[1].size(); i++)
+		updateFence(barrieres[1][i], true);
+
+	// recalculer l'apparence
+	computeBarrieres();
+
+	Model::getInstance()->annulerDernierCoup();
+}

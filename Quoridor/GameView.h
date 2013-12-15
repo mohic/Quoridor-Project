@@ -17,7 +17,6 @@
 #include "Controller.h"
 #include "EventController.h"
 #include "Model.h"
-#include "PositionUpdater.h"
 
 /**
 	classe de la View du jeu

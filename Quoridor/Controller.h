@@ -117,4 +117,7 @@ public:
 
 	//TODO: doc
 	void updateFence(osg::ref_ptr<osg::MatrixTransform> mt, bool reset);
+
+	//TODO: doc
+	void annulerDernierCoup();
 };

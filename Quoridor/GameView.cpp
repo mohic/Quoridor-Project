@@ -949,46 +949,7 @@ string GameView::obtenirNomBoutonCollision(Point position)
 
 Config::Button GameView::testerCollisionAvecBouton(Point position)
 {
-	// TODO: utiliser la méthode obtenir nom bouton collision pour éviter une répétition de code
-	Config::Button result = Config::Button::UNKNOWN;
-
-	// REMARQUE: getChildIndex renvoie le nombre d'enfants si l'enfant passé en paramètre
-	//           n'a pas été trouvé donc le 0 permet de dire renvoie d'office le nombre
-	//           d'enfants contenu dans la caméra des boutons d'actions
-	for (unsigned int i = 0; i < cameraActionsArea->getChildIndex(0); i++)
-	{
-		ref_ptr<Node> n = cameraActionsArea->getChild(i);
-		BoundingSphere bs = n->getBound(); //TODO problème sur les flèches de direction si l'on clique trop prêt du changement de direction
-
-		// tester si position est dans le noeud
-		if (!bs.contains(Vec3(position.getX(), position.getY(), 0)))
-			continue;
-
-		// vérifier sur quel bouton...
-		if (n->getName() != "") // si simple bouton
-			result = checkButton(n->getName());
-		else { // si container
-			ref_ptr<MatrixTransform> mt = dynamic_cast<MatrixTransform *>(n.get());
-
-			for (unsigned int j = 0; j < mt->getChildIndex(0); j++)
-			{
-				ref_ptr<Node> n_mt = mt->getChild(j);
-				BoundingSphere bs_mt = n_mt->getBound();
-
-				Vec3 c = bs.center();
-
-				if (!bs_mt.contains(Vec3(position.getX() - c.x(), position.getY() - c.y(), 0)))
-					continue;
-
-				result = checkButton(n_mt->getName());
-			}
-		}
-
-		if (result != Config::Button::UNKNOWN) // si bouton trouvé, arrêter de chercher
-			break;
-	}
-
-	return result;
+	return checkButton(obtenirNomBoutonCollision(position));
 }
 
 Config::Button GameView::checkButton(std::string name)
