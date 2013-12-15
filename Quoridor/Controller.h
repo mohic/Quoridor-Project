@@ -91,23 +91,23 @@ public:
 	}
 
 	/**
-		initialise le controlleur en ajoutant les différents éléments à la caméra et en calculant les différents positions
+		méthode d'initialisation du controlleur en ajoutant les différents éléments à la caméra et en calculant les différents positions
 		@param container le container devant contenir les différents éléments mobiles
 	*/
 	void initialize(osg::ref_ptr<osg::MatrixTransform> container);
 
 	/**
-		afficher la barrière virtuelle
+		méthode d'affichage de la barrière virtuelle
 	*/
 	void showVirtualBarriere();
 
 	/**
-		cacher la barrière virtuelle
+		méthode de masquage de la barrière virtuelle
 	*/
 	void hideVirtualBarriere();
 
 	/**
-		calculer toutes les positions
+		méthode du calcul toutes les positions
 	*/
 	void computeAllPositions();
 };

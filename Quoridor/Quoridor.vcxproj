@@ -89,7 +89,6 @@
     <ClInclude Include="Point.h" />
     <ClInclude Include="PositionUpdater.h" />
     <ClInclude Include="GameView.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="SaveLoad.h" />
     <ClInclude Include="StateException.h" />
   </ItemGroup>

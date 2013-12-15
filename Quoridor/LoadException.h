@@ -22,7 +22,7 @@ public:
 	}
 
 	/**
-		Obtenir le message d'erreur associé à cette exception
+		méthode de récupération du message d'erreur associé à cette exception
 		@return message d'erreur
 	*/
 	virtual const char *what() const throw()

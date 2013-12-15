@@ -41,13 +41,13 @@ private:
 	std::vector<Point> caseVerifiee;			// case déjà vérifiée lors de l'analyse du bloquage d'un pion
 
 	/**
-		méthode testant si les pions peuvent atteindre l'arrivée
+		méthode de test de la possiblilité d'atteindre l'arrivée pour les pions
 		@return true si tous les pions peuvent atteindre la ligne d'arrivée, sinon false
 	*/
 	bool testerBlocagePions();
 
 	/**
-		méthode servant pour le test si un pion est bloqué de façon récursive
+		méthode de test du bloquage d'un pion de façon récursive
 		@param joueur Le joueur à tester
 		@parem caseATester case à tester
 		@return true si le pion n'est pas bloqué, sinon false
@@ -55,7 +55,7 @@ private:
 	bool testerBlocagePion(int joueur, Point caseATester);
 
 	/**
-		méthode de teste si une barrière peut être positionnée à un endroit donné
+		méthode de test de la possibilité de position d'une barrière à un endroit donné
 		@param position la position de la barrière
 		@param vertical le sens de la barrière. true si vertical, false si horizontal
 		@param colision vérifie si la barrière n'est pas en colision avec une autre
@@ -64,7 +64,7 @@ private:
 	bool testerPositionnementBarriere(Point position, bool vertical, bool colision);
 
 	/**
-		méthode de teste si un pion peut être déplacé dans la direction choisie
+		méthode de test du déplacement d'un pion dans la direction choisie
 		@param position position actuelle du pion
 		@param direction la direction voulue du pion
 		@return true si le pion peut être déplacé, sinon false
@@ -72,7 +72,7 @@ private:
 	bool testerPassagePion(Point position, Direction direction);
 
 	/**
-		méthode enregistrant le coups joué
+		méthode d'enregistrement du coup joué
 		@param action True si doit ajouter à la liste des coups joué, sinon false. Permet d'ajouter le coups à la liste et si le coups est interdit, de le retirer
 	*/
 	void coupsJoue(bool action);
@@ -88,7 +88,7 @@ public:
 	static Model *getInstance();
 
 	/**
-		obtenir si une partie est terminée ou non
+		méthode de récupération de la fin d'une partie ou non
 		@return true si la partie est terminée, sinon false
 	*/
 	bool getPartieTerminee()
@@ -97,7 +97,7 @@ public:
 	}
 
 	/**
-		recommencer une partie
+		méthode de recommencement de la partie
 	*/
 	void recommencerPartie()
 	{
@@ -222,7 +222,7 @@ public:
 	bool placerBarriere(int joueur, Point position, bool vertical);
 
 	/**
-		obtenir le mode de jeu en cours
+		méthode de récupération du mode de jeu en cours
 		@return le mode de jeu en cours
 	*/
 	Mode getMode()
@@ -231,7 +231,7 @@ public:
 	}
 
 	/**
-		définir le mode de jeu
+		méthode de définition du mode de jeu
 		@param mode le mode de jeu
 	*/
 	void setMode(Mode mode)
@@ -240,7 +240,7 @@ public:
 	}
 
 	/**
-		obtenir le sens de la barrière virtuelle
+		méthode de récupération du sens de la barrière virtuelle
 		@return true si la barrière est vertical, false si horizontale
 	*/
 	bool getSensVirtualBarriere()
@@ -249,7 +249,7 @@ public:
 	}
 
 	/**
-		obtenir la position de la barrière virtuelle
+		méthode de récupération de la position de la barrière virtuelle
 		@return la position de la barrière virtuelle
 	*/
 	Point getVirtualBarriere()
@@ -258,45 +258,49 @@ public:
 	}
 
 	/**
-		définir la position de la barrière virtuelle
+		méthode de définition de la position de la barrière virtuelle
 		@param position la position de la barrière virtuelle
 		@return true si la barrière virtuelle peut être définie à cet endroit, sinon false
 	*/
 	bool setVirtualBarriere(Point position);
 
 	/**
-		déplacer une barrière virtuelle dans une direction donnée
+		méthode de déplacement d'une barrière virtuelle dans une direction donnée
 		@param direction la direction du déplacement de la barrière virtuelle
 		@return true si la barrière virtuelle peut être déplacée à cet endroit, sinon false
 	*/
 	bool deplacerVirtualBarriere(Direction direction);
 
 	/**
-		changer le sens de la barrière virtuelle
+		méthode de changement du sens de la barrière virtuelle
 		@return true si le sens de la barrière virtuelle peut-être changé, sinon false
 	*/
 	bool changerSensVirtualBarriere();
 
 	/**
-		annuler le dernier coup
+		méthode d'annulation du dernier coup
 		@return False si plus aucun coups à annuler, sinon true
 	*/
 	bool annulerDernierCoup();
 
-	//TODO: doc
+	/**
+		méthode de récuparation de la vue courante
+	*/
 	View getView()
 	{
 		return currentView;
 	}
 
-	//TODO: doc
+	/**
+		méthode de définition de la vue courante
+	*/
 	void setView(View view)
 	{
 		currentView = view;
 	}
 
 	/**
-		méthode enregistement de la partie dans un flux
+		méthode d'enregistement de la partie dans un flux
 		@param stream le flux où enregistrer la partie
 		@param model la partie à enregistrer
 		@return le flux avec les données enregistrées

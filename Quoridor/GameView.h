@@ -95,13 +95,18 @@ public:
 	*/
 	void refreshMessage();
 
-	//TODO: doc
+	/**
+		méthode de récupération de la camera
+	*/
 	osg::Camera *getActionsCamera()
 	{
 		return cameraActionsArea.get();
 	}
 
-	//TODO: doc
+	/**
+		méthode de récupération du nom du bouton sur lequel l'on clique
+		@param position la position du clique de la souris
+	*/
 	std::string GameView::obtenirNomBoutonCollision(Point position);
 
 	/**
@@ -111,25 +116,40 @@ public:
 	*/
 	Config::Button testerCollisionAvecBouton(Point position);
 
-	//TODO: doc
+	/**
+		méthode de rafraichissement des boutons
+	*/
 	void refreshButtons();
 
-	//TODO: doc
+	/**
+		méthode de rafraichissement de la vue
+	*/
 	void refreshView();
 
-	//TODO: doc
+	/**
+		méthode du zoom de la caméra
+	*/
 	void zoomIn();
 
-	//TODO: doc
+	/**
+		méthode du dézoom de la caméra
+	*/
 	void zoomOut();
 
-	//TODO: doc
+	/**
+		méthode de la rotation vers la gauche de la caméra
+	*/
 	void turnLeft();
 
-	//TODO: doc
+	/**
+		méthode de la rotation vers la droite de la caméra
+	*/
 	void turnRight();
 
-	//TODO: doc
+	/**
+		méthode de récupération de l'angle de la caméra
+		@return l'angle de la caméra
+	*/
 	int getAngle()
 	{
 		return currentAngle;

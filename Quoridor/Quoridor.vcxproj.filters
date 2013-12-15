@@ -71,9 +71,6 @@
     <ClInclude Include="LoadException.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="SaveLoad.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
