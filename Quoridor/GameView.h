@@ -154,4 +154,13 @@ public:
 	{
 		return currentAngle;
 	}
+
+	/**
+		méthode créeant une forme de pyramide centrée sur le milieu de la base
+		@param size la taille de la base
+		@param height la hauteur de la pyramide
+		@param color la couleur de la pyramide
+		@return la pyramide crée
+	*/
+	osg::ref_ptr<osg::Geode> createPyramidShape(float size, float height, osg::Vec4 color);
 };

@@ -301,23 +301,11 @@ void GameView::drawVirtualFence()
 
 void GameView::drawPawns()
 {
-	ref_ptr<ShapeDrawable> pion1 = new ShapeDrawable();
-	ref_ptr<ShapeDrawable> pion2 = new ShapeDrawable();
-	ref_ptr<Geode> geodePion1 = new Geode();
-	ref_ptr<Geode> geodePion2 = new Geode();
-
-	pion1->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), 20));
-	pion2->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), 20));
-	pion1->setColor(COLOR_PION_1);
-	pion2->setColor(COLOR_PION_2);
-
-	geodePion1->addDrawable(pion1.get());
-	geodePion2->addDrawable(pion2.get());
-
 	ref_ptr<MatrixTransform> mt1 = new MatrixTransform();
-	mt1->addChild(geodePion1.get());
+	mt1->addChild(createPyramidShape(Config::getInstance()->getTaillePion(), 20, RED));
+
 	ref_ptr<MatrixTransform> mt2 = new MatrixTransform();
-	mt2->addChild(geodePion2.get());
+	mt2->addChild(createPyramidShape(Config::getInstance()->getTaillePion(), 20, BLUE));
 
 	Controller::getInstance()->setPion(1, mt1);
 	Controller::getInstance()->setPion(2, mt2);
@@ -1176,6 +1164,78 @@ void GameView::turnRight()
 	arrows->setMatrix(Matrix::identity());
 	arrows->postMult(Matrix::rotate(inDegrees((double)currentAngle), Z_AXIS));
 	arrows->postMult(Matrix::translate(0, 270, 0));
+}
+
+ref_ptr<Geode> GameView::createPyramidShape(float size, float height, Vec4 color)
+{
+	ref_ptr<Geometry> pyramideGeometry = new Geometry();
+	
+	// création des vertices
+	ref_ptr<Vec3Array> vertices = new Vec3Array();
+	vertices->push_back(Vec3(-size, -size,      0));
+	vertices->push_back(Vec3(-size,  size,      0));
+	vertices->push_back(Vec3( size,  size,      0));
+	vertices->push_back(Vec3( size, -size,      0));
+	vertices->push_back(Vec3(   0 ,     0, height));
+
+	pyramideGeometry->setVertexArray(vertices.get());
+
+	// définition des différentes faces
+	ref_ptr<DrawElementsUInt> base = new DrawElementsUInt(PrimitiveSet::Mode::QUADS, 0);
+	base->push_back(0);
+	base->push_back(1);
+	base->push_back(2);
+	base->push_back(3);
+	pyramideGeometry->addPrimitiveSet(base.get());
+
+	ref_ptr<DrawElementsUInt> f1 = new DrawElementsUInt(PrimitiveSet::Mode::TRIANGLES, 0);
+	f1->push_back(4);
+	f1->push_back(2);
+	f1->push_back(1);
+	pyramideGeometry->addPrimitiveSet(f1.get());
+
+	ref_ptr<DrawElementsUInt> f2 = new DrawElementsUInt(PrimitiveSet::Mode::TRIANGLES, 0);
+	f2->push_back(4);
+	f2->push_back(3);
+	f2->push_back(2);
+	pyramideGeometry->addPrimitiveSet(f2.get());
+
+	ref_ptr<DrawElementsUInt> f3 = new DrawElementsUInt(PrimitiveSet::Mode::TRIANGLES, 0);
+	f3->push_back(4);
+	f3->push_back(0);
+	f3->push_back(3);
+	pyramideGeometry->addPrimitiveSet(f3.get());
+
+	ref_ptr<DrawElementsUInt> f4 = new DrawElementsUInt(PrimitiveSet::Mode::TRIANGLES, 0);
+	f4->push_back(4);
+	f4->push_back(1);
+	f4->push_back(0);
+	pyramideGeometry->addPrimitiveSet(f4.get());
+
+	// création des couleurs
+	ref_ptr<Vec4Array> colors = new Vec4Array();
+	colors->push_back(color);
+	colors->push_back(color);
+	colors->push_back(color);
+	colors->push_back(color);
+	colors->push_back(color);
+
+	pyramideGeometry->setColorArray(colors.get());
+	pyramideGeometry->setColorBinding(Geometry::AttributeBinding::BIND_PER_VERTEX);
+
+	// création du vecteur de normale
+	ref_ptr<Vec3Array> normalArray = new Vec3Array;
+	normalArray->push_back(Vec3(0,0,1));
+
+	pyramideGeometry->setNormalArray(normalArray.get());
+	pyramideGeometry->setNormalBinding(Geometry::AttributeBinding::BIND_PER_VERTEX);
+
+	// création de la geode
+	ref_ptr<Geode> pyramideGeode = new Geode();
+
+	pyramideGeode->addDrawable(pyramideGeometry.get());
+
+	return pyramideGeode.get();
 }
 
 ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
