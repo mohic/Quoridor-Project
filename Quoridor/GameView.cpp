@@ -85,6 +85,7 @@ void GameView::createAndConfigureCameraGameArea()
 {
 	ref_ptr<Light> light;
 	ref_ptr<LightSource> source;
+	StateSet *stateset;
 
 	cameraGameArea = new Camera();
 
@@ -96,6 +97,37 @@ void GameView::createAndConfigureCameraGameArea()
 	// vue parallèle (par défaut)
 	cameraGameArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
 	cameraGameArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_PLATEAU_BOTTOM, CAMERA_PLATEAU_TOP, CAMERA_NEAR, CAMERA_FAR);
+
+	// création de la lumière positionnelle à lumière diffuse
+	light = new Light;
+	light->setLightNum(0);
+	light->setDiffuse(Vec4(1, 1, 1, 0));
+	light->setPosition(Vec4(40, -40, 10, 1));
+
+	light->setConstantAttenuation(0.2);
+	light->setLinearAttenuation(0.01);
+
+	source = new LightSource();
+	source->setLight(light.get());
+	cameraGameArea->addChild(source.get());
+
+	stateset = cameraGameArea->getOrCreateStateSet();
+
+	stateset->setMode(GL_LIGHT0, StateAttribute::Values::ON);
+
+	// création de la lumière directionnelle à lumière ambiante
+	light = new Light;
+	light->setLightNum(1);
+	light->setAmbient(Vec4(1, 1, 1, 0));
+	light->setPosition(Vec4(0, 0, 0, 0));
+
+	source = new LightSource();
+	source->setLight(light.get());
+	cameraGameArea->addChild(source.get());
+
+	stateset = cameraGameArea->getOrCreateStateSet();
+
+	stateset->setMode(GL_LIGHT1, StateAttribute::Values::ON);
 }
 
 void GameView::createAndConfigureCameraDisplayArea()
@@ -150,7 +182,6 @@ void GameView::drawPlate()
 	ref_ptr<Geode> geodePlateau = new Geode();
 
 	StateSet *stateset = geodePlateau->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::Values::ON);
 	if (textureFound) stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	geodePlateau->addDrawable(plateau.get());
@@ -178,7 +209,6 @@ void GameView::drawCases()
 	ref_ptr<Geode> geodeCase = new Geode();
 	
 	StateSet *stateset = geodeCase->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	geodeCase->addDrawable(casePlateau.get());
@@ -214,8 +244,6 @@ void GameView::drawCases()
 
 void GameView::drawFences()
 {
-	StateSet *stateset;
-
 	// barrière avec l'apparence de la zone de stockage
 	ref_ptr<ShapeDrawable> barriereDock = new ShapeDrawable();
 	barriereDock->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), 18));
@@ -223,10 +251,6 @@ void GameView::drawFences()
 
 	ref_ptr<Geode> geodeBarriereDock = new Geode();
 	geodeBarriereDock->setName("dock");
-
-	stateset = geodeBarriereDock->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
-
 	geodeBarriereDock->addDrawable(barriereDock.get());
 
 	// barrière avec l'apparence dans le jeu
@@ -236,10 +260,6 @@ void GameView::drawFences()
 
 	ref_ptr<Geode> geodeBarriereGame = new Geode();
 	geodeBarriereGame->setName("game");
-
-	stateset = geodeBarriereGame->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
-
 	geodeBarriereGame->addDrawable(barriereGame.get());
 
 	// ajouter les barrières au controller
@@ -290,12 +310,6 @@ void GameView::drawPawns()
 	pion2->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), 20));
 	pion1->setColor(COLOR_PION_1);
 	pion2->setColor(COLOR_PION_2);
-
-	StateSet *stateset = geodePion1->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
-
-	stateset = geodePion2->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
 	geodePion1->addDrawable(pion1.get());
 	geodePion2->addDrawable(pion2.get());
