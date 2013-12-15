@@ -93,9 +93,6 @@
     <ClInclude Include="StateException.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Quoridor.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <Font Include="resources\fonts\messages.ttf" />
   </ItemGroup>
   <ItemGroup>
