@@ -34,8 +34,9 @@
 
 
 // différentes positions d'éléments
-#define EYE_PERSPECTIVE			Vec3(0, -130, 150)										//position de l'oeil en perspective
-#define EYE_ORTHO				Vec3(0, 0, 1)											//position de l'oeil en orthogonale
+#define EYE_PERSPECTIVE		Vec3(0, -130, 150)											//position de l'oeil en perspective
+#define EYE_ORTHO			Vec3(0, 0, 1)												//position de l'oeil en orthogonale
+#define POS_ECLAIRAGE		Vec4(40, -40, 10, 1)										//position de l'éclairage
 #define POS_MESSAGE_USER	Vec3(-98, 1, 0)												//position du message de joueur qui joue
 #define POS_MESSAGE_ERROR	Vec3(-98, -5.5, 0)											//position du message d'avertissement d'erreur
 

@@ -102,7 +102,7 @@ void GameView::createAndConfigureCameraGameArea()
 	light = new Light;
 	light->setLightNum(0);
 	light->setDiffuse(Vec4(1, 1, 1, 0));
-	light->setPosition(Vec4(40, -40, 10, 1));
+	light->setPosition(POS_ECLAIRAGE);
 
 	light->setConstantAttenuation(0.2);
 	light->setLinearAttenuation(0.01);
