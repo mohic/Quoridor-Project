@@ -1148,7 +1148,7 @@ void GameView::turnLeft()
 
 	arrows->setMatrix(Matrix::identity());
 	arrows->postMult(Matrix::rotate(inDegrees((double)currentAngle), Z_AXIS));
-	arrows->postMult(Matrix::translate(0, 270, 0));
+	arrows->postMult(Matrix::translate(POS_CONT_FLECHES));
 }
 
 void GameView::turnRight()
@@ -1163,7 +1163,7 @@ void GameView::turnRight()
 
 	arrows->setMatrix(Matrix::identity());
 	arrows->postMult(Matrix::rotate(inDegrees((double)currentAngle), Z_AXIS));
-	arrows->postMult(Matrix::translate(0, 270, 0));
+	arrows->postMult(Matrix::translate(POS_CONT_FLECHES));
 }
 
 ref_ptr<Geode> GameView::createPyramidShape(float size, float height, Vec4 color)
