@@ -928,14 +928,16 @@ string GameView::obtenirNomBoutonCollision(Point position)
 		else { // si container
 			ref_ptr<MatrixTransform> mt = dynamic_cast<MatrixTransform *>(n.get());
 
+			Vec3 v = mt->getMatrix().getTrans();
+
+			position = Point(position.getX() - v.x(), position.getY() - v.y());
+
 			for (unsigned int j = 0; j < mt->getChildIndex(0); j++)
 			{
 				ref_ptr<Node> n_mt = mt->getChild(j);
 				BoundingSphere bs_mt = n_mt->getBound();
 
-				Vec3 c = bs.center();
-
-				if (!bs_mt.contains(Vec3(position.getX() - c.x(), position.getY() - c.y(), 0)))
+				if (!bs_mt.contains(Vec3(position.getX(), position.getY(), 0)))
 					continue;
 
 				return n_mt->getName();
