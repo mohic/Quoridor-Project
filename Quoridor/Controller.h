@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <osg\AnimationPath>
 #include <osg\MatrixTransform>
 #include <osg\Camera>
 #include "Config.h"
@@ -26,6 +27,12 @@ private:
 	osg::ref_ptr<osg::MatrixTransform> virtualBarriere;					// sert à afficher une barrière servant à choisir où placer la barrière
 
 	bool isInitialized;													// détermine si le controlleur a été initialisé ou non
+
+	// variables servant à retenir un état donné pour éviter de recalculer les positions des éléments qui n'ont pas bougés
+	Point cache_pions[2];												// position actuelle des pions
+	Point cache_virtualFence;											// position actuelle de la barrière virtuelle
+	bool  cache_sens;													// sens actuel de la barrière virtuelle
+	int cache_barriereRestante[2];										// nombre actuel de barrières restante par joueurs
 
 	void computePions();												// calculer la position des pions
 	void computeVirtualBarriere();										// calculer la position de la barrière virtuelle

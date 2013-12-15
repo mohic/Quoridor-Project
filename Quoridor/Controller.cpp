@@ -62,10 +62,11 @@ void Controller::initialize(osg::ref_ptr<osg::MatrixTransform> container)
 	container->addChild(pions[0]);
 	container->addChild(pions[1]);
 
-	isInitialized = true;
-
 	// calculer les positions
 	computeAllPositions();
+
+	// mettre la classe en état initialisé
+	isInitialized = true;
 }
 
 void Controller::hideVirtualBarriere()
@@ -84,16 +85,42 @@ void Controller::computePions()
 		// récupération de la position du pion
 		Point p = Model::getInstance()->getPion(i + 1);
 
-		// définition de sa position
+		if (isInitialized && p == cache_pions[i]) // si le pion n'a pas bougé et que la classe est initialisée, l'ignorer
+			continue;
+
+		cache_pions[i] = p;
+
+		Vec3 pos0 = cases[cache_pions[i].getX()][cache_pions[i].getY()]->getMatrix().getTrans();
+		Vec3 pos1 = cases[p.getX()][p.getY()]->getMatrix().getTrans();
+
+		// définition de sa position finale
 		pions[i]->setMatrix(cases[p.getX()][p.getY()]->getMatrix());
+
+		// animation du pion
+		ref_ptr<AnimationPath> animPath = new AnimationPath();
+		animPath->setLoopMode(AnimationPath::LoopMode::NO_LOOPING);
+
+		AnimationPath::ControlPoint key0 = AnimationPath::ControlPoint(pos0);
+		AnimationPath::ControlPoint key1 = AnimationPath::ControlPoint(pos1);
+
+		animPath->insert(0, key0);
+		animPath->insert(.2, key1);
+
+		ref_ptr<AnimationPathCallback> animCallback = new AnimationPathCallback(animPath.get());
+		pions[i]->setUpdateCallback(animCallback.get());
 	}
 }
 
 void Controller::computeVirtualBarriere()
 {
-	//TODO: calculer QUE lorsque la barrière virtuelle a bougé
-
 	Point p = Model::getInstance()->getVirtualBarriere();
+	bool sens = Model::getInstance()->getSensVirtualBarriere();
+
+	if (isInitialized && p == cache_virtualFence && sens == cache_sens) // si la barrière virtuelle n'a pas bougé et que la classe est initialisée, l'ignorer
+		return;
+
+	cache_virtualFence = p;
+	cache_sens = sens;
 
 	virtualBarriere->setMatrix(Matrix::identity());
 
@@ -109,7 +136,8 @@ void Controller::computeVirtualBarriere()
 
 void Controller::computeBarrieres()
 {
-	//TODO: calculer QUE lorsqu'une barrière a bougé
+	bool mustCalculate1 = false;
+	bool mustCalculate2 = false;
 	
 	ref_ptr<MatrixTransform> mt;
 
@@ -126,77 +154,88 @@ void Controller::computeBarrieres()
 
 	int py = -pxInit + Config::getInstance()->getTailleRainure() * 2 + Config::getInstance()->getTailleCase();
 
-	// placement des barrières dans la zone rangement du joueur 1
-	for (int i = 0; i < barriereZoneJ1; i++)
-	{
-		mt = barrieres[0][i];
-		mt->setMatrix(Matrix::identity());
-		mt->postMult(Matrix::rotate(osg::inDegrees(90.0), Z_AXIS));
-		mt->postMult(Matrix::translate(Vec3(px, py, 0)));
+	if (!isInitialized || barriereZoneJ1 != cache_barriereRestante[0]) { // si le nombre de barrière a bougé ou que la classe n'est pas initialisée, calculer
+		cache_barriereRestante[0] = barriereZoneJ1;
+		mustCalculate1 = true; // indiquer qu'il faut calculer la position des barrières de J1
 
-		px += Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure();
+		// placement des barrières dans la zone rangement du joueur 1
+		for (int i = 0; i < barriereZoneJ1; i++)
+		{
+			mt = barrieres[0][i];
+			mt->setMatrix(Matrix::identity());
+			mt->postMult(Matrix::rotate(osg::inDegrees(90.0), Z_AXIS));
+			mt->postMult(Matrix::translate(Vec3(px, py, 0)));
+
+			px += Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure();
+		}
 	}
 
 	// emplacement de la première barrière dans la zone de rangement du joueur 2
 	px = pxInit;
 
-	// placement des barrières dans la zone rangement du joueur 2
-	for (int i = 0; i < barriereZoneJ2; i++)
-	{
-		mt = barrieres[1][i];
-		mt->setMatrix(Matrix::identity());
-		mt->postMult(Matrix::rotate(osg::inDegrees(90.0), Z_AXIS));
-		mt->postMult(Matrix::translate(Vec3(px, -py, 0)));
+	if (!isInitialized || barriereZoneJ2 != cache_barriereRestante[1]) { // si le nombre de barrière a bougé ou que la classe n'est pas initialisée, calculer
+		cache_barriereRestante[1] = barriereZoneJ2;
+		mustCalculate2 = true; // indiquer qu'il faut calculer la position des barrières de J2
 
-		px += Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure();
-	}
-
-	// calculer les barrières déjà placées du joueur 1
-	vector<Point> bp1 = Model::getInstance()->getBarrierePlacee(1);
-	vector<bool> sensBp1 = Model::getInstance()->getSensBarrierePlacee(1);
-
-	// placement des barrières placées par je joueur 1
-	for (unsigned int i = 0; i < bp1.size(); i++)
-	{
-		mt = barrieres[0][barriereZoneJ1 + i];
-		mt->setMatrix(Matrix::identity());
-
-		if (sensBp1[i]) { // si vertical
+		// placement des barrières dans la zone rangement du joueur 2
+		for (int i = 0; i < barriereZoneJ2; i++)
+		{
+			mt = barrieres[1][i];
+			mt->setMatrix(Matrix::identity());
 			mt->postMult(Matrix::rotate(osg::inDegrees(90.0), Z_AXIS));
-			mt->postMult(cases[bp1[i].getX() - 1][bp1[i].getY()]->getMatrix());
-			mt->postMult(Matrix::translate(Vec3((Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure()) / 2.0, (-Config::getInstance()->getTailleBarriere() / 2.0) + (Config::getInstance()->getTailleCase() / 2.0), 0)));
-		} else { // si horizontale
-			mt->setMatrix(cases[bp1[i].getX()][bp1[i].getY() - 1]->getMatrix());
-			mt->postMult(Matrix::translate(Vec3((Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure()) / 2.0, (-Config::getInstance()->getTailleBarriere() / 2.0) + (Config::getInstance()->getTailleCase() / 2.0), 0)));
+			mt->postMult(Matrix::translate(Vec3(px, -py, 0)));
+
+			px += Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure();
 		}
 	}
 
-	// calculer les barrières déjà placées du joueur 2
-	vector<Point> bp2 = Model::getInstance()->getBarrierePlacee(2);
-	vector<bool> sensBp2 = Model::getInstance()->getSensBarrierePlacee(2);
+	if (mustCalculate1) { // si doit être calculé
+		// calculer les barrières déjà placées du joueur 1
+		vector<Point> bp1 = Model::getInstance()->getBarrierePlacee(1);
+		vector<bool> sensBp1 = Model::getInstance()->getSensBarrierePlacee(1);
 
-	// placement des barrières placées par je joueur 2
-	for (unsigned int i = 0; i < bp2.size(); i++)
-	{
-		mt = barrieres[1][barriereZoneJ2 + i];
-		mt->setMatrix(Matrix::identity());
+		// placement des barrières placées par je joueur 1
+		for (unsigned int i = 0; i < bp1.size(); i++)
+		{
+			mt = barrieres[0][barriereZoneJ1 + i];
+			mt->setMatrix(Matrix::identity());
 
-		if (sensBp2[i]) { // si vertical
-			mt->postMult(Matrix::rotate(osg::inDegrees(90.0), Z_AXIS));
-			mt->postMult(cases[bp2[i].getX() - 1][bp2[i].getY()]->getMatrix());
-			mt->postMult(Matrix::translate(Vec3((Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure()) / 2.0, (-Config::getInstance()->getTailleBarriere() / 2.0) + (Config::getInstance()->getTailleCase() / 2.0), 0)));
-		} else { // si horizontale
-			mt->setMatrix(cases[bp2[i].getX()][bp2[i].getY() - 1]->getMatrix());
-			mt->postMult(Matrix::translate(Vec3((Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure()) / 2.0, (-Config::getInstance()->getTailleBarriere() / 2.0) + (Config::getInstance()->getTailleCase() / 2.0), 0)));
+			if (sensBp1[i]) { // si vertical
+				mt->postMult(Matrix::rotate(osg::inDegrees(90.0), Z_AXIS));
+				mt->postMult(cases[bp1[i].getX() - 1][bp1[i].getY()]->getMatrix());
+				mt->postMult(Matrix::translate(Vec3((Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure()) / 2.0, (-Config::getInstance()->getTailleBarriere() / 2.0) + (Config::getInstance()->getTailleCase() / 2.0), 0)));
+			} else { // si horizontale
+				mt->setMatrix(cases[bp1[i].getX()][bp1[i].getY() - 1]->getMatrix());
+				mt->postMult(Matrix::translate(Vec3((Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure()) / 2.0, (-Config::getInstance()->getTailleBarriere() / 2.0) + (Config::getInstance()->getTailleCase() / 2.0), 0)));
+			}
+		}
+	}
+
+	if (mustCalculate2) { // si doit être calculé
+		// calculer les barrières déjà placées du joueur 2
+		vector<Point> bp2 = Model::getInstance()->getBarrierePlacee(2);
+		vector<bool> sensBp2 = Model::getInstance()->getSensBarrierePlacee(2);
+
+		// placement des barrières placées par je joueur 2
+		for (unsigned int i = 0; i < bp2.size(); i++)
+		{
+			mt = barrieres[1][barriereZoneJ2 + i];
+			mt->setMatrix(Matrix::identity());
+
+			if (sensBp2[i]) { // si vertical
+				mt->postMult(Matrix::rotate(osg::inDegrees(90.0), Z_AXIS));
+				mt->postMult(cases[bp2[i].getX() - 1][bp2[i].getY()]->getMatrix());
+				mt->postMult(Matrix::translate(Vec3((Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure()) / 2.0, (-Config::getInstance()->getTailleBarriere() / 2.0) + (Config::getInstance()->getTailleCase() / 2.0), 0)));
+			} else { // si horizontale
+				mt->setMatrix(cases[bp2[i].getX()][bp2[i].getY() - 1]->getMatrix());
+				mt->postMult(Matrix::translate(Vec3((Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure()) / 2.0, (-Config::getInstance()->getTailleBarriere() / 2.0) + (Config::getInstance()->getTailleCase() / 2.0), 0)));
+			}
 		}
 	}
 }
 
 void Controller::computeAllPositions()
 {
-	if (!isInitialized)
-		throw new StateException("État incorrect: Veuillez appeler la méthode initialize une fois que tout les éléments sont setter");
-
 	// position des pions
 	computePions();
 

@@ -4,7 +4,9 @@
 
 #include <string>
 #include <vector>
+#include <osg\BlendFunc>
 #include <osg\Geode>
+#include <osg\Material>
 #include <osg\MatrixTransform>
 #include <osg\ShapeDrawable>
 #include <osg\Texture2D>

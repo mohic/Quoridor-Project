@@ -83,14 +83,19 @@ void GameView::createAndConfigureViewer()
 
 void GameView::createAndConfigureCameraGameArea()
 {
+	ref_ptr<Light> light;
+	ref_ptr<LightSource> source;
+
 	cameraGameArea = new Camera();
+
+	// configuration générale
+	cameraGameArea->setViewport(new Viewport(ESPACEMENT, ESPACEMENT + MESSAGE_HEIGHT + ESPACEMENT, PLATEAU_TAILLE, PLATEAU_TAILLE));
+	cameraGameArea->setReferenceFrame(Camera::ABSOLUTE_RF);
+	cameraGameArea->setClearColor(BLACK);
 
 	// vue parallèle (par défaut)
 	cameraGameArea->setViewMatrixAsLookAt(eyeOrtho, center, up);
 	cameraGameArea->setProjectionMatrixAsOrtho(CAMERA_LEFT, CAMERA_RIGHT, CAMERA_PLATEAU_BOTTOM, CAMERA_PLATEAU_TOP, CAMERA_NEAR, CAMERA_FAR);
-	cameraGameArea->setViewport(new Viewport(ESPACEMENT, ESPACEMENT + MESSAGE_HEIGHT + ESPACEMENT, PLATEAU_TAILLE, PLATEAU_TAILLE));
-	cameraGameArea->setReferenceFrame(Camera::ABSOLUTE_RF);
-	cameraGameArea->setClearColor(BLACK);
 }
 
 void GameView::createAndConfigureCameraDisplayArea()
@@ -131,11 +136,13 @@ void GameView::createClassicButton()
 
 void GameView::drawPlate()
 {
+	// texture
 	ref_ptr<Texture2D> texture = new Texture2D();
 	ref_ptr<Image> img = osgDB::readImageFile("resources/textures/plate.jpg");
 	bool textureFound = img != 0;
 	texture->setImage(img);
 
+	// forme
 	ref_ptr<ShapeDrawable> plateau = new ShapeDrawable();
 	plateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTaillePlateau(), Config::getInstance()->getTaillePlateau(), 5));
 	if (!textureFound) plateau->setColor(COLOR_PLATEAU);
@@ -143,7 +150,7 @@ void GameView::drawPlate()
 	ref_ptr<Geode> geodePlateau = new Geode();
 
 	StateSet *stateset = geodePlateau->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::ON);
 	if (textureFound) stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	geodePlateau->addDrawable(plateau.get());
@@ -1191,7 +1198,6 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 
 	// ajouter les callbacks
 	root->setEventCallback(new EventController());
-	root->setUpdateCallback(new PositionUpdater());
 
 	// ajouter le noeud racine au viewer
 	viewer->setSceneData(root.get());
