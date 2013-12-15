@@ -373,9 +373,9 @@ void GameView::drawArrowAndDirectionButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
+	button->postMult(Matrix::scale(TAILLE_FLECHES));
 	button->postMult(Matrix::rotate(inDegrees(90.0), Z_AXIS));
-	button->postMult(Matrix::translate(POS_FLECHE_GAUCHE));
+	button->postMult(Matrix::translate(POS_FLECHE_HAUT));
 
 	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
@@ -385,9 +385,9 @@ void GameView::drawArrowAndDirectionButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
+	button->postMult(Matrix::scale(TAILLE_FLECHES));
 	button->postMult(Matrix::rotate(inDegrees(90.0), Z_AXIS));
-	button->postMult(Matrix::translate(Vec3(0, 60, 0)));
+	button->postMult(Matrix::translate(POS_FLECHE_HAUT));
 
 	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, textureHover, StateAttribute::Values::ON);
@@ -403,9 +403,9 @@ void GameView::drawArrowAndDirectionButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
+	button->postMult(Matrix::scale(TAILLE_FLECHES));
 	button->postMult(Matrix::rotate(inDegrees(180.0), Z_AXIS));
-	button->postMult(Matrix::translate(Vec3(-60, 0, 0)));
+	button->postMult(Matrix::translate(POS_FLECHE_GAUCHE));
 
 	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
@@ -415,9 +415,9 @@ void GameView::drawArrowAndDirectionButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
+	button->postMult(Matrix::scale(TAILLE_FLECHES));
 	button->postMult(Matrix::rotate(inDegrees(180.0), Z_AXIS));
-	button->postMult(Matrix::translate(Vec3(-60, 0, 0)));
+	button->postMult(Matrix::translate(POS_FLECHE_GAUCHE));
 
 	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, textureHover, StateAttribute::Values::ON);
@@ -433,9 +433,9 @@ void GameView::drawArrowAndDirectionButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
+	button->postMult(Matrix::scale(TAILLE_FLECHES));
 	button->postMult(Matrix::rotate(inDegrees(-90.0), Z_AXIS));
-	button->postMult(Matrix::translate(Vec3(0, -60, 0)));
+	button->postMult(Matrix::translate(POS_FLECHE_BAS));
 
 	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
@@ -445,9 +445,9 @@ void GameView::drawArrowAndDirectionButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
+	button->postMult(Matrix::scale(TAILLE_FLECHES));
 	button->postMult(Matrix::rotate(inDegrees(-90.0), Z_AXIS));
-	button->postMult(Matrix::translate(Vec3(0, -60, 0)));
+	button->postMult(Matrix::translate(POS_FLECHE_BAS));
 
 	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, textureHover, StateAttribute::Values::ON);
@@ -463,8 +463,8 @@ void GameView::drawArrowAndDirectionButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());;
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
-	button->postMult(Matrix::translate(Vec3(60, 0, 0)));
+	button->postMult(Matrix::scale(TAILLE_FLECHES));
+	button->postMult(Matrix::translate(POS_FLECHE_DROITE));
 
 	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
@@ -474,8 +474,8 @@ void GameView::drawArrowAndDirectionButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());;
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
-	button->postMult(Matrix::translate(Vec3(60, 0, 0)));
+	button->postMult(Matrix::scale(TAILLE_FLECHES));
+	button->postMult(Matrix::translate(POS_FLECHE_DROITE));
 
 	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, textureHover, StateAttribute::Values::ON);
@@ -491,7 +491,7 @@ void GameView::drawArrowAndDirectionButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::scale(0.75, 0.75, 1));
+	button->postMult(Matrix::scale(TAILLE_FLECHES));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/direction_no.png");
@@ -505,7 +505,7 @@ void GameView::drawArrowAndDirectionButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::scale(0.75, 0.75, 1));
+	button->postMult(Matrix::scale(TAILLE_FLECHES));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/direction_no_hover.png");
@@ -534,7 +534,7 @@ void GameView::drawGameButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(-50, 130, 0)));
+	button->postMult(Matrix::translate(POS_CHANGE_MODE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/fence.png");
@@ -548,7 +548,7 @@ void GameView::drawGameButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(-50, 130, 0)));
+	button->postMult(Matrix::translate(POS_CHANGE_MODE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/fence_hover.png");
@@ -568,7 +568,7 @@ void GameView::drawGameButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, 130, 0)));
+	button->postMult(Matrix::translate(POS_VALIDE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/validate_no.png");
@@ -582,7 +582,7 @@ void GameView::drawGameButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, 130, 0)));
+	button->postMult(Matrix::translate(POS_VALIDE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/validate_no_hover.png");
@@ -602,7 +602,7 @@ void GameView::drawGameButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, -240, 0)));
+	button->postMult(Matrix::translate(POS_RECOMMENCER));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/restart.png");
@@ -616,7 +616,7 @@ void GameView::drawGameButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, -240, 0)));
+	button->postMult(Matrix::translate(POS_RECOMMENCER));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/restart_hover.png");
@@ -636,7 +636,7 @@ void GameView::drawGameButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(-50, -240, 0)));
+	button->postMult(Matrix::translate(POS_ANNULATION));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/undo.png");
@@ -650,7 +650,7 @@ void GameView::drawGameButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(-50, -240, 0)));
+	button->postMult(Matrix::translate(POS_ANNULATION));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/undo_hover.png");
@@ -679,7 +679,7 @@ void GameView::drawSaveAndLoadButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(-50, -325, 0)));
+	button->postMult(Matrix::translate(POS_SAUVEGARDE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/save.png");
@@ -693,7 +693,7 @@ void GameView::drawSaveAndLoadButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(-50, -325, 0)));
+	button->postMult(Matrix::translate(POS_SAUVEGARDE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/save_hover.png");
@@ -713,7 +713,7 @@ void GameView::drawSaveAndLoadButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, -325, 0)));
+	button->postMult(Matrix::translate(POS_CHARGEMENT));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/load.png");
@@ -727,7 +727,7 @@ void GameView::drawSaveAndLoadButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, -325, 0)));
+	button->postMult(Matrix::translate(POS_CHARGEMENT));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/load_hover.png");
@@ -756,7 +756,7 @@ void GameView::drawViewButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(-50, -115, 0)));
+	button->postMult(Matrix::translate(POS_CHANGE_VUE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/perspective.png");
@@ -770,7 +770,7 @@ void GameView::drawViewButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(-50, -115, 0)));
+	button->postMult(Matrix::translate(POS_CHANGE_VUE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/perspective_hover.png");
@@ -790,7 +790,7 @@ void GameView::drawViewButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, -60, 0)));
+	button->postMult(Matrix::translate(POS_ZOOM));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/zoom_in.png");
@@ -804,7 +804,7 @@ void GameView::drawViewButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, -60, 0)));
+	button->postMult(Matrix::translate(POS_ZOOM));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/zoom_in_hover.png");
@@ -824,7 +824,7 @@ void GameView::drawViewButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, -150, 0)));
+	button->postMult(Matrix::translate(POS_DEZOOM));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/zoom_out.png");
@@ -838,7 +838,7 @@ void GameView::drawViewButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, -150, 0)));
+	button->postMult(Matrix::translate(POS_DEZOOM));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/zoom_out_hover.png");
@@ -858,7 +858,7 @@ void GameView::drawViewButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(-50, 40, 0)));
+	button->postMult(Matrix::translate(POS_ROTATION_GAUCHE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/turn_left.png");
@@ -872,7 +872,7 @@ void GameView::drawViewButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(-50, 40, 0)));
+	button->postMult(Matrix::translate(POS_ROTATION_GAUCHE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/turn_left_hover.png");
@@ -892,7 +892,7 @@ void GameView::drawViewButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, 40, 0)));
+	button->postMult(Matrix::translate(POS_ROTATION_DROITE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/turn_right.png");
@@ -906,7 +906,7 @@ void GameView::drawViewButtons()
 	button = new MatrixTransform();
 	button->addChild(classicButton.get());
 	button->setMatrix(Matrix::identity());
-	button->postMult(Matrix::translate(Vec3(50, 40, 0)));
+	button->postMult(Matrix::translate(POS_ROTATION_DROITE));
 
 	texture = new Texture2D();
 	img = osgDB::readImageFile("resources/textures/turn_right_hover.png");
