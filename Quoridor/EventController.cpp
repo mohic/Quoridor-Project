@@ -5,8 +5,6 @@ using namespace osg;
 using namespace osgGA;
 using namespace osgUtil;
 
-//TODO: refresh que lorsqu'un élément à bougé (et pour refresh view, que quand la vue a changé)
-
 EventController::EventController()
 {
 	// initialisation des variables
@@ -198,7 +196,7 @@ void EventController::performAction(Config::Button button)
 	switch (button)
 	{	
 		case Config::Button::UNDO: // annuler un coup
-			Model::getInstance()->annulerDernierCoup();
+			Controller::getInstance()->annulerDernierCoup();
 			GameView::getInstance()->refreshButtons(); // met à jour la textures des boutons
 
 			return;
