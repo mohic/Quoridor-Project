@@ -360,22 +360,22 @@ void EventController::manageArrow(int key)
 	Config::Button leftArrow;
 	Config::Button rightArrow;
 
-	if (angle >= 315 || angle < 45) { // si vers le bas
+	if (angle >= MAX_ANGLE_HAUT || angle < MAX_ANGLE_BAS) { // si vers le bas
 		upArrow = Config::Button::ARROW_UP;
 		downArrow = Config::Button::ARROW_DOWN;
 		leftArrow = Config::Button::ARROW_LEFT;
 		rightArrow = Config::Button::ARROW_RIGHT;
-	} else if (angle >= 45 && angle < 135) { // si vers la droite
+	} else if (angle >= MAX_ANGLE_BAS && angle < MAX_ANGLE_DROITE) { // si vers la droite
 		upArrow = Config::Button::ARROW_RIGHT;
 		downArrow = Config::Button::ARROW_LEFT;
 		leftArrow = Config::Button::ARROW_UP;
 		rightArrow = Config::Button::ARROW_DOWN;
-	} else if (angle >= 135 && angle < 225) { // si à l'envers
+	} else if (angle >= MAX_ANGLE_DROITE && angle < MAX_ANGLE_HAUT) { // si vers le haut
 		upArrow = Config::Button::ARROW_DOWN;
 		downArrow = Config::Button::ARROW_UP;
 		leftArrow = Config::Button::ARROW_RIGHT;
 		rightArrow = Config::Button::ARROW_LEFT;
-	} else { // si vers la gacuhe
+	} else { // si vers la gauche
 		upArrow = Config::Button::ARROW_LEFT;
 		downArrow = Config::Button::ARROW_RIGHT;
 		leftArrow = Config::Button::ARROW_DOWN;

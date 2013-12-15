@@ -32,6 +32,16 @@
 #define LIMIT_PERSPECTIVE_MIN	Vec3(0, -85, 105)										// limite du zoom en avant de la caméra en vue perspective (le x n'est pas prit en compte)
 #define LIMIT_PERSPECTIVE_MAX	Vec3(0, -165, 185)										// limite du zoom en arrière de la caméra en vue perspective (le x n'est pas prit en compte)
 
+
+// différentes positions d'éléments
+#define EYE_PERSPECTIVE			Vec3(0, -130, 150)										//emplacement de l'oeil en perspective
+#define EYE_ORTHO				Vec3(0, 0, 1)											//emplacement de l'oeil en orthogonale
+#define POS_MESSAGE_USER	Vec3(-98, 1, 0)												//emplacement du message de joueur qui joue
+#define POS_MESSAGE_ERROR	Vec3(-98, -5.5, 0)											//emplacement du message d'avertissement d'erreur
+#define POS_CONT_FLECHES	Vec3(0, 270, 0)												//position du conteneur des fleches
+#define POS_FLECHE_GAUCHE	Vec3(0, 60, 0)												//position de la flèche gauche
+
+
 // spécificités de la caméra des messages
 #define CAMERA_MESSAGE_BOTTOM	-8														// coordonnée du bas du plan de délimitation des messages
 #define CAMERA_MESSAGE_TOP		8														// coordonnée du haut du plan de délimitation des messages
@@ -50,6 +60,20 @@
 									/ 2.0)												// coordonnée du bas du plan de délimitation des actions
 #define CAMERA_ACTIONS_TOP		(((PLATEAU_TAILLE / ACTIONS_WIDTH) * WIDTH_CAMERA) \
 									/ 2.0)												// coordonnée du haut du plan de délimitation des action
+
+
+//spécificités des différents éléments
+#define TAILLE_BOUTON			70														//taille des boutons
+#define HAUTEUR_PLATEAU			5														//hauteur du plateau
+#define HAUTEUR_CASE			8														//hauteur des cases
+#define HAUTEUR_BARRIERE		18														//hauteur des barrieres
+#define HAUTEUR_PION			20														//hauteur des pions
+
+//angle
+#define MAX_ANGLE_HAUT			225														//maximum de l'angle pour regarder vers le haut
+#define MAX_ANGLE_BAS			45														//maximum de l'angle pour regarder vers le bas
+#define MAX_ANGLE_DROITE		135														//maximum de l'angle pour regarder vers la droite
+#define MAX_ANGLE_GAUCHE		315														//maximum de l'angle pour regarder vers la gauche
 
 // spécificités des textes
 #define FONT_SIZE				5														// taille de la police

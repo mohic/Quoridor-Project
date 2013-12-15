@@ -16,8 +16,8 @@ GameView::GameView()
 	center         = POSITION_CENTRE;
 	eye            = Vec3(0, 0, 1);
 	up             = Vec3(0, 1, 0);
-	eyeOrtho       = Vec3(0, 0, 1);
-	eyePerspective = Vec3(0, -130, 150);
+	eyeOrtho       = EYE_ORTHO;
+	eyePerspective = EYE_PERSPECTIVE;
 
 	offset         = 0;
 
@@ -43,7 +43,7 @@ void GameView::initMessage()
 	userMessage = new osgText::Text();
 	userMessage->setFont(font);
 	userMessage->setCharacterSize(FONT_SIZE);
-	userMessage->setPosition(Vec3(-98, 1, 0));
+	userMessage->setPosition(POS_MESSAGE_USER);
 	userMessage->setText(Model::getInstance()->getUserMessage());
 	userMessage->setColor(COLOR_MESSAGE);
 
@@ -51,7 +51,7 @@ void GameView::initMessage()
 	errorMessage = new osgText::Text();
 	errorMessage->setFont(font);
 	errorMessage->setCharacterSize(FONT_SIZE);
-	errorMessage->setPosition(Vec3(-98, -5.5, 0));
+	errorMessage->setPosition(POS_MESSAGE_ERROR);
 	errorMessage->setText(Model::getInstance()->getErrorMessage());
 	errorMessage->setColor(COLOR_MESSAGE);
 }
@@ -123,7 +123,7 @@ void GameView::createAndConfigureCameraActionsArea()
 void GameView::createClassicButton()
 {
 	ref_ptr<ShapeDrawable> button = new ShapeDrawable();
-	button->setShape(new Box(POSITION_CENTRE, 70, 70, 1));
+	button->setShape(new Box(POSITION_CENTRE, TAILLE_BOUTON, TAILLE_BOUTON, 1));
 	button->setColor(WHITE);
 
 	classicButton = new Geode();
@@ -144,7 +144,7 @@ void GameView::drawPlate()
 
 	// forme
 	ref_ptr<ShapeDrawable> plateau = new ShapeDrawable();
-	plateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTaillePlateau(), Config::getInstance()->getTaillePlateau(), 5));
+	plateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTaillePlateau(), Config::getInstance()->getTaillePlateau(), HAUTEUR_PLATEAU));
 	if (!textureFound) plateau->setColor(COLOR_PLATEAU);
 
 	ref_ptr<Geode> geodePlateau = new Geode();
@@ -171,7 +171,7 @@ void GameView::drawCases()
 
 	// création de l'apparence d'une case
 	ref_ptr<ShapeDrawable> casePlateau = new ShapeDrawable();
-	casePlateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleCase(), Config::getInstance()->getTailleCase(), 8));
+	casePlateau->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleCase(), Config::getInstance()->getTailleCase(), HAUTEUR_CASE));
 	casePlateau->setColor(COLOR_CASE);
 	
 	// création de la géode avec ajout de la texture
@@ -218,7 +218,7 @@ void GameView::drawFences()
 
 	// barrière avec l'apparence de la zone de stockage
 	ref_ptr<ShapeDrawable> barriereDock = new ShapeDrawable();
-	barriereDock->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), 18));
+	barriereDock->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), HAUTEUR_BARRIERE));
 	barriereDock->setColor(COLOR_BARRIERE);
 
 	ref_ptr<Geode> geodeBarriereDock = new Geode();
@@ -231,7 +231,7 @@ void GameView::drawFences()
 
 	// barrière avec l'apparence dans le jeu
 	ref_ptr<ShapeDrawable> barriereGame = new ShapeDrawable();
-	barriereGame->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), 18));
+	barriereGame->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), HAUTEUR_BARRIERE));
 	barriereGame->setColor(BLUE);
 
 	ref_ptr<Geode> geodeBarriereGame = new Geode();
@@ -264,7 +264,7 @@ void GameView::drawFences()
 void GameView::drawVirtualFence()
 {
 	ref_ptr<ShapeDrawable> virtualFence = new ShapeDrawable();
-	virtualFence->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere() + 0.1, Config::getInstance()->getTailleRainure() + 0.1, 18 + 0.1));
+	virtualFence->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere() + 0.1, Config::getInstance()->getTailleRainure() + 0.1, HAUTEUR_BARRIERE + 0.1));
 	virtualFence->setColor(COLOR_VIRTUAL_BARRIERE);
 
 	geodeVirtualFence = new Geode();
@@ -286,8 +286,8 @@ void GameView::drawPawns()
 	ref_ptr<Geode> geodePion1 = new Geode();
 	ref_ptr<Geode> geodePion2 = new Geode();
 
-	pion1->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), 20));
-	pion2->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), 20));
+	pion1->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), HAUTEUR_PION));
+	pion2->setShape(new Cylinder(POSITION_CENTRE, Config::getInstance()->getTaillePion(), HAUTEUR_PION));
 	pion1->setColor(COLOR_PION_1);
 	pion2->setColor(COLOR_PION_2);
 
@@ -339,7 +339,7 @@ void GameView::drawArrowAndDirectionButtons()
 	// matrixTransform contenant les touches de directions et de changements de direction
 	arrows = new MatrixTransform();
 	arrows->setMatrix(Matrix::identity());
-	arrows->postMult(Matrix::translate(0, 270, 0));
+	arrows->postMult(Matrix::translate(POS_CONT_FLECHES));
 
 	cameraActionsArea->addChild(arrows.get());
 
@@ -361,7 +361,7 @@ void GameView::drawArrowAndDirectionButtons()
 	button->setMatrix(Matrix::identity());
 	button->postMult(Matrix::scale(Vec3(0.75, 0.75, 1)));
 	button->postMult(Matrix::rotate(inDegrees(90.0), Z_AXIS));
-	button->postMult(Matrix::translate(Vec3(0, 60, 0)));
+	button->postMult(Matrix::translate(POS_FLECHE_GAUCHE));
 
 	stateset = button->getOrCreateStateSet();
 	stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
