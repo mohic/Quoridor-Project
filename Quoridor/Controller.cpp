@@ -80,6 +80,9 @@ void Controller::hideVirtualBarriere()
 
 void Controller::computePions()
 {
+	Vec3 pos0;
+	Vec3 pos1;
+
 	for (int i = 0; i < 2; i++)
 	{
 		// récupération de la position du pion
@@ -88,26 +91,30 @@ void Controller::computePions()
 		if (isInitialized && p == cache_pions[i]) // si le pion n'a pas bougé et que la classe est initialisée, l'ignorer
 			continue;
 
-		cache_pions[i] = p;
+		if (isInitialized) {
+			pos0 = cases[cache_pions[i].getX()][cache_pions[i].getY()]->getMatrix().getTrans();
+			pos1 = cases[p.getX()][p.getY()]->getMatrix().getTrans();
+		}
 
-		Vec3 pos0 = cases[cache_pions[i].getX()][cache_pions[i].getY()]->getMatrix().getTrans();
-		Vec3 pos1 = cases[p.getX()][p.getY()]->getMatrix().getTrans();
+		cache_pions[i] = p;
 
 		// définition de sa position finale
 		pions[i]->setMatrix(cases[p.getX()][p.getY()]->getMatrix());
 
 		// animation du pion
-		ref_ptr<AnimationPath> animPath = new AnimationPath();
-		animPath->setLoopMode(AnimationPath::LoopMode::NO_LOOPING);
+		if (isInitialized) {
+			ref_ptr<AnimationPath> animPath = new AnimationPath();
+			animPath->setLoopMode(AnimationPath::LoopMode::NO_LOOPING);
 
-		AnimationPath::ControlPoint key0 = AnimationPath::ControlPoint(pos0);
-		AnimationPath::ControlPoint key1 = AnimationPath::ControlPoint(pos1);
+			AnimationPath::ControlPoint key0 = AnimationPath::ControlPoint(pos0);
+			AnimationPath::ControlPoint key1 = AnimationPath::ControlPoint(pos1);
 
-		animPath->insert(0, key0);
-		animPath->insert(.2, key1);
+			animPath->insert(0, key0);
+			animPath->insert(0.2, key1);
 
-		ref_ptr<AnimationPathCallback> animCallback = new AnimationPathCallback(animPath.get());
-		pions[i]->setUpdateCallback(animCallback.get());
+			ref_ptr<AnimationPathCallback> animCallback = new AnimationPathCallback(animPath.get());
+			pions[i]->setUpdateCallback(animCallback.get());
+		}
 	}
 }
 
