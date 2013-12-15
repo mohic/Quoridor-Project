@@ -2,8 +2,9 @@
 
 #include <vector>
 #include <osg\AnimationPath>
-#include <osg\MatrixTransform>
 #include <osg\Camera>
+#include <osg\MatrixTransform>
+#include <osg\Switch>
 #include "Config.h"
 #include "Model.h"
 #include "Point.h"
@@ -110,4 +111,10 @@ public:
 		méthode du calcul toutes les positions
 	*/
 	void computeAllPositions();
+
+	//TODO: doc
+	void recommencerPartie();
+
+	//TODO: doc
+	void updateFence(osg::ref_ptr<osg::MatrixTransform> mt, bool reset);
 };

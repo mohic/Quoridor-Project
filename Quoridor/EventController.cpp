@@ -165,7 +165,7 @@ void EventController::performAction(Config::Button button)
 	switch (button)
 	{
 		case Config::RESTART: // recommencer une partie
-			Model::getInstance()->recommencerPartie();
+			Controller::getInstance()->recommencerPartie();
 			return;
 		case Config::VIEW:
 			if (Model::getInstance()->getView() == Model::View::PARALLELE)
