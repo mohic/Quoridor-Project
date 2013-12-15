@@ -19,7 +19,7 @@ private:
 	static Controller *instance;										// instance de la vue pour le pattern singleton
 	Controller();														// constructeur privé
 	
-	osg::ref_ptr<osg::Camera> camera;									// camera devant afficher les différents éléments mobile
+	osg::ref_ptr<osg::MatrixTransform> container;						// sert de container pour afficher les différents éléments mobiles
 	std::vector<std::vector<osg::ref_ptr<osg::MatrixTransform>>> cases;	// emplacement des cases. La première dimension donne l'emplacement X, la deuxième Y
 	std::vector<osg::ref_ptr<osg::MatrixTransform>> barrieres[2];		// MatrixTransform des différentes barrières par joueurs
 	osg::ref_ptr<osg::MatrixTransform> pions[2];						// pions sur le jeu
@@ -85,9 +85,9 @@ public:
 
 	/**
 		initialise le controlleur en ajoutant les différents éléments à la caméra et en calculant les différents positions
-		@param camera la caméra contenant les différents éléments
+		@param container le container devant contenir les différents éléments mobiles
 	*/
-	void initialize(osg::ref_ptr<osg::Camera> camera);
+	void initialize(osg::ref_ptr<osg::MatrixTransform> container);
 
 	/**
 		afficher la barrière virtuelle

@@ -16,7 +16,7 @@ Controller *Controller::getInstance()
 Controller::Controller()
 {
 	// initialise la caméra
-	camera = 0;
+	container = 0;
 
 	// initialise isInitialized
 	isInitialized = false;
@@ -34,33 +34,33 @@ void Controller::showVirtualBarriere()
 	if (!isInitialized)
 		throw new StateException("État incorrect: Veuillez appeler la méthode initialize une fois que tout les éléments sont setter");
 
-	if (!camera->containsNode(virtualBarriere))
-		camera->addChild(virtualBarriere);
+	if (!container->containsNode(virtualBarriere))
+		container->addChild(virtualBarriere);
 }
 
-void Controller::initialize(osg::ref_ptr<osg::Camera> camera)
+void Controller::initialize(osg::ref_ptr<osg::MatrixTransform> container)
 {
 	// éviter d'initialiser 2x
 	if (isInitialized)
 		return;
 
-	this->camera = camera;
+	this->container = container;
 
 	// ajout des cases
 	for (unsigned int i = 0; i < cases.size(); i++)
 		for (unsigned int j = 0; j < cases[i].size(); j++)
-			camera->addChild(cases[i][j].get());
+			container->addChild(cases[i][j].get());
 
 	// ajout des barrières
 	for (unsigned int i = 0; i < barrieres[0].size(); i++)
 	{
-		camera->addChild(barrieres[0][i].get());
-		camera->addChild(barrieres[1][i].get());
+		container->addChild(barrieres[0][i].get());
+		container->addChild(barrieres[1][i].get());
 	}
 
 	// ajout des pions
-	camera->addChild(pions[0]);
-	camera->addChild(pions[1]);
+	container->addChild(pions[0]);
+	container->addChild(pions[1]);
 
 	isInitialized = true;
 
@@ -73,8 +73,8 @@ void Controller::hideVirtualBarriere()
 	if (!isInitialized)
 		throw new StateException("État incorrect: Veuillez appeler la méthode initialize une fois que tout les éléments sont setter");
 
-	if (camera->containsNode(virtualBarriere))
-		camera->removeChild(virtualBarriere);
+	if (container->containsNode(virtualBarriere))
+		container->removeChild(virtualBarriere);
 }
 
 void Controller::computePions()

@@ -314,18 +314,6 @@ void EventController::handleKeyboard(int key)
 		case GUIEventAdapter::KeySymbol::KEY_F7:
 			performAction(Config::Button::LOAD);
 			break;
-		case GUIEventAdapter::KeySymbol::KEY_Up:
-			performAction(Config::Button::ARROW_UP);
-			break;
-		case GUIEventAdapter::KeySymbol::KEY_Down:
-			performAction(Config::Button::ARROW_DOWN);
-			break;
-		case GUIEventAdapter::KeySymbol::KEY_Left:
-			performAction(Config::Button::ARROW_LEFT);
-			break;
-		case GUIEventAdapter::KeySymbol::KEY_Right:
-			performAction(Config::Button::ARROW_RIGHT);
-			break;
 		case 'S':
 		case GUIEventAdapter::KeySymbol::KEY_S:
 			performAction(Config::Button::DIRECTION);
@@ -353,6 +341,60 @@ void EventController::handleKeyboard(int key)
 		case 'P':
 		case GUIEventAdapter::KeySymbol::KEY_P:
 			performAction(Config::Button::TURN_RIGHT);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_Up:
+		case GUIEventAdapter::KeySymbol::KEY_Down:
+		case GUIEventAdapter::KeySymbol::KEY_Left:
+		case GUIEventAdapter::KeySymbol::KEY_Right:
+			manageArrow(key);
+			break;
+	}
+}
+
+void EventController::manageArrow(int key)
+{
+	int angle = GameView::getInstance()->getAngle();
+
+	Config::Button upArrow;
+	Config::Button downArrow;
+	Config::Button leftArrow;
+	Config::Button rightArrow;
+
+	if (angle >= 315 || angle < 45) { // si vers le bas
+		upArrow = Config::Button::ARROW_UP;
+		downArrow = Config::Button::ARROW_DOWN;
+		leftArrow = Config::Button::ARROW_LEFT;
+		rightArrow = Config::Button::ARROW_RIGHT;
+	} else if (angle >= 45 && angle < 135) { // si vers la droite
+		upArrow = Config::Button::ARROW_RIGHT;
+		downArrow = Config::Button::ARROW_LEFT;
+		leftArrow = Config::Button::ARROW_UP;
+		rightArrow = Config::Button::ARROW_DOWN;
+	} else if (angle >= 135 && angle < 225) { // si à l'envers
+		upArrow = Config::Button::ARROW_DOWN;
+		downArrow = Config::Button::ARROW_UP;
+		leftArrow = Config::Button::ARROW_RIGHT;
+		rightArrow = Config::Button::ARROW_LEFT;
+	} else { // si vers la gacuhe
+		upArrow = Config::Button::ARROW_LEFT;
+		downArrow = Config::Button::ARROW_RIGHT;
+		leftArrow = Config::Button::ARROW_DOWN;
+		rightArrow = Config::Button::ARROW_UP;
+	}
+
+	switch (key)
+	{
+		case GUIEventAdapter::KeySymbol::KEY_Up:
+			performAction(upArrow);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_Down:
+			performAction(downArrow);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_Left:
+			performAction(leftArrow);
+			break;
+		case GUIEventAdapter::KeySymbol::KEY_Right:
+			performAction(rightArrow);
 			break;
 	}
 }

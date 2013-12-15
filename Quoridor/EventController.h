@@ -29,6 +29,7 @@ private:
 	void refreshScene();														// rafraîchit le graphe de scène
 	void performAction(Config::Button button);									// appelle les différentes méthodes en fonctions de l'action à effectuer
 	bool highlightButton(osg::ref_ptr<osg::Switch> sw, std::string name);		// met en surbrillance le bouton si nécessaire
+	void manageArrow(int key);													// gérer l'appuis sur un bouton flèche pour agir en fonction de l'angle du plateau
 	
 public:
 	/**

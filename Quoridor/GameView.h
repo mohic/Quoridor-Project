@@ -39,12 +39,17 @@ private:
 	osg::Vec3 eyePerspective;							// position de la caméra en vue perspective
 
 	osg::ref_ptr<osgViewer::Viewer> viewer;				// le viewer
+
 	osg::ref_ptr<osg::Camera> cameraGameArea;			// caméra servant à afficher la zone de jeu
 	osg::ref_ptr<osg::Camera> cameraDisplayArea;		// caméra de la zone de texte
 	osg::ref_ptr<osg::Camera> cameraActionsArea;		// caméra de la zone des bouton d'actions
-	osg::ref_ptr<osg::Geode> geodeVirtualFence;			// géode de la barrière virtuelle
 
+	osg::ref_ptr<osg::Geode> geodeVirtualFence;			// géode de la barrière virtuelle
 	osg::ref_ptr<osg::Geode> classicButton;				// bouton classique
+
+	int currentAngle;									// retient l'angle actuel pour modifier la configuration des touches directionnelle en fonction de l'angle
+	osg::ref_ptr<osg::MatrixTransform> arrows;			// ensemble des flèches + le bouton changement de direction
+	osg::ref_ptr<osg::MatrixTransform> rotate;			// sert pour la rotation du plateau de jeu
 
 	void initMessage();									// initialise le message utilisateur
 
@@ -121,4 +126,10 @@ public:
 
 	//TODO: doc
 	void turnRight();
+
+	//TODO: doc
+	int getAngle()
+	{
+		return currentAngle;
+	}
 };

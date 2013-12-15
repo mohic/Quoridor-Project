@@ -5,9 +5,10 @@ using namespace osg;
 
 GameView *GameView::instance = 0;
 
-//TODO: bug en vue perspective sur la barrière virtuelle qui a deux couleurs
+//TODO: bug en vue perspective sur la barrière virtuelle qui a deux couleurs ? (possible que ca soit une ombre)
 //TODO: bug bouton direction (le bouton changer se sens "déborde" sur les autres
 //      dans la détection de collision)
+//TODO: bug détection collision lors de la rotation de la matrice contenant les flèches
 
 GameView::GameView()
 {
@@ -19,6 +20,10 @@ GameView::GameView()
 	eyePerspective = Vec3(0, -130, 150);
 
 	offset         = 0;
+
+	// initialisation de la rotation
+	rotate = new MatrixTransform();
+	currentAngle = 0;
 }
 
 GameView *GameView::getInstance()
@@ -142,7 +147,7 @@ void GameView::drawPlate()
 	if (textureFound) stateset->setTextureAttributeAndModes(0, texture, StateAttribute::Values::ON);
 
 	geodePlateau->addDrawable(plateau.get());
-	cameraGameArea->addChild(geodePlateau.get());
+	rotate->addChild(geodePlateau.get());
 
 	
 }
@@ -192,7 +197,7 @@ void GameView::drawCases()
 			px += Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure();
 
 			Controller::getInstance()->setCase(Point(x, y), caseTransform.get());
-			cameraGameArea->addChild(caseTransform.get());
+			rotate->addChild(caseTransform.get());
 		}
 
 		py -= (Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure());
@@ -301,7 +306,7 @@ void GameView::drawArrowAndDirectionButtons()
 	ref_ptr<Switch> sw;
 
 	// matrixTransform contenant les touches de directions et de changements de direction
-	ref_ptr<MatrixTransform> arrows = new MatrixTransform();
+	arrows = new MatrixTransform();
 	arrows->setMatrix(Matrix::identity());
 	arrows->postMult(Matrix::translate(0, 270, 0));
 
@@ -1103,26 +1108,29 @@ void GameView::zoomOut()
 
 void GameView::turnLeft()
 {
-	cout << "Turn Left" << endl;
+	currentAngle = (currentAngle + 5) % 360;
 
-	if (Model::getInstance()->getView() == Model::View::PARALLELE) { // mode parallèle
-		//TODO: __
-	} else { // mode perspective
-		//TODO: __
-	}
+	rotate->setMatrix(Matrix::identity());
+	rotate->postMult(Matrix::rotate(inDegrees((double)currentAngle), Z_AXIS));
+
+	arrows->setMatrix(Matrix::identity());
+	arrows->postMult(Matrix::rotate(inDegrees((double)currentAngle), Z_AXIS));
+	arrows->postMult(Matrix::translate(0, 270, 0));
 }
 
 void GameView::turnRight()
 {
-	cout << "Turn Right" << endl;
+	currentAngle -= 5;
 
-	if (Model::getInstance()->getView() == Model::View::PARALLELE) { // mode parallèle
-		//TODO: __
-		//eyeOrtho = Vec3(eyeOrtho.x() + cos(PI), eyeOrtho.y() + cos(PI), eyeOrtho.z());
-		//eyeOrtho = Vec3(50, 50, 0);
-	} else { // mode perspective
-		//TODO: __
-	}
+	if (currentAngle < 0)
+		currentAngle += 360;
+
+	rotate->setMatrix(Matrix::identity());
+	rotate->postMult(Matrix::rotate(inDegrees((double)currentAngle), Z_AXIS));
+
+	arrows->setMatrix(Matrix::identity());
+	arrows->postMult(Matrix::rotate(inDegrees((double)currentAngle), Z_AXIS));
+	arrows->postMult(Matrix::translate(0, 270, 0));
 }
 
 ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
@@ -1169,7 +1177,10 @@ ref_ptr<osgViewer::Viewer> GameView::buildSceneGraph()
 	drawViewButtons();
 
 	// initialisation du controller
-	Controller::getInstance()->initialize(cameraGameArea.get());
+	Controller::getInstance()->initialize(rotate.get());
+
+	// ajout de la matrice de transformation (servant à la rotation) à la caméra du jeu
+	cameraGameArea->addChild(rotate.get());
 
 	// création d'un noeud racine de type group contenant les caméras
 	ref_ptr<Group> root = new Group();
