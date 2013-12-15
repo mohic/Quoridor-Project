@@ -5,11 +5,6 @@ using namespace osg;
 
 GameView *GameView::instance = 0;
 
-//TODO: bug en vue perspective sur la barrière virtuelle qui a deux couleurs ? (possible que ca soit une ombre)
-//TODO: bug bouton direction (le bouton changer se sens "déborde" sur les autres
-//      dans la détection de collision)
-//TODO: bug détection collision lors de la rotation de la matrice contenant les flèches
-
 GameView::GameView()
 {
 	// configuration des caméras
@@ -910,6 +905,10 @@ void GameView::drawViewButtons()
 
 string GameView::obtenirNomBoutonCollision(Point position)
 {
+	//TODO: bug bouton direction (le bouton changer se sens "déborde" sur les autres
+	//      dans la détection de collision)
+	//TODO: bug détection collision lors de la rotation de la matrice contenant les flèches
+
 	// REMARQUE: getChildIndex renvoie le nombre d'enfants si l'enfant passé en paramètre
 	//           n'a pas été trouvé donc le 0 permet de dire renvoie d'office le nombre
 	//           d'enfants contenu dans la caméra des boutons d'actions

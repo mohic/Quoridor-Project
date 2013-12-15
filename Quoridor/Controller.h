@@ -112,12 +112,20 @@ public:
 	*/
 	void computeAllPositions();
 
-	//TODO: doc
+	/**
+		méthode permettant de remettre le controlleur dans un état cohérent et de recommencer la partie
+	*/
 	void recommencerPartie();
 
-	//TODO: doc
+	/**
+		méthode permettant de changer le style de la barrière
+		@param mt le MatrixTransform contenant la barrière à modifier
+		@param reset true si elle doit être remise à zéro pour revenir dans la zone de rangement, false si va dans le jeu
+	*/
 	void updateFence(osg::ref_ptr<osg::MatrixTransform> mt, bool reset);
 
-	//TODO: doc
+	/**
+		méthode permettant de remettre le controlleur dans un état cohérent et d'annuler le dernier coup
+	*/
 	void annulerDernierCoup();
 };
