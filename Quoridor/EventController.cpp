@@ -246,7 +246,7 @@ void EventController::performAction(Config::Button button)
 		switch(button)
 		{
 			case Config::Button::ARROW_UP: // déplacer le pion vers le haut
-				mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::UP);
+				mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::UP);
 				break;
 			case Config::Button::ARROW_DOWN: // déplacer le pion vers le bas
 				mustChangePlayer = Model::getInstance()->deplacerPion(Model::getInstance()->getJoueurEnCours(), Model::Direction::DOWN);
