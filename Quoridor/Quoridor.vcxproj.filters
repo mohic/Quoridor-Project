@@ -79,11 +79,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Quoridor.rc">
-      <Filter>Fichiers de ressources</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <Font Include="resources\fonts\messages.ttf">
       <Filter>Fichiers de ressources</Filter>
     </Font>
