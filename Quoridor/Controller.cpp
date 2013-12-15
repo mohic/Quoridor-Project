@@ -215,6 +215,8 @@ void Controller::computeBarrieres()
 				mt->setMatrix(cases[bp1[i].getX()][bp1[i].getY() - 1]->getMatrix());
 				mt->postMult(Matrix::translate(Vec3((Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure()) / 2.0, (-Config::getInstance()->getTailleBarriere() / 2.0) + (Config::getInstance()->getTailleCase() / 2.0), 0)));
 			}
+
+			updateFence(mt, false);
 		}
 	}
 
@@ -237,6 +239,8 @@ void Controller::computeBarrieres()
 				mt->setMatrix(cases[bp2[i].getX()][bp2[i].getY() - 1]->getMatrix());
 				mt->postMult(Matrix::translate(Vec3((Config::getInstance()->getTailleCase() + Config::getInstance()->getTailleRainure()) / 2.0, (-Config::getInstance()->getTailleBarriere() / 2.0) + (Config::getInstance()->getTailleCase() / 2.0), 0)));
 			}
+
+			updateFence(mt, false);
 		}
 	}
 }
@@ -251,4 +255,32 @@ void Controller::computeAllPositions()
 
 	// position des barrières
 	computeBarrieres();
+}
+
+void Controller::recommencerPartie()
+{
+	// reset de l'apparence des barrières
+	for (unsigned int i = 0; i < barrieres[0].size(); i++)
+		updateFence(barrieres[0][i], true);
+
+	for (unsigned int i = 0; i < barrieres[1].size(); i++)
+		updateFence(barrieres[1][i], true);
+
+	// reset de l'état de la partie
+	Model::getInstance()->recommencerPartie();
+}
+
+void Controller::updateFence(ref_ptr<MatrixTransform> mt, bool reset)
+{
+	ref_ptr<Switch> sw = mt->getChild(0)->asSwitch();
+
+	if (sw == 0)
+		return;
+
+	for (unsigned int j = 0; j < sw->getChildIndex(0); j++) {
+		if (sw->getChild(j)->getName() == "dock")
+			sw->setValue(j, reset);
+		else
+			sw->setValue(j, !reset);
+	}
 }

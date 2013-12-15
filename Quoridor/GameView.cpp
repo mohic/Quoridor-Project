@@ -214,23 +214,47 @@ void GameView::drawCases()
 
 void GameView::drawFences()
 {
-	ref_ptr<ShapeDrawable> barriere = new ShapeDrawable();
-	barriere->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), 18));
-	barriere->setColor(COLOR_BARRIERE);
+	StateSet *stateset;
 
-	ref_ptr<Geode> geodeBarriere = new Geode();
+	// barrière avec l'apparence de la zone de stockage
+	ref_ptr<ShapeDrawable> barriereDock = new ShapeDrawable();
+	barriereDock->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), 18));
+	barriereDock->setColor(COLOR_BARRIERE);
 
-	StateSet *stateset = geodeBarriere->getOrCreateStateSet();
+	ref_ptr<Geode> geodeBarriereDock = new Geode();
+	geodeBarriereDock->setName("dock");
+
+	stateset = geodeBarriereDock->getOrCreateStateSet();
 	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
 
-	geodeBarriere->addDrawable(barriere.get());
+	geodeBarriereDock->addDrawable(barriereDock.get());
 
+	// barrière avec l'apparence dans le jeu
+	ref_ptr<ShapeDrawable> barriereGame = new ShapeDrawable();
+	barriereGame->setShape(new Box(POSITION_CENTRE, Config::getInstance()->getTailleBarriere(), Config::getInstance()->getTailleRainure(), 18));
+	barriereGame->setColor(BLUE);
+
+	ref_ptr<Geode> geodeBarriereGame = new Geode();
+	geodeBarriereGame->setName("game");
+
+	stateset = geodeBarriereGame->getOrCreateStateSet();
+	stateset->setMode(GL_LIGHTING, StateAttribute::Values::OFF);
+
+	geodeBarriereGame->addDrawable(barriereGame.get());
+
+	// ajouter les barrières au controller
 	for (int joueur = 1; joueur <= 2; joueur++)
 	{
 		for (int i = 0; i < Config::getInstance()->getNbrBarriereJoueur(); i++)
 		{
+			// création du switch
+			ref_ptr<Switch> sw = new Switch();
+
+			sw->addChild(geodeBarriereDock.get(), true);
+			sw->addChild(geodeBarriereGame.get(), false);
+
 			ref_ptr<MatrixTransform> mt = new MatrixTransform();
-			mt->addChild(geodeBarriere.get());
+			mt->addChild(sw.get());
 
 			Controller::getInstance()->setBarriere(Point(joueur, i), mt.get());
 		}
